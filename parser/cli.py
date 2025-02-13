@@ -11,6 +11,7 @@ from parser import Parser
 from serializer import JSONSerializer
 from plantuml_generator import PlantUMLGenerator
 
+VERSION = '1.0.0'
 
 class CLI:
   def __init__(self):
@@ -24,6 +25,12 @@ class CLI:
       '--watch',
       action='store_true',
       help='Watch the specified file for changes and re-parse automatically.',
+    )
+    self.args_parser.add_argument(
+      '--version',
+      action='version',
+      version=f'%(prog)s {VERSION}',
+      help='Show the version of the program and exit.'
     )
 
     self.parser = Parser()
