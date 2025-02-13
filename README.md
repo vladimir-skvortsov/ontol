@@ -18,22 +18,63 @@ Ontol DSL Parser - A tool for parsing and visualizing ontology files written in 
 -  Watch files for changes and re-parse them automatically.
 -  Display version and help information.
 
+## Requirements
+
+-  Python 3.7 or higher
+-  Java (for local PlantUML rendering)
+-  PlantUML (for local rendering)
+
+## Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/vladimir-skvortsov/ontol.git
+cd ontol
+```
+
+2.	Install the required Python packages:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Usage
 
-Get help:
+### Parse a file
+
+To parse an `.ontol` file and generate JSON and PlantUML files:
 
 ```bash
-python parser/cli.py --help
+python cli.py path/to/yourfile.ontol
 ```
 
-Parse a file:
+### Watch Mode
+
+To watch a file for changes and automatically re-parse it:
 
 ```bash
-python parser/cli.py examples/test.ontol
+python cli.py path/to/yourfile.ontol --watch
 ```
 
-Watch a file:
+### Display Version
+
+To display the version of the program:
 
 ```bash
-python parser/cli.py examples/test.ontol --watch
+python cli.py --version
 ```
+
+### Help
+
+To display help information:
+
+```bash
+python cli.py --help
+```
+
+## Output
+
+- **JSON File**: A JSON representation of the ontology is saved with the same basename as the `.ontol` file.
+- **PlantUML File**: A `.puml` file is generated for visualization.
+- **PNG Image**: A PNG image is rendered from the PlantUML file.
