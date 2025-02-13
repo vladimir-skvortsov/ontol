@@ -2,6 +2,12 @@
 
 ## Usage
 
+Get help:
+
+```bash
+python parser/cli.py --help
+```
+
 Parse a file:
 
 ```bash
