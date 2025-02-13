@@ -1,0 +1,48 @@
+{
+    "terms": [
+        {
+            "name": "set",
+            "description": "\"Множество - это коллекция уникальных элементов\""
+        },
+        {
+            "name": "element",
+            "description": "\"Элемент - это индивидуальный объект в множестве\""
+        }
+    ],
+    "functions": [
+        {
+            "name": "decart",
+            "input_types": [
+                "set",
+                ""
+            ],
+            "output_types": [
+                "set"
+            ],
+            "label": "->",
+            "description": "(set) \"Декартово произведение\" \"Декартово произведение двух множеств\""
+        },
+        {
+            "name": "isSetElem",
+            "input_types": [
+                "element",
+                ""
+            ],
+            "output_types": [
+                "set"
+            ],
+            "label": "->",
+            "description": "(bool) \"Проверка на принадлежность\" \"Проверка на принадлежность элемента к множеству\""
+        }
+    ],
+    "hierarchy": [
+        "element1 in set1 and element2 in set2"
+    ],
+    "meta": {
+        "version": "1.0",
+        "name": "\"Пример",
+        "author": "Онтологии\"",
+        "description": "\"Алексей Иванов\" \"Описание онтологии\"",
+        "date_created": "2025-02-08"
+    }
+}
