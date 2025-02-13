@@ -1,0 +1,19 @@
+@startuml
+skinparam classAttributeIconSize 0
+title "Пример by Онтологии"
+class set {
+  "Множество - это коллекция уникальных элементов"
+}
+class element {
+  "Элемент - это индивидуальный объект в множестве"
+}
+class decart <<Function>> {
+  +decart(set, ) : (set)
+  (set) "Декартово произведение" "Декартово произведение двух множеств"
+}
+class isSetElem <<Function>> {
+  +isSetElem(element, ) : (set)
+  (bool) "Проверка на принадлежность" "Проверка на принадлежность элемента к множеству"
+}
+note "element1 in set1 and element2 in set2" as N9366
+@enduml
