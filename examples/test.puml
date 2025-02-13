@@ -15,5 +15,5 @@ class isSetElem <<Function>> {
   +isSetElem(element, ) : (set)
   (bool) "Проверка на принадлежность" "Проверка на принадлежность элемента к множеству"
 }
-note "element1 in set1 and element2 in set2" as N9366
+note "element1 in set1 and element2 in set2" as N2691
 @enduml

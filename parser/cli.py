@@ -2,12 +2,14 @@ import argparse
 import time
 import os
 
+from plantuml import PlantUML
+
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 from parser import Parser
 from serializer import JSONSerializer
-from plantuml import PlantUMLGenerator
+from plantuml_generator import PlantUMLGenerator
 
 class CLI:
   def __init__(self):
@@ -44,6 +46,12 @@ class CLI:
       with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
         puml_file.write(plantuml_content)
 
+      self.render_plantuml_to_png(puml_file_path)
+
+  def render_plantuml_to_png(self, puml_file_path):
+    server = PlantUML(url='http://www.plantuml.com/plantuml/img/')
+    server.processes_file(puml_file_path)
+
   def watch_file(self, file_path):
     class FileChangeHandler(FileSystemEventHandler):
       def __init__(self, parse_callback):
@@ -51,7 +59,6 @@ class CLI:
         self.parse_callback = parse_callback
 
       def on_modified(self, event):
-        print(event.src_path)
         if event.src_path.endswith('.ontol'):
           print(f"File {event.src_path} modified, re-parsing...")
           self.parse_callback(event.src_path)
