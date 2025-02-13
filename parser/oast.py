@@ -3,15 +3,15 @@ from typing import Optional
 class ASTNode:
   pass
 
-class TypeDefinition(ASTNode):
+class Term(ASTNode):
   def __init__(self, name: str, description: Optional[str] = None):
     self.name = name
     self.description = description
 
   def __repr__(self):
-    return f"TypeDefinition(name={self.name}, description={self.description})"
+    return f"Term(name={self.name}, description={self.description})"
 
-class FunctionDefinition(ASTNode):
+class Function(ASTNode):
   def __init__(self, name: str, input_types: list[str], output_types: list[str], label: Optional[str] = None, description: Optional[str] = None):
     self.name = name
     self.input_types = input_types
@@ -20,7 +20,7 @@ class FunctionDefinition(ASTNode):
     self.description = description
 
   def __repr__(self):
-    return f"FunctionDefinition(name={self.name}, input_types={self.input_types}, output_types={self.output_types}, label={self.label}, description={self.description})"
+    return f"Function(name={self.name}, input_types={self.input_types}, output_types={self.output_types}, label={self.label}, description={self.description})"
 
 class Relationship(ASTNode):
   def __init__(self, expression: str):
@@ -52,19 +52,19 @@ class Meta(ASTNode):
 
 class Ontology(ASTNode):
   def __init__(self):
-    self.types: list[TypeDefinition] = []
-    self.functions: list[FunctionDefinition] = []
-    self.logical_expressions: list[Relationship] = []
+    self.types: list[Term] = []
+    self.functions: list[Function] = []
+    self.hierarchy: list[Relationship] = []
     self.meta: Optional[Meta] = None
 
-  def add_type(self, type_def: TypeDefinition):
+  def add_type(self, type_def: Term):
     self.types.append(type_def)
 
-  def add_function(self, func_def: FunctionDefinition):
+  def add_function(self, func_def: Function):
     self.functions.append(func_def)
 
-  def add_logical_expression(self, logical_expr: Relationship):
-    self.logical_expressions.append(logical_expr)
+  def add_relationship(self, logical_expr: Relationship):
+    self.hierarchy.append(logical_expr)
 
   def set_meta(self, meta: Meta):
     if self.meta is not None:
@@ -75,5 +75,5 @@ class Ontology(ASTNode):
     return (
       f"Ontology(types={self.types}, "
       f"functions={self.functions},"
-      f"logical_expressions={self.logical_expressions}"
+      f"hierarchy={self.hierarchy}"
     )

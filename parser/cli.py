@@ -1,16 +1,18 @@
 import argparse
+import time
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
-import time
+from parser import Parser
 
-class OntolCLI:
+class CLI:
     def __init__(self):
-        self.parser = argparse.ArgumentParser(description='Ontol DSL Parser')
-        self.parser.add_argument('file', type=str, help='Path to the .ontol file')
-        self.parser.add_argument('--watch', action='store_true', help='Watch for changes in the file')
+        self.args_parser = argparse.ArgumentParser(description='Ontol DSL Parser')
+        self.args_parser.add_argument('file', type=str, help='Path to the .ontol file')
+        self.args_parser.add_argument('--watch', action='store_true', help='Watch for changes in the file')
+        self.parser = Parser()
 
     def run(self):
-        args = self.parser.parse_args()
+        args = self.args_parser.parse_args()
 
         if args.watch:
             self.watch_file(args.file)
@@ -18,8 +20,11 @@ class OntolCLI:
             self.parse_file(args.file)
 
     def parse_file(self, file_path):
-        # Логика парсинга файла
         print(f"Parsing file: {file_path}")
+        with open(file_path, 'r', encoding='utf-8') as file:
+            content = file.read()
+            ontology = self.parser.parse(content)
+            print(ontology)
 
     def watch_file(self, file_path):
         event_handler = FileSystemEventHandler()
@@ -37,5 +42,5 @@ class OntolCLI:
         observer.join()
 
 if __name__ == "__main__":
-    cli = OntolCLI()
+    cli = CLI()
     cli.run()
