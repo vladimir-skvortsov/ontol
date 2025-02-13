@@ -7,6 +7,7 @@ from watchdog.events import FileSystemEventHandler
 
 from parser import Parser
 from serializer import JSONSerializer
+from plantuml import PlantUMLGenerator
 
 class CLI:
   def __init__(self):
@@ -16,6 +17,7 @@ class CLI:
 
     self.parser = Parser()
     self.serializer = JSONSerializer()
+    self.plantuml_generator = PlantUMLGenerator()
 
   def run(self):
     args = self.args_parser.parse_args()
@@ -30,12 +32,17 @@ class CLI:
       content = file.read()
       ontology = self.parser.parse(content)
 
+      # JSON
       json_content = self.serializer.serialize(ontology)
       json_file_path = os.path.splitext(file_path)[0] + '.json'
       with open(json_file_path, 'w', encoding='utf-8') as json_file:
         json_file.write(json_content)
 
-      print(f"Ontology parsed and saved to {json_file_path}")
+      # PlantUML
+      plantuml_content = self.plantuml_generator.generate(ontology)
+      puml_file_path = os.path.splitext(file_path)[0] + '.puml'
+      with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
+        puml_file.write(plantuml_content)
 
   def watch_file(self, file_path):
     class FileChangeHandler(FileSystemEventHandler):
