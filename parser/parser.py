@@ -11,15 +11,15 @@ class Parser:
 
     for line in lines:
       line = line.strip()
-      if line.startswith("#"):  # Это комментарий
+      if line.startswith('#'):
         continue
-      elif line.startswith("type"):
+      elif line.startswith('type'):
         type_def = self._parse_type(line)
         ontology.add_type(type_def)
-      elif line.startswith("function"):
+      elif line.startswith('function'):
         func_def = self._parse_function(line)
         ontology.add_function(func_def)
-      elif line.startswith("meta"):
+      elif line.startswith('meta'):
         meta = self._parse_meta(line)
         ontology.set_meta(meta)
       elif line:
@@ -31,7 +31,7 @@ class Parser:
   def _parse_type(self, line: str) -> Term:
     parts = line.split()
     name = parts[1]
-    description = " ".join(parts[2:]) if len(parts) > 2 else None
+    description = ' '.join(parts[2:])[1:-1] if len(parts) > 2 else None
     return Term(name, description)
 
   def _parse_function(self, line: str) -> Function:
