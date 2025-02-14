@@ -73,6 +73,14 @@ To display help information:
 python cli.py --help
 ```
 
+### Test
+
+To display test information:
+
+```bash
+pytest tests
+```
+
 ## Output
 
 - **JSON File**: A JSON representation of the ontology is saved with the same basename as the `.ontol` file.

@@ -1,4 +1,4 @@
-from oast import Ontology, Term, Function, Relationship, Meta
+from parser.oast import Ontology, Term, Function, Relationship, Meta
 
 class Parser:
   def __init__(self):
