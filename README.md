@@ -5,7 +5,7 @@
 [Aptukov Mikhail](https://github.com/LuckyAm20),
 [Markov Mikhail](https://github.com/eagerbeaver04),
 [Afanasyev Andrew](https://github.com/afafos),
-[Khamidullin Ilsaf](https://github.com/Ilsaffff)
+[Khamidullin Ilsaf](https://github.com/Ilsaffff).
 
 Ontol DSL Parser is a command-line tool for parsing and visualizing ontology files written in the Ontol DSL. It generates JSON representations and PlantUML diagrams from `.ontol` files.
 
@@ -46,7 +46,7 @@ pip install -r requirements.txt
 To parse an `.ontol` file and generate JSON and PlantUML files:
 
 ```bash
-python cli.py path/to/yourfile.ontol
+python parser/cli.py path/to/yourfile.ontol
 ```
 
 ### Watch Mode
@@ -54,7 +54,7 @@ python cli.py path/to/yourfile.ontol
 To watch a file for changes and automatically re-parse it:
 
 ```bash
-python cli.py path/to/yourfile.ontol --watch
+python parser/cli.py path/to/yourfile.ontol --watch
 ```
 
 ### Display Version
@@ -62,7 +62,7 @@ python cli.py path/to/yourfile.ontol --watch
 To display the version of the program:
 
 ```bash
-python cli.py --version
+python parser/cli.py --version
 ```
 
 ### Help
@@ -70,7 +70,7 @@ python cli.py --version
 To display help information:
 
 ```bash
-python cli.py --help
+python parser/cli.py --help
 ```
 
 ### Test
