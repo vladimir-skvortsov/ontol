@@ -35,7 +35,7 @@ def test_parse_file(cli, sample_ontology_file):
 
     with open(json_file_path, "r", encoding="utf-8") as json_file:
         assert json_file.read() == "{}"
-    
+
     with open(puml_file_path, "r", encoding="utf-8") as puml_file:
         assert puml_file.read() == "@startuml\n@enduml"
 
@@ -54,31 +54,33 @@ def test_render_plantuml_to_png(cli):
 
 
 def test_watch_file(cli):
-    with patch("watchdog.observers.Observer.schedule") as mock_schedule, \
-         patch("watchdog.observers.Observer.start") as mock_start, \
-         patch("watchdog.observers.Observer.join") as mock_join, \
-         patch("time.sleep", side_effect=KeyboardInterrupt):
-        
+    with (
+        patch("watchdog.observers.Observer.schedule") as mock_schedule,
+        patch("watchdog.observers.Observer.start") as mock_start,
+        patch("watchdog.observers.Observer.join") as mock_join,
+        patch("time.sleep", side_effect=KeyboardInterrupt),
+    ):
         mock_start.return_value = None
-        mock_join.return_value = None 
-        
+        mock_join.return_value = None
+
         cli.watch_file("test.ontol")
-        
+
         mock_schedule.assert_called()
         mock_start.assert_called()
         mock_join.assert_called()
 
 
 def test_watch_file_no_changes(cli):
-    with patch("watchdog.observers.Observer.schedule") as mock_schedule, \
-         patch("watchdog.observers.Observer.start") as mock_start, \
-         patch("watchdog.observers.Observer.join") as mock_join, \
-         patch("time.sleep", side_effect=KeyboardInterrupt):
-        
+    with (
+        patch("watchdog.observers.Observer.schedule") as mock_schedule,
+        patch("watchdog.observers.Observer.start") as mock_start,
+        patch("watchdog.observers.Observer.join") as mock_join,
+        patch("time.sleep", side_effect=KeyboardInterrupt),
+    ):
         mock_start.return_value = None
-        mock_join.return_value = None 
-        
-        cli.watch_file("nonexistent_file.ontol")  
+        mock_join.return_value = None
+
+        cli.watch_file("nonexistent_file.ontol")
 
         mock_schedule.assert_called()
         mock_start.assert_called()
