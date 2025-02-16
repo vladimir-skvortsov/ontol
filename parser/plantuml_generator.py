@@ -1,4 +1,4 @@
-from parser.oast import Function, Ontology, Term, Relationship
+from parser.oast import Function, Ontology, Relationship, Term
 
 
 class PlantUMLGenerator:

@@ -1,5 +1,6 @@
+from parser.oast import Function, Meta, Ontology, Relationship, Term
+
 import pytest
-from parser.oast import Term, Function, Relationship, Meta, Ontology
 
 
 def test_term_creation() -> None:

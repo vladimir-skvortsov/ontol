@@ -1,8 +1,9 @@
-import pytest
 import os
 import tempfile
-from unittest.mock import patch, MagicMock
 from parser.cli import CLI
+from unittest.mock import MagicMock, patch
+
+import pytest
 
 
 @pytest.fixture

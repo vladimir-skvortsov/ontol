@@ -1,5 +1,5 @@
-from parser.oast import Ontology, Term, Function, Relationship, Meta
 import re
+from parser.oast import Function, Meta, Ontology, Relationship, Term
 
 
 class Parser:

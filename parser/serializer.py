@@ -1,5 +1,5 @@
 import json
-from parser.oast import Ontology, Term, Function, Meta
+from parser.oast import Function, Meta, Ontology, Term
 
 
 class JSONSerializer:

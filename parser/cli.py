@@ -1,17 +1,15 @@
 import os
 import time
 from argparse import ArgumentParser, Namespace
+from parser import Parser
+from parser.oast import Ontology
+from parser.plantuml_generator import PlantUMLGenerator
+from parser.serializer import JSONSerializer
 
 from plantuml import PlantUML
-
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.api import BaseObserver
-
-from parser import Parser
-from parser.plantuml_generator import PlantUMLGenerator
-from parser.serializer import JSONSerializer
-from parser.oast import Ontology
 
 VERSION: str = '1.0.0'
 
