@@ -2,7 +2,7 @@ import json
 
 from dataclasses import asdict
 
-from parser.oast import Ontology, Term, Function, Meta
+from oast import Ontology, Term, Function, Meta
 
 
 class JSONSerializer:

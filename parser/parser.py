@@ -1,10 +1,12 @@
 import re
 
-from parser.oast import Ontology, Term, Function, Relationship, Meta
+from oast import Ontology, Term, Function, Relationship, Meta
 
 from datetime import datetime
 
 
+# TODO: develop error and warning messages system. Should work like latex compiler.
+# Error blocks file parsing. Errors and warnings should be displayed in terminal.
 class Parser:
     @staticmethod
     def parse(file_content: str) -> Ontology:
@@ -35,7 +37,9 @@ class Parser:
     @staticmethod
     def _parse_type(line: str) -> Term:
         parts: list[str] = line.split()
+        # FIX: strip double quotes if they exist
         name: str = parts[1]
+        # FIX: strip double quotes if they exist (remove [1:-1])
         description: str | None = ' '.join(parts[2:])[1:-1] if len(parts) > 2 else None
         return Term(name, description)
 
@@ -43,9 +47,13 @@ class Parser:
     def _parse_function(line: str) -> Function:
         parts: list[str] = line.split()
         name: str = parts[1]
+        # TODO: check if listed terms are already declared
         input_types: list[str] = parts[2].strip('()').split(',')
+        # TODO: check if listed terms are already declared
         output_types: list[str] = parts[3].strip('()').split(',')
+        # FIX: strip double quotes if they exist
         label: str | None = parts[4] if len(parts) > 4 else None
+        # FIX: strip double quotes if they exist
         description: str | None = ' '.join(parts[5:]) if len(parts) > 5 else None
         return Function(name, input_types, output_types, label, description)
 
@@ -59,5 +67,6 @@ class Parser:
         description: str | None = (
             ' '.join(parts[4:]).strip('"') if len(parts) > 4 else ''
         )
+        # TODO: also parse date from file
         date_created: str = datetime.today().strftime('%Y-%m-%d')
         return Meta(version, name, author, description, date_created)

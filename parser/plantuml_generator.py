@@ -1,6 +1,7 @@
-from parser.oast import Function, Ontology, Relationship, Term
+from oast import Function, Ontology, Relationship, Term
 
 
+# TODO: make look like in technical task
 class PlantUMLGenerator:
     def generate(self, ontology: Ontology) -> str:
         uml_lines: list[str] = ['@startuml', 'skinparam classAttributeIconSize 0']

@@ -1,15 +1,18 @@
 import os
 import time
-from argparse import ArgumentParser, Namespace
-from parser import Parser
-from parser.oast import Ontology
-from parser.plantuml_generator import PlantUMLGenerator
-from parser.serializer import JSONSerializer
 
 from plantuml import PlantUML
+
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.api import BaseObserver
+
+from argparse import ArgumentParser, Namespace
+from parser import Parser
+from oast import Ontology
+from plantuml_generator import PlantUMLGenerator
+from serializer import JSONSerializer
+
 
 VERSION: str = '1.0.0'
 
@@ -38,6 +41,7 @@ class CLI:
         self.serializer: JSONSerializer = JSONSerializer()
         self.plantuml_generator: PlantUMLGenerator = PlantUMLGenerator()
 
+    # TODO: allow work with directories. Should parse recursively
     def run(self) -> None:
         args: Namespace = self.args_parser.parse_args()
 
@@ -69,6 +73,7 @@ class CLI:
         server: PlantUML = PlantUML(url='http://www.plantuml.com/plantuml/img/')
         server.processes_file(puml_file_path)
 
+    # TODO: parse immediately, don't wait for changes
     def watch_file(self, file_path):
         class FileChangeHandler(FileSystemEventHandler):
             def __init__(self, parse_callback):
@@ -82,6 +87,7 @@ class CLI:
 
         event_handler = FileChangeHandler(self.parse_file)
 
+        # FIX: works with directories, doesn't work with files
         observer: BaseObserver = Observer()
         observer.schedule(event_handler, path=file_path, recursive=False)
         observer.start()

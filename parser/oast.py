@@ -27,6 +27,7 @@ class Function(ASTNode):
         return f'Function(name={self.name}, input_types={self.input_types}, output_types={self.output_types}, label={self.label}, description={self.description})'
 
 
+# TODO: implmenent structure from technical task. Must contain parent, child, and relationship type
 @dataclass
 class Relationship(ASTNode):
     expression: str
