@@ -8,8 +8,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 from parser import Parser
-from serializer import JSONSerializer
-from plantuml_generator import PlantUMLGenerator
+from parser.serializer import JSONSerializer
+from parser.plantuml_generator import PlantUMLGenerator
 
 VERSION = '1.0.0'
 

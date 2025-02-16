@@ -1,4 +1,4 @@
-from oast import Function, Ontology, Term, Relationship
+from parser.oast import Function, Ontology, Term, Relationship
 
 class PlantUMLGenerator:
   def generate(self, ontology: Ontology) -> str:

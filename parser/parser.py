@@ -1,4 +1,5 @@
 from parser.oast import Ontology, Term, Function, Relationship, Meta
+import re
 
 class Parser:
   def __init__(self):
@@ -44,10 +45,11 @@ class Parser:
     return Function(name, input_types, output_types, label, description)
 
   def _parse_meta(self, line: str) -> Meta:
-    parts = line.split()
+    parts = re.findall(r'\"[^\"]*\"|\S+', line)
+
     version = parts[1]
-    name = parts[2]
-    author = parts[3]
-    description = " ".join(parts[4:]) if len(parts) > 4 else ""
+    name = parts[2].strip('"')
+    author = parts[3].strip('"')
+    description = " ".join(parts[4:]).strip('"') if len(parts) > 4 else ""
     date_created = "2025-02-08"
     return Meta(version, name, author, description, date_created)
