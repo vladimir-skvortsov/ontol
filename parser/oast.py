@@ -11,7 +11,7 @@ class Term(ASTNode):
         self.description = description
 
     def __repr__(self):
-        return f"Term(name={self.name}, description={self.description})"
+        return f'Term(name={self.name}, description={self.description})'
 
 
 class Function(ASTNode):
@@ -30,7 +30,7 @@ class Function(ASTNode):
         self.description = description
 
     def __repr__(self):
-        return f"Function(name={self.name}, input_types={self.input_types}, output_types={self.output_types}, label={self.label}, description={self.description})"
+        return f'Function(name={self.name}, input_types={self.input_types}, output_types={self.output_types}, label={self.label}, description={self.description})'
 
 
 class Relationship(ASTNode):
@@ -38,7 +38,7 @@ class Relationship(ASTNode):
         self.expression = expression
 
     def __repr__(self):
-        return f"Relationship(expression={self.expression})"
+        return f'Relationship(expression={self.expression})'
 
 
 class Meta(ASTNode):
@@ -58,8 +58,8 @@ class Meta(ASTNode):
 
     def __repr__(self):
         return (
-            f"Meta(version={self.version}, name={self.name}, author={self.author}, "
-            f"description={self.description}, date_created={self.date_created})"
+            f'Meta(version={self.version}, name={self.name}, author={self.author}, '
+            f'description={self.description}, date_created={self.date_created})'
         )
 
 
@@ -82,13 +82,13 @@ class Ontology(ASTNode):
     def set_meta(self, meta: Meta):
         if self.meta is not None:
             raise ValueError(
-                "Meta information is already set and can only be set once."
+                'Meta information is already set and can only be set once.'
             )
         self.meta = meta
 
     def __repr__(self):
         return (
-            f"Ontology(types={self.types}, "
-            f"functions={self.functions},"
-            f"hierarchy={self.hierarchy}"
+            f'Ontology(types={self.types}, '
+            f'functions={self.functions},'
+            f'hierarchy={self.hierarchy}'
         )
