@@ -1,0 +1,8 @@
+[tool.ruff.lint]
+ignore = ['E722']
+
+[tool.ruff.format]
+quote-style = 'single'
+
+[tool.ruff]
+indent-width = 4
