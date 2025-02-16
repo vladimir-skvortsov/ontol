@@ -2,19 +2,19 @@ import pytest
 from parser.oast import Term, Function, Relationship, Meta, Ontology
 
 
-def test_term_creation():
-    term = Term(name='TestTerm', description='A test term')
+def test_term_creation() -> None:
+    term: Term = Term(name='TestTerm', description='A test term')
     assert term.name == 'TestTerm'
     assert term.description == 'A test term'
     assert repr(term) == 'Term(name=TestTerm, description=A test term)'
 
-    term_no_desc = Term(name='NoDescTerm')
+    term_no_desc: Term = Term(name='NoDescTerm')
     assert term_no_desc.description is None
     assert repr(term_no_desc) == 'Term(name=NoDescTerm, description=None)'
 
 
 def test_function_creation():
-    func = Function(
+    func: Function = Function(
         name='TestFunction',
         input_types=['int', 'str'],
         output_types=['bool'],
@@ -29,7 +29,7 @@ def test_function_creation():
         == "Function(name=TestFunction, input_types=['int', 'str'], output_types=['bool'], label=None, description=A test function)"
     )
 
-    func_no_desc = Function(
+    func_no_desc: Function = Function(
         name='NoDescFunction', input_types=['float'], output_types=['str']
     )
     assert func_no_desc.description is None
@@ -38,7 +38,7 @@ def test_function_creation():
         == "Function(name=NoDescFunction, input_types=['float'], output_types=['str'], label=None, description=None)"
     )
 
-    func_with_label = Function(
+    func_with_label: Function = Function(
         name='LabeledFunction',
         input_types=['int'],
         output_types=['str'],
@@ -51,18 +51,18 @@ def test_function_creation():
     )
 
 
-def test_relationship_creation():
-    rel = Relationship(expression='A > B')
+def test_relationship_creation() -> None:
+    rel: Relationship = Relationship(expression='A > B')
     assert rel.expression == 'A > B'
     assert repr(rel) == 'Relationship(expression=A > B)'
 
-    rel2 = Relationship(expression='C < D')
+    rel2: Relationship = Relationship(expression='C < D')
     assert rel2.expression == 'C < D'
     assert repr(rel2) == 'Relationship(expression=C < D)'
 
 
 def test_meta_creation():
-    meta = Meta(
+    meta: Meta = Meta(
         version='1.0',
         name='TestOntology',
         author='Author',
@@ -79,7 +79,7 @@ def test_meta_creation():
         == 'Meta(version=1.0, name=TestOntology, author=Author, description=A test ontology, date_created=2024-01-01)'
     )
 
-    meta_no_optional = Meta(
+    meta_no_optional: Meta = Meta(
         version='1.0',
         name='TestOntology',
         author='Author',
@@ -95,11 +95,13 @@ def test_meta_creation():
 
 
 def test_ontology_operations():
-    ontology = Ontology()
-    term = Term(name='TestTerm')
-    func = Function(name='TestFunction', input_types=['int'], output_types=['str'])
-    rel = Relationship(expression='A > B')
-    meta = Meta(
+    ontology: Ontology = Ontology()
+    term: Term = Term(name='TestTerm')
+    func: Function = Function(
+        name='TestFunction', input_types=['int'], output_types=['str']
+    )
+    rel: Relationship = Relationship(expression='A > B')
+    meta: Meta = Meta(
         version='1.0',
         name='TestOntology',
         author='Author',
@@ -124,9 +126,11 @@ def test_ontology_operations():
 
     assert 'Ontology(types=[Term(name=TestTerm, description=None)]' in repr(ontology)
 
-    new_term = Term(name='NewTerm')
-    new_func = Function(name='NewFunction', input_types=['str'], output_types=['int'])
-    new_rel = Relationship(expression='B < A')
+    new_term: Term = Term(name='NewTerm')
+    new_func: Function = Function(
+        name='NewFunction', input_types=['str'], output_types=['int']
+    )
+    new_rel: Relationship = Relationship(expression='B < A')
 
     ontology.add_type(new_term)
     ontology.add_function(new_func)
@@ -136,7 +140,7 @@ def test_ontology_operations():
     assert ontology.functions == [func, new_func]
     assert ontology.hierarchy == [rel, new_rel]
 
-    repr_str = repr(ontology)
+    repr_str: str = repr(ontology)
     assert (
         'Ontology(types=[Term(name=TestTerm, description=None), Term(name=NewTerm, description=None)]'
         in repr_str
