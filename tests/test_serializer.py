@@ -1,7 +1,8 @@
-import pytest
 import json
-from parser.oast import Ontology, Term, Function, Relationship, Meta
+from parser.oast import Function, Meta, Ontology, Relationship, Term
 from parser.serializer import JSONSerializer
+
+import pytest
 
 
 @pytest.fixture

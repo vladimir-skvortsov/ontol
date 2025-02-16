@@ -1,6 +1,7 @@
-import pytest
-from parser.oast import Ontology, Term, Function, Relationship, Meta
+from parser.oast import Function, Meta, Ontology, Relationship, Term
 from parser.plantuml_generator import PlantUMLGenerator
+
+import pytest
 
 
 @pytest.fixture

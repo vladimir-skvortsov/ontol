@@ -1,6 +1,8 @@
-from parser.oast import Ontology, Term, Function, Relationship, Meta
-from datetime import datetime
 import re
+
+from parser.oast import Ontology, Term, Function, Relationship, Meta
+
+from datetime import datetime
 
 
 class Parser:
