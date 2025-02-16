@@ -1,22 +1,24 @@
-import argparse
-import time
 import os
+import time
+from argparse import ArgumentParser, Namespace
 
 from plantuml import PlantUML
 
-from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
+from watchdog.observers import Observer
+from watchdog.observers.api import BaseObserver
 
 from parser import Parser
-from parser.serializer import JSONSerializer
 from parser.plantuml_generator import PlantUMLGenerator
+from parser.serializer import JSONSerializer
+from parser.oast import Ontology
 
-VERSION = '1.0.0'
+VERSION: str = '1.0.0'
 
 
 class CLI:
-    def __init__(self):
-        self.args_parser = argparse.ArgumentParser(
+    def __init__(self) -> None:
+        self.args_parser: ArgumentParser = ArgumentParser(
             description='Ontol DSL Parser - A tool for parsing and visualizing ontology files written in the Ontol DSL.'
         )
         self.args_parser.add_argument(
@@ -34,39 +36,39 @@ class CLI:
             help='Show the version of the program and exit.',
         )
 
-        self.parser = Parser()
-        self.serializer = JSONSerializer()
-        self.plantuml_generator = PlantUMLGenerator()
+        self.parser: Parser = Parser()
+        self.serializer: JSONSerializer = JSONSerializer()
+        self.plantuml_generator: PlantUMLGenerator = PlantUMLGenerator()
 
-    def run(self):
-        args = self.args_parser.parse_args()
+    def run(self) -> None:
+        args: Namespace = self.args_parser.parse_args()
 
         if args.watch:
             self.watch_file(args.file)
         else:
             self.parse_file(args.file)
 
-    def parse_file(self, file_path):
+    def parse_file(self, file_path: str) -> None:
         with open(file_path, 'r', encoding='utf-8') as file:
-            content = file.read()
-            ontology = self.parser.parse(content)
+            content: str = file.read()
+            ontology: Ontology = self.parser.parse(content)
 
             # JSON
-            json_content = self.serializer.serialize(ontology)
-            json_file_path = os.path.splitext(file_path)[0] + '.json'
+            json_content: str = self.serializer.serialize(ontology)
+            json_file_path: str = os.path.splitext(file_path)[0] + '.json'
             with open(json_file_path, 'w', encoding='utf-8') as json_file:
                 json_file.write(json_content)
 
             # PlantUML
-            plantuml_content = self.plantuml_generator.generate(ontology)
-            puml_file_path = os.path.splitext(file_path)[0] + '.puml'
+            plantuml_content: str = self.plantuml_generator.generate(ontology)
+            puml_file_path: str = os.path.splitext(file_path)[0] + '.puml'
             with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
                 puml_file.write(plantuml_content)
 
             self.render_plantuml_to_png(puml_file_path)
 
     def render_plantuml_to_png(self, puml_file_path):
-        server = PlantUML(url='http://www.plantuml.com/plantuml/img/')
+        server: PlantUML = PlantUML(url='http://www.plantuml.com/plantuml/img/')
         server.processes_file(puml_file_path)
 
     def watch_file(self, file_path):
@@ -82,7 +84,7 @@ class CLI:
 
         event_handler = FileChangeHandler(self.parse_file)
 
-        observer = Observer()
+        observer: BaseObserver = Observer()
         observer.schedule(event_handler, path=file_path, recursive=False)
         observer.start()
 
@@ -95,5 +97,5 @@ class CLI:
 
 
 if __name__ == '__main__':
-    cli = CLI()
+    cli: CLI = CLI()
     cli.run()
