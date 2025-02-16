@@ -6,7 +6,6 @@ from datetime import datetime
 
 
 class Parser:
-
     @staticmethod
     def parse(file_content: str) -> Ontology:
         ontology: Ontology = Ontology()

@@ -4,14 +4,19 @@ from dataclasses import asdict
 
 from parser.oast import Ontology, Term, Function, Meta
 
+
 class JSONSerializer:
     @staticmethod
     def serialize(ontology: Ontology) -> str:
         data: dict[str, object] = {
             'terms': [JSONSerializer._serialize_term(t) for t in ontology.types],
-            'functions': [JSONSerializer._serialize_function(f) for f in ontology.functions],
+            'functions': [
+                JSONSerializer._serialize_function(f) for f in ontology.functions
+            ],
             'hierarchy': [expr.expression for expr in ontology.hierarchy],
-            'meta': JSONSerializer._serialize_meta(ontology.meta) if ontology.meta else None,
+            'meta': JSONSerializer._serialize_meta(ontology.meta)
+            if ontology.meta
+            else None,
         }
         return json.dumps(data, ensure_ascii=False, indent=4)
 
@@ -20,9 +25,7 @@ class JSONSerializer:
         return asdict(type_def)
 
     @staticmethod
-    def _serialize_function(
-            func_def: Function
-    ) -> dict[str, str | list[str] | None]:
+    def _serialize_function(func_def: Function) -> dict[str, str | list[str] | None]:
         return asdict(func_def)
 
     @staticmethod
