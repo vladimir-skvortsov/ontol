@@ -1,60 +1,47 @@
 from typing import Optional
+from dataclasses import dataclass, field
 
 
 class ASTNode:
     pass
 
 
+@dataclass
 class Term(ASTNode):
-    def __init__(self, name: str, description: Optional[str] = None) -> None:
-        self.name = name
-        self.description = description
+    name: str
+    description: Optional[str] = None
 
     def __repr__(self) -> str:
         return f'Term(name={self.name}, description={self.description})'
 
 
+@dataclass
 class Function(ASTNode):
-    def __init__(
-        self,
-        name: str,
-        input_types: list[str],
-        output_types: list[str],
-        label: Optional[str] = None,
-        description: Optional[str] = None,
-    ) -> None:
-        self.name = name
-        self.input_types = input_types
-        self.output_types = output_types
-        self.label = label
-        self.description = description
+    name: str
+    input_types: list[str] = field(default_factory=list)
+    output_types: list[str] = field(default_factory=list)
+    label: Optional[str] = None
+    description: Optional[str] = None
 
     def __repr__(self) -> str:
         return f'Function(name={self.name}, input_types={self.input_types}, output_types={self.output_types}, label={self.label}, description={self.description})'
 
 
+@dataclass
 class Relationship(ASTNode):
-    def __init__(self, expression: str) -> None:
-        self.expression = expression
+    expression: str
 
     def __repr__(self) -> str:
         return f'Relationship(expression={self.expression})'
 
 
+@dataclass
 class Meta(ASTNode):
-    def __init__(
-        self,
-        version: Optional[str],
-        name: Optional[str],
-        author: Optional[str],
-        description: Optional[str],
-        date_created: Optional[str],
-    ) -> None:
-        self.version = version
-        self.name = name
-        self.author = author
-        self.description = description
-        self.date_created = date_created
+    version: Optional[str]
+    name: Optional[str]
+    author: Optional[str]
+    description: Optional[str]
+    date_created: Optional[str]
 
     def __repr__(self) -> str:
         return (
@@ -63,12 +50,12 @@ class Meta(ASTNode):
         )
 
 
+@dataclass
 class Ontology(ASTNode):
-    def __init__(self) -> None:
-        self.types: list[Term] = []
-        self.functions: list[Function] = []
-        self.hierarchy: list[Relationship] = []
-        self.meta: Optional[Meta] = None
+    types: list[Term] = field(default_factory=list)
+    functions: list[Function] = field(default_factory=list)
+    hierarchy: list[Relationship] = field(default_factory=list)
+    meta: Optional[Meta] = None
 
     def add_type(self, type_def: Term) -> None:
         self.types.append(type_def)
@@ -90,5 +77,6 @@ class Ontology(ASTNode):
         return (
             f'Ontology(types={self.types}, '
             f'functions={self.functions},'
-            f'hierarchy={self.hierarchy}'
+            f'hierarchy={self.hierarchy},'
+            f'meta={self.meta})'
         )
