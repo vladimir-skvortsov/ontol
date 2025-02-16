@@ -13,7 +13,7 @@ def test_parse_type(parser):
     assert ontology.types[0].description == 'Множество - это коллекция уникальных элементов'
 
 def test_parse_function(parser):
-    content = "function decart (set, set) -> (set) \"Декартово произведение\" \"Декартово произведение двух множеств\""
+    content = "function decart (set,set) -> (set) \"Декартово произведение\" \"Декартово произведение двух множеств\""
     ontology = parser.parse(content)
     assert len(ontology.functions) == 1
     func = ontology.functions[0]

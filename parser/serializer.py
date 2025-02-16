@@ -1,5 +1,5 @@
 import json
-from oast import Ontology, Term, Function, Meta
+from parser.oast import Ontology, Term, Function, Meta
 
 class JSONSerializer:
     def serialize(self, ontology: Ontology) -> str:

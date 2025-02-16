@@ -2,6 +2,8 @@
 __pycache__/
 *.py[cod]
 *$py.class
+.coverage
+.pytest_cache
 
 # mypy
 .mypy_cache/
@@ -9,3 +11,7 @@ __pycache__/
 # MacOS
 .DS_Store
 .idea
+
+# Virtual Enviroment
+venv
+.venv
