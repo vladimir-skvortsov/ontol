@@ -3,54 +3,57 @@ import re
 
 
 class Parser:
-    def __init__(self):
+    def __init__(self) -> None:
         pass
 
     def parse(self, file_content: str) -> Ontology:
-        ontology = Ontology()
+        ontology: Ontology = Ontology()
 
-        lines = file_content.splitlines()
+        lines: list[str] = file_content.splitlines()
 
         for line in lines:
-            line = line.strip()
+            line: str = line.strip()
+
             if line.startswith('#'):
                 continue
             elif line.startswith('type'):
-                type_def = self._parse_type(line)
+                type_def: Term = self._parse_type(line)
                 ontology.add_type(type_def)
             elif line.startswith('function'):
-                func_def = self._parse_function(line)
+                func_def: Function = self._parse_function(line)
                 ontology.add_function(func_def)
             elif line.startswith('meta'):
-                meta = self._parse_meta(line)
+                meta: Meta = self._parse_meta(line)
                 ontology.set_meta(meta)
             elif line:
-                logical_expr = Relationship(line)
-                ontology.add_relationship(logical_expr)
+                relationship: Relationship = Relationship(line)
+                ontology.add_relationship(relationship)
 
         return ontology
 
     def _parse_type(self, line: str) -> Term:
-        parts = line.split()
-        name = parts[1]
-        description = ' '.join(parts[2:])[1:-1] if len(parts) > 2 else None
+        parts: list[str] = line.split()
+        name: str = parts[1]
+        description: str | None = ' '.join(parts[2:])[1:-1] if len(parts) > 2 else None
         return Term(name, description)
 
     def _parse_function(self, line: str) -> Function:
-        parts = line.split()
-        name = parts[1]
-        input_types = parts[2].strip('()').split(',')
-        output_types = parts[3].strip('()').split(',')
-        label = parts[4] if len(parts) > 4 else None
-        description = ' '.join(parts[5:]) if len(parts) > 5 else None
+        parts: list[str] = line.split()
+        name: str = parts[1]
+        input_types: list[str] = parts[2].strip('()').split(',')
+        output_types: list[str] = parts[3].strip('()').split(',')
+        label: str | None = parts[4] if len(parts) > 4 else None
+        description: str | None = ' '.join(parts[5:]) if len(parts) > 5 else None
         return Function(name, input_types, output_types, label, description)
 
     def _parse_meta(self, line: str) -> Meta:
-        parts = re.findall(r'\"[^\"]*\"|\S+', line)
+        parts: list[str] = re.findall(r'\"[^\"]*\"|\S+', line)
 
-        version = parts[1]
-        name = parts[2].strip('"')
-        author = parts[3].strip('"')
-        description = ' '.join(parts[4:]).strip('"') if len(parts) > 4 else ''
-        date_created = '2025-02-08'
+        version: str = parts[1]
+        name: str = parts[2].strip('"')
+        author: str = parts[3].strip('"')
+        description: str | None = (
+            ' '.join(parts[4:]).strip('"') if len(parts) > 4 else ''
+        )
+        date_created: str = '2025-02-08'
         return Meta(version, name, author, description, date_created)

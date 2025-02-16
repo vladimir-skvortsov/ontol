@@ -3,7 +3,7 @@ from parser.oast import Function, Ontology, Term, Relationship
 
 class PlantUMLGenerator:
     def generate(self, ontology: Ontology) -> str:
-        uml_lines = ['@startuml', 'skinparam classAttributeIconSize 0']
+        uml_lines: list[str] = ['@startuml', 'skinparam classAttributeIconSize 0']
 
         if ontology.meta:
             uml_lines.append(f'title {ontology.meta.name} by {ontology.meta.author}')
@@ -24,8 +24,8 @@ class PlantUMLGenerator:
         return f'class {type_def.name} {{\n  {type_def.description}\n}}'
 
     def _generate_function(self, func_def: Function) -> str:
-        inputs = ', '.join(func_def.input_types)
-        outputs = ', '.join(func_def.output_types)
+        inputs: str = ', '.join(func_def.input_types)
+        outputs: str = ', '.join(func_def.output_types)
         return (
             f'class {func_def.name} <<Function>> {{\n'
             f'  +{func_def.name}({inputs}) : ({outputs})\n'
