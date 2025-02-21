@@ -14,7 +14,7 @@ from plantuml_generator import PlantUMLGenerator
 from serializer import JSONSerializer
 
 
-VERSION: str = '1.0.0'
+VERSION: str = '2.0.0'
 
 
 class CLI:
