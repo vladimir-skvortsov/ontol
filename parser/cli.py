@@ -71,6 +71,7 @@ class CLI:
 
     def render_plantuml_to_png(self, puml_file_path):
         server: PlantUML = PlantUML(url='http://www.plantuml.com/plantuml/img/')
+        # TODO: properly handle errors from the PlantUML server. For example, when the syntax of PlantUML is incorrect due to our mistake
         server.processes_file(puml_file_path)
 
     # TODO: parse immediately, don't wait for changes

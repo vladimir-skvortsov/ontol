@@ -18,8 +18,10 @@ class Term(ASTNode):
 @dataclass
 class Function(ASTNode):
     name: str
-    input_types: list[str] = field(default_factory=list)
-    output_types: list[str] = field(default_factory=list)
+    # TODO: replace tuple[str, str | None] with dict { name: str, description: str | None }
+    input_types: list[tuple[str, str | None]] = field(default_factory=list)
+    # TODO: replace tuple[str, str | None] with dict { name: str, description: str | None }
+    output_types: list[tuple[str, str | None]] = field(default_factory=list)
     label: Optional[str] = None
     description: Optional[str] = None
 
@@ -30,8 +32,11 @@ class Function(ASTNode):
 # TODO: implmenent structure from technical task. Must contain parent, child, and relationship type
 @dataclass
 class Relationship(ASTNode):
+    # TODO: replace str with Term
     parent: str
+    # TODO: replace str with enum type
     relationship: str
+    # TODO: replace str with Term
     child: str
 
     def __repr__(self) -> str:

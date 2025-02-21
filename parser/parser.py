@@ -21,9 +21,12 @@ class Parser:
         for line in lines:
             line = line.strip()
 
+            # TODO: handle the case where # is not the first symbol, but the line is still empty
+            # Example: "   # some comment"
             if line.startswith('#') or not line:
                 continue
 
+            # TODO: send a warning if the user specified some meta information twice
             if re.match(r'^version\s+', line):
                 meta_data['version'] = Parser._parse_meta_line(line, 'version')
             elif re.match(r'^title\s+', line):
@@ -32,6 +35,7 @@ class Parser:
                 meta_data['author'] = Parser._parse_meta_line(line, 'author')
             elif re.match(r'^desc\s+', line):
                 meta_data['description'] = Parser._parse_meta_line(line, 'desc')
+
             elif line.startswith('types:'):
                 current_block = 'types'
                 continue
@@ -41,6 +45,7 @@ class Parser:
             elif line.startswith('hierarchy:'):
                 current_block = 'hierarchy'
                 continue
+
             elif current_block == 'types':
                 type_def = Parser._parse_type(line)
                 ontology.add_type(type_def)
@@ -51,14 +56,12 @@ class Parser:
                 relationship = Parser._parse_relationship(line)
                 ontology.add_relationship(relationship)
 
-        # Установка метаинформации после обработки всех строк
         ontology.set_meta(Meta(**meta_data))
 
         return ontology
 
     @staticmethod
     def _parse_meta_line(line: str, key: str) -> str:
-        """Парсит строку метаинформации и возвращает значение."""
         match = re.match(rf"{key}\s+['\"](.+?)['\"]", line)
         if match:
             return match.group(1)
@@ -66,7 +69,6 @@ class Parser:
 
     @staticmethod
     def _parse_type(line: str) -> Term:
-        """Парсит строку определения типа."""
         match = re.match(r"(\w+):?\s*['\"]?(.*?)['\"]?$", line)
         if match:
             name = match.group(1)
@@ -78,7 +80,6 @@ class Parser:
     def _parse_function(line: str) -> Function:
         line = line.split('#', 1)[0].strip()
 
-        # Регулярное выражение для разбора строки функции
         match = re.match(
             r"(\w+):?\s*['\"]?(.*?)['\"]?\s*\((.*?)\)\s*->\s*(\w+):?\s*['\"]?(.*?)['\"]?$",
             line,
@@ -96,9 +97,9 @@ class Parser:
 
     @staticmethod
     def _parse_parameters(param_string: str) -> list:
-        """Парсит параметры функции."""
         params = []
         for param in param_string.split(','):
+            # TODO: check if this term was declared. If not, raise ValueError
             param = param.strip()
             match = re.match(r"(\w+):?\s*['\"]?(.*?)['\"]?$", param)
             if match:
@@ -109,7 +110,8 @@ class Parser:
 
     @staticmethod
     def _parse_relationship(line: str) -> Relationship:
-        """Парсит строку иерархического выражения."""
+        # TODO: check if this term was declared. If not, raise ValueError
+        # TODO: check relationship type
         parts = line.split()
         if len(parts) == 3:
             return Relationship(parts[0], parts[1], parts[2])
