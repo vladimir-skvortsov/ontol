@@ -2,7 +2,7 @@ import json
 
 from dataclasses import asdict
 
-from oast import Ontology, Term, Function, Meta
+from oast import Ontology, Term, Function, Meta, Relationship
 
 
 class JSONSerializer:
@@ -13,7 +13,9 @@ class JSONSerializer:
             'functions': [
                 JSONSerializer._serialize_function(f) for f in ontology.functions
             ],
-            'hierarchy': [expr.expression for expr in ontology.hierarchy],
+            'hierarchy': [
+                JSONSerializer._serialize_relationship(r) for r in ontology.hierarchy
+            ],
             'meta': JSONSerializer._serialize_meta(ontology.meta)
             if ontology.meta
             else None,
@@ -31,3 +33,9 @@ class JSONSerializer:
     @staticmethod
     def _serialize_meta(meta: Meta) -> dict[str, str | None]:
         return asdict(meta)
+
+    @staticmethod
+    def _serialize_relationship(
+        rel_def: Relationship,
+    ) -> dict[str, str | list[str] | None]:
+        return asdict(rel_def)

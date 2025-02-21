@@ -2,18 +2,21 @@
 skinparam classAttributeIconSize 0
 title Пример Онтологии by Иван Иванов
 class set {
-  Множество - это коллекция уникальных элементов
+  Коллекция уникальных элементов' # Описание типа в онтологии
+}
+class bool {
+  None
 }
 class element {
-  Элемент - это индивидуальный объект в множестве
+  Индивидуальный объект в множестве
 }
-class decart <<Function>> {
-  +decart(set, ) : (set)
-  (set) "Декартово произведение" "Декартово произведение двух множеств"
+class descartes <<Function>> {
+  +descartes(set, set) : (s, e, t)
+  Множество-результат
 }
 class isSetElem <<Function>> {
-  +isSetElem(element, ) : (set)
-  (bool) "Проверка на принадлежность" "Проверка на принадлежность элемента к множеству"
+  +isSetElem(element, который, set) : (b, o, o, l)
+  None
 }
-note "element1 in set1 and element2 in set2" as N1570
+note "multiset subclass set" as N3627
 @enduml

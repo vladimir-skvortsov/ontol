@@ -2,47 +2,67 @@
     "terms": [
         {
             "name": "set",
-            "description": "Множество - это коллекция уникальных элементов"
+            "description": "Коллекция уникальных элементов' # Описание типа в онтологии"
+        },
+        {
+            "name": "bool",
+            "description": null
         },
         {
             "name": "element",
-            "description": "Элемент - это индивидуальный объект в множестве"
+            "description": "Индивидуальный объект в множестве"
         }
     ],
     "functions": [
         {
-            "name": "decart",
+            "name": "descartes",
             "input_types": [
-                "set",
-                ""
+                [
+                    "set",
+                    "первое множество"
+                ],
+                [
+                    "set",
+                    "второе множество"
+                ]
             ],
-            "output_types": [
-                "set"
-            ],
-            "label": "->",
-            "description": "(set) \"Декартово произведение\" \"Декартово произведение двух множеств\""
+            "output_types": "set",
+            "label": "Декартово произведение",
+            "description": "Множество-результат"
         },
         {
             "name": "isSetElem",
             "input_types": [
-                "element",
-                ""
+                [
+                    "element",
+                    "Элемент"
+                ],
+                [
+                    "который",
+                    "проверяем"
+                ],
+                [
+                    "set",
+                    null
+                ]
             ],
-            "output_types": [
-                "set"
-            ],
-            "label": "->",
-            "description": "(bool) \"Проверка на принадлежность\" \"Проверка на принадлежность элемента к множеству\""
+            "output_types": "bool",
+            "label": null,
+            "description": null
         }
     ],
     "hierarchy": [
-        "element1 in set1 and element2 in set2"
+        {
+            "parent": "multiset",
+            "relationship": "subclass",
+            "child": "set"
+        }
     ],
     "meta": {
         "version": "1.0",
         "name": "Пример Онтологии",
         "author": "Иван Иванов",
         "description": "Описание онтологии",
-        "date_created": "2025-02-17"
+        "date_created": "2025-02-21"
     }
 }

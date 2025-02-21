@@ -30,10 +30,12 @@ class Function(ASTNode):
 # TODO: implmenent structure from technical task. Must contain parent, child, and relationship type
 @dataclass
 class Relationship(ASTNode):
-    expression: str
+    parent: str
+    relationship: str
+    child: str
 
     def __repr__(self) -> str:
-        return f'Relationship(expression={self.expression})'
+        return f'Relationship(parent={self.parent}, relationship={self.relationship}, child={self.child})'
 
 
 @dataclass

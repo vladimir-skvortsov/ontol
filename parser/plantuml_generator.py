@@ -9,29 +9,29 @@ class PlantUMLGenerator:
         if ontology.meta:
             uml_lines.append(f'title {ontology.meta.name} by {ontology.meta.author}')
 
-        for type_def in ontology.types:
-            uml_lines.append(self._generate_type(type_def))
+        for term in ontology.types:
+            uml_lines.append(self._generate_type(term))
 
-        for func_def in ontology.functions:
-            uml_lines.append(self._generate_function(func_def))
+        for function in ontology.functions:
+            uml_lines.append(self._generate_function(function))
 
-        for expr in ontology.hierarchy:
-            uml_lines.append(self._generate_logical_expression(expr))
+        for relationship in ontology.hierarchy:
+            uml_lines.append(self._generate_relationship(relationship))
 
         uml_lines.append('@enduml')
         return '\n'.join(uml_lines)
 
-    def _generate_type(self, type_def: Term) -> str:
-        return f'class {type_def.name} {{\n  {type_def.description}\n}}'
+    def _generate_type(self, term: Term) -> str:
+        return f'class {term.name} {{\n  {term.description}\n}}'
 
-    def _generate_function(self, func_def: Function) -> str:
-        inputs: str = ', '.join(func_def.input_types)
-        outputs: str = ', '.join(func_def.output_types)
+    def _generate_function(self, function: Function) -> str:
+        inputs: str = ', '.join(map(lambda t: t[0], function.input_types))
+        outputs: str = ', '.join(map(lambda t: t[0], function.output_types))
         return (
-            f'class {func_def.name} <<Function>> {{\n'
-            f'  +{func_def.name}({inputs}) : ({outputs})\n'
-            f'  {func_def.description}\n}}'
+            f'class {function.name} <<Function>> {{\n'
+            f'  +{function.name}({inputs}) : ({outputs})\n'
+            f'  {function.description}\n}}'
         )
 
-    def _generate_logical_expression(self, logical_expr: Relationship) -> str:
-        return f'note "{logical_expr.expression}" as N{hash(logical_expr.expression) % 10000}'
+    def _generate_relationship(self, relationship: Relationship) -> str:
+        return f'note "{relationship.parent} {relationship.relationship} {relationship.child}" as N{hash(relationship.parent) % 10000}'
