@@ -54,6 +54,9 @@ class Parser:
                     relationship = Parser._parse_relationship(line)
                     ontology.add_relationship(relationship)
 
+                else:
+                    raise SyntaxError('Unexpected line')
+
             except Exception as e:
                 raise Exception(
                     f'File "{file_path}", line {index + 1}\n    {line}\n{type(e).__name__}: {e}'
