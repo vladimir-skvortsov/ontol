@@ -1,20 +1,22 @@
 import re
+
+from typing import Optional
 from src import Ontology, Term, Function, Relationship, Meta
 from datetime import datetime
 
 
 class Parser:
     def __init__(self):
-        self.warnings = []
+        self.warnings: list[str] = []
 
     def parse(self, file_content: str, file_path: str) -> tuple[Ontology, list]:
         self.warnings.clear()
 
-        ontology = Ontology()
+        ontology: Ontology = Ontology()
 
-        lines = file_content.splitlines()
+        lines: list[str] = file_content.splitlines()
         current_block = None
-        meta_data = {
+        meta_data: dict[str, Optional[str]] = {
             'version': None,
             'name': None,
             'author': None,
@@ -24,8 +26,8 @@ class Parser:
         }
 
         for index, line in enumerate(lines):
-            line_number = index + 1
-            line = line.strip()
+            line_number: int = index + 1
+            line: str = line.strip()
 
             if line.startswith('#') or not line:
                 continue
@@ -108,9 +110,9 @@ class Parser:
         if not match:
             raise SyntaxError('Invalid type format')
 
-        name = match.group(1)
-        label = match.group(2)
-        description = match.group(3)
+        name: str = match.group(1)
+        label: str = match.group(2)
+        description: str = match.group(3)
 
         if not label:
             self._add_warning(file_path, line_number, line, 'Label is empty for type.')
@@ -124,12 +126,14 @@ class Parser:
         return Term(name, label, description, attributes)
 
     def _parse_attributes(self, attr_string: str) -> dict:
-        attributes = {}
+        attributes: dict[str, str] = {}
+
         if attr_string:
             attr_string = attr_string.strip('{}').strip()
             for attr in attr_string.split(','):
                 key, value = attr.split(':', 1)
                 attributes[key.strip()] = value.strip().strip('\'"')
+
         return attributes
 
     def _parse_function(self, line: str, file_path: str, line_number: int) -> Function:
@@ -143,11 +147,11 @@ class Parser:
         if not match:
             raise SyntaxError('Invalid function format')
 
-        name = match.group(1)
-        label = match.group(2)
-        input_params = self._parse_parameters(match.group(3))
-        output_type = match.group(4)
-        output_label = match.group(5)
+        name: str = match.group(1)
+        label: str = match.group(2)
+        input_params: list[tuple[str, str]] = self._parse_parameters(match.group(3))
+        output_type: str = match.group(4)
+        output_label: str = match.group(5)
 
         if not label:
             self._add_warning(file_path, line_number, line, 'Label is empty')
@@ -156,22 +160,22 @@ class Parser:
 
         return Function(name, label, input_params, (output_type, output_label))
 
-    def _parse_parameters(self, param_string: str) -> list:
-        params = []
+    def _parse_parameters(self, param_string: str) -> list[tuple[str, str]]:
+        params: list[tuple[str, str]] = []
 
         for param in param_string.split(','):
             param = param.strip()
             match = re.match(r"(\w+):\s*['\"](.*?)['\"]$", param)
 
             if match:
-                param_name = match.group(1)
-                param_description = match.group(2) if match.group(2) else None
+                param_name: str = match.group(1)
+                param_description: str = match.group(2)
                 params.append((param_name, param_description))
 
         return params
 
     def _parse_relationship(self, line: str) -> Relationship:
-        parts = line.split()
+        parts: list[str] = line.split()
 
         if len(parts) != 3:
             raise SyntaxError('Invalid hierarchy format')
@@ -181,7 +185,7 @@ class Parser:
     def _add_warning(
         self, file_path: str, line_number: int, line: str, message: str
     ) -> None:
-        warning = (
+        warning: str = (
             f'File "{file_path}", line {line_number}\n    {line}\nWarning: {message}'
         )
         self.warnings.append(warning)
