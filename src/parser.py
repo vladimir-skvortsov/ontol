@@ -15,6 +15,7 @@ class Parser:
             'name': None,
             'author': None,
             'description': None,
+            'type': None,
             'date_created': datetime.today().strftime('%Y-%m-%d'),
         }
 
