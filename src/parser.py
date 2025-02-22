@@ -1,6 +1,6 @@
 import re
 
-from typing import Optional
+from typing import Optional, Literal
 from src import Ontology, Term, Function, Relationship, Meta
 from datetime import datetime
 
@@ -15,7 +15,7 @@ class Parser:
         ontology: Ontology = Ontology()
 
         lines: list[str] = file_content.splitlines()
-        current_block = None
+        current_block: Optional[Literal['types', 'functions', 'hierarchy']] = None
         meta_data: dict[str, Optional[str]] = {
             'version': None,
             'name': None,
