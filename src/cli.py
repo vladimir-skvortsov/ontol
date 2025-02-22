@@ -7,10 +7,10 @@ from watchdog.observers.api import BaseObserver
 
 from argparse import ArgumentParser, Namespace
 
-from src import Ontology, Parser, JSONSerializer, PlantUML
+from src import Parser, JSONSerializer, PlantUML
 
 
-VERSION: str = '2.1.1'
+VERSION: str = '2.2.1'
 
 
 class CLI:
@@ -49,7 +49,10 @@ class CLI:
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content: str = file.read()
-                ontology: Ontology = self.parser.parse(content, file_path)
+                ontology, warnings = self.parser.parse(content, file_path)
+
+                # Print warnings
+                print('\n\n'.join(warnings))
 
                 # JSON
                 json_content: str = self.serializer.serialize(ontology)
