@@ -42,39 +42,18 @@ def test_term_with_empty_label_creation() -> None:
 
 def test_function_creation():
     func: Function = Function(
-        name='TestFunction',
-        input_types=['int', 'str'],
-        output_types=['bool'],
-        description='A test function',
+        name='sum',
+        label='Sum',
+        input_types=[('int', 'First number'), ('int', 'Second number')],
+        output_type=('int', 'Result'),
     )
-    assert func.name == 'TestFunction'
-    assert func.input_types == ['int', 'str']
-    assert func.output_types == ['bool']
-    assert func.description == 'A test function'
+    assert func.name == 'sum'
+    assert func.label == 'Sum'
+    assert func.input_types == [('int', 'First number'), ('int', 'Second number')]
+    assert func.output_type == ('int', 'Result')
     assert (
         repr(func)
-        == "Function(name=TestFunction, input_types=['int', 'str'], output_types=['bool'], label=None, description=A test function)"
-    )
-
-    func_no_desc: Function = Function(
-        name='NoDescFunction', input_types=['float'], output_types=['str']
-    )
-    assert func_no_desc.description is None
-    assert (
-        repr(func_no_desc)
-        == "Function(name=NoDescFunction, input_types=['float'], output_types=['str'], label=None, description=None)"
-    )
-
-    func_with_label: Function = Function(
-        name='LabeledFunction',
-        input_types=['int'],
-        output_types=['str'],
-        label='SomeLabel',
-    )
-    assert func_with_label.label == 'SomeLabel'
-    assert (
-        repr(func_with_label)
-        == "Function(name=LabeledFunction, input_types=['int'], output_types=['str'], label=SomeLabel, description=None)"
+        == "Function(name=sum, label=Sum, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'))"
     )
 
 
