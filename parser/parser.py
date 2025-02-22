@@ -1,5 +1,5 @@
 import re
-from oast import Ontology, Term, Function, Relationship, Meta
+from parser import Ontology, Term, Function, Relationship, Meta
 from datetime import datetime
 
 
