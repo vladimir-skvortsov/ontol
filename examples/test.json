@@ -1,58 +1,75 @@
 {
-  "terms": [
-    {
-      "name": "set",
-      "label": "Множество",
-      "description": "Коллекция уникальных элементов",
-      "attributes": {
-        "color": "#FF5733"
-      }
-    },
-    {
-      "name": "bool",
-      "label": "Булиан",
-      "description": "true или false",
-      "attributes": {}
-    },
-    {
-      "name": "element",
-      "label": "Элемент",
-      "description": "Индивидуальный объект в множестве",
-      "attributes": {
-        "color": "blue",
-        "size": "large"
-      }
+    "terms": [
+        {
+            "name": "set",
+            "label": "Множество",
+            "description": "Коллекция уникальных элементов",
+            "attributes": {
+                "color": "#FF5733"
+            }
+        },
+        {
+            "name": "bool",
+            "label": "Булиан",
+            "description": "true или false",
+            "attributes": {}
+        },
+        {
+            "name": "element",
+            "label": "Элемент",
+            "description": "Индивидуальный объект в множестве",
+            "attributes": {
+                "color": "blue",
+                "size": "large"
+            }
+        }
+    ],
+    "functions": [
+        {
+            "name": "descartes",
+            "label": "Декартово произведение",
+            "input_types": [
+                [
+                    "set",
+                    "первое множество"
+                ],
+                [
+                    "set",
+                    "второе множество"
+                ]
+            ],
+            "output_type": [
+                "set",
+                "Множество-результат"
+            ]
+        },
+        {
+            "name": "isSetElem",
+            "label": "Проверка принадлежности",
+            "input_types": [
+                [
+                    "element",
+                    "Элемент который проверяем"
+                ]
+            ],
+            "output_type": [
+                "bool",
+                "Результат"
+            ]
+        }
+    ],
+    "hierarchy": [
+        {
+            "parent": "multiset",
+            "relationship": "subclass",
+            "child": "set"
+        }
+    ],
+    "meta": {
+        "version": "1.0",
+        "name": "Пример Онтологии",
+        "author": "Иван Иванов",
+        "description": "Описание онтологии",
+        "date_created": "2025-02-22"
     }
-  ],
-  "functions": [
-    {
-      "name": "descartes",
-      "label": "Декартово произведение",
-      "input_types": [
-        ["set", "первое множество"],
-        ["set", "второе множество"]
-      ],
-      "output_type": ["set", "Множество-результат"]
-    },
-    {
-      "name": "isSetElem",
-      "label": "Проверка принадлежности",
-      "input_types": [["element", "Элемент который проверяем"]],
-      "output_type": ["bool", "Результат"]
-    }
-  ],
-  "hierarchy": [
-    {
-      "parent": "multiset",
-      "relationship": "subclass",
-      "child": "set"
-    }
-  ],
-  "meta": {
-    "version": "1.0",
-    "name": "Пример Онтологии",
-    "author": "Иван Иванов",
-    "description": "Описание онтологии",
-    "date_created": "2025-02-22"
-  }
 }

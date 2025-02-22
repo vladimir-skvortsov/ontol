@@ -51,7 +51,12 @@ class CLI:
     def parse_file(self, file_path: str) -> None:
         with open(file_path, 'r', encoding='utf-8') as file:
             content: str = file.read()
-            ontology: Ontology = self.parser.parse(content)
+
+            try:
+                ontology: Ontology = self.parser.parse(content)
+            except Exception as e:
+                print(e)
+                return
 
             # JSON
             json_content: str = self.serializer.serialize(ontology)
