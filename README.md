@@ -46,7 +46,7 @@ pip install -r requirements.txt
 To parse an `.ontol` file and generate JSON and PlantUML files:
 
 ```bash
-python parser/cli.py path/to/yourfile.ontol
+python -m src.cli path/to/yourfile.ontol
 ```
 
 ### Watch Mode
@@ -54,7 +54,7 @@ python parser/cli.py path/to/yourfile.ontol
 To watch a file for changes and automatically re-parse it:
 
 ```bash
-python parser/cli.py path/to/yourfile.ontol --watch
+python -m src.cli path/to/yourfile.ontol --watch
 ```
 
 ### Display Version
@@ -62,7 +62,7 @@ python parser/cli.py path/to/yourfile.ontol --watch
 To display the version of the program:
 
 ```bash
-python parser/cli.py --version
+python -m src.cli --version
 ```
 
 ### Help
@@ -70,7 +70,7 @@ python parser/cli.py --version
 To display help information:
 
 ```bash
-python parser/cli.py --help
+python -m src.cli --help
 ```
 
 ### Test
