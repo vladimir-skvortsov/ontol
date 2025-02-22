@@ -60,7 +60,7 @@ class Parser:
 
     @staticmethod
     def _parse_meta_line(line: str, key: str) -> str:
-        match = re.match(rf"{key}\s+['\"](.+?)['\"]", line)
+        match = re.match(rf"{key}\s+['\"](.*?)['\"]", line)
         if match:
             return match.group(1)
         raise ValueError(f'Invalid {key} format')
