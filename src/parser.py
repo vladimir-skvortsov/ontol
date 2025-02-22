@@ -31,15 +31,15 @@ class Parser:
                 continue
 
             try:
-                if re.match(r'^version\s+', line):
+                if re.match(r'^version:\s+', line):
                     meta_data['version'] = self._parse_meta_line(line, 'version')
-                elif re.match(r'^title\s+', line):
+                elif re.match(r'^title:\s+', line):
                     meta_data['name'] = self._parse_meta_line(line, 'title')
-                elif re.match(r'^author\s+', line):
+                elif re.match(r'^author:\s+', line):
                     meta_data['author'] = self._parse_meta_line(line, 'author')
-                elif re.match(r'^desc\s+', line):
+                elif re.match(r'^desc:\s+', line):
                     meta_data['description'] = self._parse_meta_line(line, 'desc')
-                elif re.match(r'^type\s+', line):
+                elif re.match(r'^type:\s+', line):
                     meta_data['type'] = self._parse_meta_line(line, 'type')
 
                 elif line.startswith('types:'):
@@ -76,7 +76,7 @@ class Parser:
         return ontology, self.warnings
 
     def _parse_meta_line(self, line: str, key: str) -> str:
-        match = re.match(rf"{key}\s+['\"](.*?)['\"]", line)
+        match = re.match(rf"{key}:\s+['\"](.*?)['\"]", line)
 
         if not match:
             raise SyntaxError(f'Invalid {key} format')
