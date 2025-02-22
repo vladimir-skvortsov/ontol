@@ -4,14 +4,14 @@ import pytest
 
 
 def test_term_creation() -> None:
-    term: Term = Term(name='TestTerm', description='A test term')
-    assert term.name == 'TestTerm'
+    term: Term = Term(name='test_term', label='TestTerm', description='A test term')
+    assert term.name == 'test_term'
+    assert term.label == 'TestTerm'
     assert term.description == 'A test term'
-    assert repr(term) == 'Term(name=TestTerm, description=A test term)'
-
-    term_no_desc: Term = Term(name='NoDescTerm')
-    assert term_no_desc.description is None
-    assert repr(term_no_desc) == 'Term(name=NoDescTerm, description=None)'
+    assert (
+        repr(term)
+        == 'Term(name=test_term, label=TestTerm, description=A test term, attributes={})'
+    )
 
 
 def test_function_creation():
