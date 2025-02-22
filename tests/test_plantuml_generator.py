@@ -1,5 +1,5 @@
-from parser.oast import Function, Meta, Ontology, Relationship, Term
-from parser.plantuml_generator import PlantUMLGenerator
+from src.oast import Function, Meta, Ontology, Relationship, Term
+from src.plantuml_generator import PlantUMLGenerator
 
 import pytest
 

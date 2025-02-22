@@ -2,20 +2,32 @@
     "terms": [
         {
             "name": "set",
-            "description": "Коллекция уникальных элементов' # Описание типа в онтологии"
+            "label": "Множество",
+            "description": "Коллекция уникальных элементов",
+            "attributes": {
+                "color": "#FF5733"
+            }
         },
         {
             "name": "bool",
-            "description": null
+            "label": "Булиан",
+            "description": "true или false",
+            "attributes": {}
         },
         {
             "name": "element",
-            "description": "Индивидуальный объект в множестве"
+            "label": "Элемент",
+            "description": "Индивидуальный объект в множестве",
+            "attributes": {
+                "color": "blue",
+                "size": "large"
+            }
         }
     ],
     "functions": [
         {
             "name": "descartes",
+            "label": "Декартово произведение",
             "input_types": [
                 [
                     "set",
@@ -26,29 +38,24 @@
                     "второе множество"
                 ]
             ],
-            "output_types": "set",
-            "label": "Декартово произведение",
-            "description": "Множество-результат"
+            "output_type": [
+                "set",
+                "Множество-результат"
+            ]
         },
         {
             "name": "isSetElem",
+            "label": "Проверка принадлежности",
             "input_types": [
                 [
                     "element",
-                    "Элемент"
-                ],
-                [
-                    "который",
-                    "проверяем"
-                ],
-                [
-                    "set",
-                    null
+                    "Элемент который проверяем"
                 ]
             ],
-            "output_types": "bool",
-            "label": null,
-            "description": null
+            "output_type": [
+                "bool",
+                "Результат"
+            ]
         }
     ],
     "hierarchy": [
@@ -63,6 +70,6 @@
         "name": "Пример Онтологии",
         "author": "Иван Иванов",
         "description": "Описание онтологии",
-        "date_created": "2025-02-21"
+        "date_created": "2025-02-22"
     }
 }

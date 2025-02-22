@@ -4,12 +4,12 @@ from .plantuml_generator import PlantUMLGenerator
 from .serializer import JSONSerializer
 
 __all__ = (
-    "Ontology",
-    "Term",
-    "Function",
-    "Relationship",
-    "Meta",
-    "Parser",
-    "PlantUMLGenerator",
-    "JSONSerializer"
+    'Ontology',
+    'Term',
+    'Function',
+    'Relationship',
+    'Meta',
+    'Parser',
+    'PlantUMLGenerator',
+    'JSONSerializer',
 )

@@ -1,6 +1,6 @@
 import os
 import tempfile
-from parser.cli import CLI
+from src.cli import CLI
 from unittest.mock import MagicMock, patch
 
 import pytest

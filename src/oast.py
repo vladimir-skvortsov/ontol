@@ -9,7 +9,9 @@ class ASTNode:
 @dataclass
 class Term(ASTNode):
     name: str
-    description: Optional[str] = None
+    label: str
+    description: str
+    attributes: dict = field(default_factory=dict)
 
     def __repr__(self) -> str:
         return f'Term(name={self.name}, description={self.description})'
@@ -18,12 +20,11 @@ class Term(ASTNode):
 @dataclass
 class Function(ASTNode):
     name: str
-    # TODO: replace tuple[str, str | None] with dict { name: str, description: str | None }
-    input_types: list[tuple[str, str | None]] = field(default_factory=list)
-    # TODO: replace tuple[str, str | None] with dict { name: str, description: str | None }
-    output_types: list[tuple[str, str | None]] = field(default_factory=list)
-    label: Optional[str] = None
-    description: Optional[str] = None
+    label: str
+    # TODO: replace tuple[str, str] with list[{ name: str, label: str }]
+    input_types: list[tuple[str, str]]
+    # TODO: replace tuple[str, str] with dict { name: str, label: str }
+    output_type: tuple[str, str]
 
     def __repr__(self) -> str:
         return f'Function(name={self.name}, input_types={self.input_types}, output_types={self.output_types}, label={self.label}, description={self.description})'

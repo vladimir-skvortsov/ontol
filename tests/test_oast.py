@@ -1,4 +1,4 @@
-from parser.oast import Function, Meta, Ontology, Relationship, Term
+from src.oast import Function, Meta, Ontology, Relationship, Term
 
 import pytest
 

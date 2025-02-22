@@ -1,4 +1,4 @@
-from parser import Function, Ontology, Relationship, Term
+from src import Function, Ontology, Relationship, Term
 
 
 # TODO: make look like in technical task
@@ -26,11 +26,11 @@ class PlantUMLGenerator:
 
     def _generate_function(self, function: Function) -> str:
         inputs: str = ', '.join(map(lambda t: t[0], function.input_types))
-        outputs: str = ', '.join(map(lambda t: t[0], function.output_types))
+        outputs: str = function.output_type[0]
         return (
             f'class {function.name} <<Function>> {{\n'
             f'  +{function.name}({inputs}) : ({outputs})\n'
-            f'  {function.description}\n}}'
+            f'  {function.label}\n}}'
         )
 
     def _generate_relationship(self, relationship: Relationship) -> str:

@@ -1,5 +1,5 @@
 import re
-from parser import Ontology, Term, Function, Relationship, Meta
+from src import Ontology, Term, Function, Relationship, Meta
 from datetime import datetime
 
 
@@ -69,39 +69,54 @@ class Parser:
 
     @staticmethod
     def _parse_type(line: str) -> Term:
-        match = re.match(r"(\w+):?\s*['\"]?(.*?)['\"]?$", line)
+        match = re.match(
+            r"(\w+):\s*['\"](.+?)['\"],\s*['\"](.+?)['\"](,\s*\{(.+?)\})?$", line
+        )
         if match:
             name = match.group(1)
-            description = match.group(2) if match.group(2) else None
-            return Term(name, description)
+            label = match.group(2)
+            description = match.group(3)
+            attributes = (
+                Parser._parse_attributes(match.group(5)) if match.group(5) else {}
+            )
+            return Term(name, label, description, attributes)
+        print(match, line)
         raise ValueError('Invalid type format')
+
+    @staticmethod
+    def _parse_attributes(attr_string: str) -> dict:
+        attributes = {}
+        if attr_string:
+            # Убираем фигурные скобки и разбиваем по запятым
+            attr_string = attr_string.strip('{}').strip()
+            for attr in attr_string.split(','):
+                key, value = attr.split(':', 1)
+                attributes[key.strip()] = value.strip().strip('\'"')
+        return attributes
 
     @staticmethod
     def _parse_function(line: str) -> Function:
         line = line.split('#', 1)[0].strip()
 
         match = re.match(
-            r"(\w+):?\s*['\"]?(.*?)['\"]?\s*\((.*?)\)\s*->\s*(\w+):?\s*['\"]?(.*?)['\"]?$",
+            r"(\w+):\s*['\"](.*?)['\"]\s*\((.*?)\)\s*->\s*(\w+):\s*['\"](.*?)['\"]$",
             line,
         )
         if match:
             name = match.group(1)
-            description = match.group(2) if match.group(2) else None
+            label = match.group(2) if match.group(2) else None
             input_params = Parser._parse_parameters(match.group(3))
             output_type = match.group(4)
-            output_description = match.group(5) if match.group(5) else None
-            return Function(
-                name, input_params, output_type, description, output_description
-            )
+            output_label = match.group(5) if match.group(5) else None
+            return Function(name, input_params, output_type, (label, output_label))
         raise ValueError('Invalid function format')
 
     @staticmethod
     def _parse_parameters(param_string: str) -> list:
         params = []
         for param in param_string.split(','):
-            # TODO: check if this term was declared. If not, raise ValueError
             param = param.strip()
-            match = re.match(r"(\w+):?\s*['\"]?(.*?)['\"]?$", param)
+            match = re.match(r"(\w+):\s*['\"](.*?)['\"]$", param)
             if match:
                 param_name = match.group(1)
                 param_description = match.group(2) if match.group(2) else None
@@ -110,8 +125,6 @@ class Parser:
 
     @staticmethod
     def _parse_relationship(line: str) -> Relationship:
-        # TODO: check if this term was declared. If not, raise ValueError
-        # TODO: check relationship type
         parts = line.split()
         if len(parts) == 3:
             return Relationship(parts[0], parts[1], parts[2])

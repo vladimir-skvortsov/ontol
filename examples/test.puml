@@ -2,21 +2,21 @@
 skinparam classAttributeIconSize 0
 title Пример Онтологии by Иван Иванов
 class set {
-  Коллекция уникальных элементов' # Описание типа в онтологии
+  Коллекция уникальных элементов
 }
 class bool {
-  None
+  true или false
 }
 class element {
   Индивидуальный объект в множестве
 }
 class descartes <<Function>> {
-  +descartes(set, set) : (s, e, t)
-  Множество-результат
+  +descartes(set, set) : (set)
+  Декартово произведение
 }
 class isSetElem <<Function>> {
-  +isSetElem(element, который, set) : (b, o, o, l)
-  None
+  +isSetElem(element) : (bool)
+  Проверка принадлежности
 }
-note "multiset subclass set" as N3627
+note "multiset subclass set" as N3943
 @enduml
