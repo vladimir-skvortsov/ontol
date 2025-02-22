@@ -32,15 +32,25 @@ class Parser:
 
             try:
                 if re.match(r'^version:\s+', line):
-                    meta_data['version'] = self._parse_meta_line(line, 'version')
+                    meta_data['version'] = self._parse_meta_line(
+                        line, 'version', file_path, line_number
+                    )
                 elif re.match(r'^title:\s+', line):
-                    meta_data['name'] = self._parse_meta_line(line, 'title')
+                    meta_data['name'] = self._parse_meta_line(
+                        line, 'title', file_path, line_number
+                    )
                 elif re.match(r'^author:\s+', line):
-                    meta_data['author'] = self._parse_meta_line(line, 'author')
+                    meta_data['author'] = self._parse_meta_line(
+                        line, 'author', file_path, line_number
+                    )
                 elif re.match(r'^desc:\s+', line):
-                    meta_data['description'] = self._parse_meta_line(line, 'desc')
+                    meta_data['description'] = self._parse_meta_line(
+                        line, 'desc', file_path, line_number
+                    )
                 elif re.match(r'^type:\s+', line):
-                    meta_data['type'] = self._parse_meta_line(line, 'type')
+                    meta_data['type'] = self._parse_meta_line(
+                        line, 'type', file_path, line_number
+                    )
 
                 elif line.startswith('types:'):
                     current_block = 'types'
@@ -75,13 +85,20 @@ class Parser:
         # Возвращаем объект онтологии и список предупреждений
         return ontology, self.warnings
 
-    def _parse_meta_line(self, line: str, key: str) -> str:
+    def _parse_meta_line(
+        self, line: str, key: str, file_path: str, line_number: int
+    ) -> str:
         match = re.match(rf"{key}:\s+['\"](.*?)['\"]", line)
 
         if not match:
             raise SyntaxError(f'Invalid {key} format')
 
-        return match.group(1)
+        value = match.group(1)
+
+        if not value:
+            self._add_warning(file_path, line_number, line, 'Meta value is empty')
+
+        return value
 
     def _parse_type(self, line: str, file_path: str, line_number: int) -> Term:
         match = re.match(
