@@ -68,7 +68,7 @@ class Parser:
     @staticmethod
     def _parse_type(line: str) -> Term:
         match = re.match(
-            r"(\w+):\s*['\"](.+?)['\"],\s*['\"](.+?)['\"](,\s*\{(.+?)\})?$", line
+            r"(\w+):\s*['\"](.*?)['\"],\s*['\"](.*?)['\"](,\s*\{(.*?)\})?$", line
         )
         if match:
             name = match.group(1)
