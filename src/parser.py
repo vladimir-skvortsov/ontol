@@ -5,7 +5,7 @@ from datetime import datetime
 
 class Parser:
     @staticmethod
-    def parse(file_content: str) -> Ontology:
+    def parse(file_content: str, file_path: str) -> Ontology:
         ontology = Ontology()
 
         lines = file_content.splitlines()
@@ -25,7 +25,6 @@ class Parser:
                 continue
 
             try:
-                # TODO: send a warning if the user specified some meta information twice
                 if re.match(r'^version\s+', line):
                     meta_data['version'] = Parser._parse_meta_line(line, 'version')
                 elif re.match(r'^title\s+', line):
@@ -56,8 +55,14 @@ class Parser:
                 elif current_block == 'hierarchy':
                     relationship = Parser._parse_relationship(line)
                     ontology.add_relationship(relationship)
+
+                else:
+                    raise SyntaxError('Unexpected line')
+
             except Exception as e:
-                raise Exception(f'Line {index + 1}: {e}')
+                raise Exception(
+                    f'File "{file_path}", line {index + 1}\n    {line}\n{type(e).__name__}: {e}'
+                )
 
         ontology.set_meta(Meta(**meta_data))
 
@@ -68,7 +73,7 @@ class Parser:
         match = re.match(rf"{key}\s+['\"](.*?)['\"]", line)
 
         if not match:
-            raise ValueError(f'Invalid {key} format')
+            raise SyntaxError(f'Invalid {key} format')
 
         return match.group(1)
 
@@ -79,7 +84,7 @@ class Parser:
         )
 
         if not match:
-            raise ValueError('Invalid type format')
+            raise SyntaxError('Invalid type format')
 
         name = match.group(1)
         label = match.group(2)
@@ -92,7 +97,6 @@ class Parser:
     def _parse_attributes(attr_string: str) -> dict:
         attributes = {}
         if attr_string:
-            # Убираем фигурные скобки и разбиваем по запятым
             attr_string = attr_string.strip('{}').strip()
             for attr in attr_string.split(','):
                 key, value = attr.split(':', 1)
@@ -109,7 +113,7 @@ class Parser:
         )
 
         if not match:
-            raise ValueError('Invalid function format')
+            raise SyntaxError('Invalid function format')
 
         name = match.group(1)
         label = match.group(2)
@@ -139,6 +143,6 @@ class Parser:
         parts = line.split()
 
         if len(parts) != 3:
-            raise ValueError('Invalid hierarchy format')
+            raise SyntaxError('Invalid hierarchy format')
 
         return Relationship(parts[0], parts[1], parts[2])
