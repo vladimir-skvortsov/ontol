@@ -48,12 +48,12 @@ class Relationship(ASTNode):
 
 @dataclass
 class Meta(ASTNode):
-    version: Optional[str]
-    name: Optional[str]
-    author: Optional[str]
-    description: Optional[str]
-    type: Optional[str]
-    date_created: Optional[str]
+    version: Optional[str] = None
+    name: Optional[str] = None
+    author: Optional[str] = None
+    description: Optional[str] = None
+    type: Optional[str] = None
+    date_created: Optional[str] = None
 
     def __repr__(self) -> str:
         return (
