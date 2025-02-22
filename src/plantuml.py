@@ -39,18 +39,19 @@ class PlantUML:
         return '\n'.join(uml_lines)
 
     def _generate_novikov(self, ontology: Ontology) -> str:
-        uml_lines: list[str] = ['@startuml',
-                                'skinparam backgroundColor #F0F8FF',
-                                'skinparam defaultTextAlignment center',
-                                'skinparam shadowing false', ]
+        uml_lines: list[str] = [
+            '@startuml',
+            'skinparam backgroundColor #F0F8FF',
+            'skinparam defaultTextAlignment center',
+            'skinparam shadowing false',
+        ]
 
         if not ontology.meta:
             raise ValueError('No meta defined for ontology')
         if ontology.functions:
             raise ValueError('Functions is not available for these diagram types')
 
-        uml_lines.append(f'package "{ontology.meta.name}" '
-                         '{')
+        uml_lines.append(f'package "{ontology.meta.name}" {{')
 
         for term in ontology.types:
             uml_lines.append(self._generate_rectangle(term))
@@ -63,20 +64,22 @@ class PlantUML:
         return '\n'.join(uml_lines)
 
     def _generate_rectangle(self, term: Term) -> str:
-        return (f'rectangle "'
-                f'{term.label}'
-                f'{"\\n(" + term.description + ")" if term.description else ""}'
-                '"'
-                f' as {term.name}'
-                f' {term.attributes["color"]}')
+        return (
+            f'rectangle "'
+            f'{term.label}'
+            f'{"\\n(" + term.description + ")" if term.description else ""}'
+            '"'
+            f' as {term.name}'
+            f' {term.attributes["color"]}'
+        )
 
     def _generate_base_hierarchy(self, relationship: Relationship) -> str:
-        relationships = {
-            'depends': '..>'
-        }
-        return (f'{relationship.parent} '
-                f'{relationships[relationship.relationship]} '
-                f'{relationship.child}')
+        relationships = {'depends': '..>'}
+        return (
+            f'{relationship.parent} '
+            f'{relationships[relationship.relationship]} '
+            f'{relationship.child}'
+        )
 
     def _generate_type(self, term: Term) -> str:
         return f'class {term.name} {{\n  {term.description}\n}}'
@@ -109,7 +112,7 @@ class PlantUML:
             else:
                 encoded_text += self.__encode3bytes(data[i], data[i + 1], data[i + 2])
 
-        url = f"{self.url}{encoded_text}"
+        url = f'{self.url}{encoded_text}'
         response = requests.get(url)
 
         if response.status_code == 200:
@@ -118,7 +121,7 @@ class PlantUML:
 
     @staticmethod
     def __encode3bytes(b1, b2, b3):
-        chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_"
+        chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'
         c1 = b1 >> 2
         c2 = ((b1 & 0x3) << 4) | (b2 >> 4)
         c3 = ((b2 & 0xF) << 2) | (b3 >> 6)
