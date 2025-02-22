@@ -18,45 +18,46 @@ class Parser:
             'date_created': datetime.today().strftime('%Y-%m-%d'),
         }
 
-        for line in lines:
+        for index, line in enumerate(lines):
             line = line.strip()
 
-            # TODO: handle the case where # is not the first symbol, but the line is still empty
-            # Example: "   # some comment"
             if line.startswith('#') or not line:
                 continue
 
-            # TODO: send a warning if the user specified some meta information twice
-            if re.match(r'^version\s+', line):
-                meta_data['version'] = Parser._parse_meta_line(line, 'version')
-            elif re.match(r'^title\s+', line):
-                meta_data['name'] = Parser._parse_meta_line(line, 'title')
-            elif re.match(r'^author\s+', line):
-                meta_data['author'] = Parser._parse_meta_line(line, 'author')
-            elif re.match(r'^desc\s+', line):
-                meta_data['description'] = Parser._parse_meta_line(line, 'desc')
-            elif re.match(r'^type\s+', line):
-                meta_data['type'] = Parser._parse_meta_line(line, 'type')
+            try:
+                # TODO: send a warning if the user specified some meta information twice
+                if re.match(r'^version\s+', line):
+                    meta_data['version'] = Parser._parse_meta_line(line, 'version')
+                elif re.match(r'^title\s+', line):
+                    meta_data['name'] = Parser._parse_meta_line(line, 'title')
+                elif re.match(r'^author\s+', line):
+                    meta_data['author'] = Parser._parse_meta_line(line, 'author')
+                elif re.match(r'^desc\s+', line):
+                    meta_data['description'] = Parser._parse_meta_line(line, 'desc')
+                elif re.match(r'^type\s+', line):
+                    meta_data['type'] = Parser._parse_meta_line(line, 'type')
 
-            elif line.startswith('types:'):
-                current_block = 'types'
-                continue
-            elif line.startswith('functions:'):
-                current_block = 'functions'
-                continue
-            elif line.startswith('hierarchy:'):
-                current_block = 'hierarchy'
-                continue
+                elif line.startswith('types:'):
+                    current_block = 'types'
+                    continue
+                elif line.startswith('functions:'):
+                    current_block = 'functions'
+                    continue
+                elif line.startswith('hierarchy:'):
+                    current_block = 'hierarchy'
+                    continue
 
-            elif current_block == 'types':
-                type_def = Parser._parse_type(line)
-                ontology.add_type(type_def)
-            elif current_block == 'functions':
-                func_def = Parser._parse_function(line)
-                ontology.add_function(func_def)
-            elif current_block == 'hierarchy':
-                relationship = Parser._parse_relationship(line)
-                ontology.add_relationship(relationship)
+                elif current_block == 'types':
+                    type_def = Parser._parse_type(line)
+                    ontology.add_type(type_def)
+                elif current_block == 'functions':
+                    func_def = Parser._parse_function(line)
+                    ontology.add_function(func_def)
+                elif current_block == 'hierarchy':
+                    relationship = Parser._parse_relationship(line)
+                    ontology.add_relationship(relationship)
+            except Exception as e:
+                raise Exception(f'Line {index + 1}: {e}')
 
         ontology.set_meta(Meta(**meta_data))
 
@@ -64,7 +65,7 @@ class Parser:
 
     @staticmethod
     def _parse_meta_line(line: str, key: str) -> str:
-        match = re.match(rf"{key}\s+['\"](.+?)['\"]", line)
+        match = re.match(rf"{key}\s+['\"](.*?)['\"]", line)
         if match:
             return match.group(1)
         raise ValueError(f'Invalid {key} format')
@@ -72,7 +73,7 @@ class Parser:
     @staticmethod
     def _parse_type(line: str) -> Term:
         match = re.match(
-            r"(\w+):\s*['\"](.+?)['\"],\s*['\"](.+?)['\"](,\s*\{(.+?)\})?$", line
+            r"(\w+):\s*['\"](.*?)['\"],\s*['\"](.*?)['\"](,\s*\{(.*?)\})?$", line
         )
         if match:
             name = match.group(1)
@@ -82,7 +83,6 @@ class Parser:
                 Parser._parse_attributes(match.group(5)) if match.group(5) else {}
             )
             return Term(name, label, description, attributes)
-        print(match, line)
         raise ValueError('Invalid type format')
 
     @staticmethod

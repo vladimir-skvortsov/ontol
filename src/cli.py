@@ -49,7 +49,12 @@ class CLI:
     def parse_file(self, file_path: str) -> None:
         with open(file_path, 'r', encoding='utf-8') as file:
             content: str = file.read()
-            ontology: Ontology = self.parser.parse(content)
+
+            try:
+                ontology: Ontology = self.parser.parse(content)
+            except Exception as e:
+                print(e)
+                return
 
             # JSON
             json_content: str = self.serializer.serialize(ontology)
@@ -67,7 +72,7 @@ class CLI:
 
     def render_plantuml_to_png(self, puml_file_path):
         # TODO: properly handle errors from the PlantUML server. For example, when the syntax of PlantUML is incorrect due to our mistake
-        self.plantuml.processes_file(puml_file_path)
+        self.plantuml.processes_puml_to_png(puml_file_path)
 
     # TODO: parse immediately, don't wait for changes
     def watch_file(self, file_path):

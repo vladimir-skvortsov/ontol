@@ -1,0 +1,150 @@
+{
+    "terms": [
+        {
+            "name": "order",
+            "label": "Упорядоченность",
+            "description": "",
+            "attributes": {
+                "color": "#E6B8B7"
+            }
+        },
+        {
+            "name": "sequence",
+            "label": "Последовательность",
+            "description": "",
+            "attributes": {
+                "color": "#F2E6D9"
+            }
+        },
+        {
+            "name": "multiset",
+            "label": "Мультимножество",
+            "description": "",
+            "attributes": {
+                "color": "#F2E6D9"
+            }
+        },
+        {
+            "name": "set",
+            "label": "Множество",
+            "description": "",
+            "attributes": {
+                "color": "#F2E6D9"
+            }
+        },
+        {
+            "name": "finiteSet",
+            "label": "Конечное множество",
+            "description": "Мощность: Натуральное число",
+            "attributes": {
+                "color": "#F2E6D9"
+            }
+        },
+        {
+            "name": "natural",
+            "label": "Натуральное число",
+            "description": "",
+            "attributes": {
+                "color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "alphabet",
+            "label": "Алфавит",
+            "description": "",
+            "attributes": {
+                "color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "language",
+            "label": "Язык",
+            "description": "",
+            "attributes": {
+                "color": "#F2E6D9"
+            }
+        },
+        {
+            "name": "word",
+            "label": "Слово",
+            "description": "",
+            "attributes": {
+                "color": "#FFFFFF"
+            }
+        },
+        {
+            "name": "letter",
+            "label": "Буква",
+            "description": "",
+            "attributes": {
+                "color": "#FFFFFF"
+            }
+        }
+    ],
+    "functions": [],
+    "hierarchy": [
+        {
+            "parent": "sequence",
+            "relationship": "depends",
+            "child": "multiset"
+        },
+        {
+            "parent": "sequence",
+            "relationship": "depends",
+            "child": "order"
+        },
+        {
+            "parent": "multiset",
+            "relationship": "depends",
+            "child": "set"
+        },
+        {
+            "parent": "multiset",
+            "relationship": "depends",
+            "child": "natural"
+        },
+        {
+            "parent": "finiteSet",
+            "relationship": "depends",
+            "child": "set"
+        },
+        {
+            "parent": "alphabet",
+            "relationship": "depends",
+            "child": "finiteSet"
+        },
+        {
+            "parent": "alphabet",
+            "relationship": "depends",
+            "child": "letter"
+        },
+        {
+            "parent": "language",
+            "relationship": "depends",
+            "child": "set"
+        },
+        {
+            "parent": "language",
+            "relationship": "depends",
+            "child": "word"
+        },
+        {
+            "parent": "word",
+            "relationship": "depends",
+            "child": "letter"
+        },
+        {
+            "parent": "word",
+            "relationship": "depends",
+            "child": "sequence"
+        }
+    ],
+    "meta": {
+        "version": "1.0",
+        "name": "Множества - зависимости определений",
+        "author": "Иван Иванов",
+        "description": "Описание онтологии",
+        "type": "Базовый",
+        "date_created": "2025-02-22"
+    }
+}

@@ -14,7 +14,7 @@ class Term(ASTNode):
     attributes: dict = field(default_factory=dict)
 
     def __repr__(self) -> str:
-        return f'Term(name={self.name}, description={self.description})'
+        return f'Term(name={self.name}, label={self.label}, description={self.description}, attributes={self.attributes})'
 
 
 @dataclass
@@ -22,12 +22,14 @@ class Function(ASTNode):
     name: str
     label: str
     # TODO: replace tuple[str, str] with list[{ name: str, label: str }]
+    # TODO: replace str with Term
     input_types: list[tuple[str, str]]
     # TODO: replace tuple[str, str] with dict { name: str, label: str }
+    # TODO: replace str with Term
     output_type: tuple[str, str]
 
     def __repr__(self) -> str:
-        return f'Function(name={self.name}, input_types={self.input_types}, output_types={self.output_types}, label={self.label}, description={self.description})'
+        return f'Function(name={self.name}, label={self.label}, input_types={self.input_types}, output_type={self.output_type})'
 
 
 # TODO: implmenent structure from technical task. Must contain parent, child, and relationship type

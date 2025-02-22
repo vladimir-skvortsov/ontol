@@ -1,6 +1,6 @@
 from .oast import Ontology, Term, Function, Relationship, Meta
 from .parser import Parser
-from .plantuml_generator import PlantUML
+from .plantuml import PlantUML
 from .serializer import JSONSerializer
 
 __all__ = (

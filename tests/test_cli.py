@@ -23,7 +23,7 @@ def sample_ontology_file():
 def test_parse_file(cli, sample_ontology_file):
     cli.parser.parse = MagicMock()
     cli.serializer.serialize = MagicMock(return_value='{}')
-    cli.plantuml_generator.generate = MagicMock(return_value='@startuml\n@enduml')
+    cli.plantuml.generate = MagicMock(return_value='@startuml\n@enduml')
     cli.render_plantuml_to_png = MagicMock()
 
     cli.parse_file(sample_ontology_file)

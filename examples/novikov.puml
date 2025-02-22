@@ -1,0 +1,28 @@
+@startuml
+skinparam backgroundColor #F0F8FF
+skinparam defaultTextAlignment center
+skinparam shadowing false
+package "Множества - зависимости определений" {
+rectangle "Упорядоченность" as order #E6B8B7
+rectangle "Последовательность" as sequence #F2E6D9
+rectangle "Мультимножество" as multiset #F2E6D9
+rectangle "Множество" as set #F2E6D9
+rectangle "Конечное множество\n(Мощность: Натуральное число)" as finiteSet #F2E6D9
+rectangle "Натуральное число" as natural #FFFFFF
+rectangle "Алфавит" as alphabet #FFFFFF
+rectangle "Язык" as language #F2E6D9
+rectangle "Слово" as word #FFFFFF
+rectangle "Буква" as letter #FFFFFF
+sequence ..> multiset
+sequence ..> order
+multiset ..> set
+multiset ..> natural
+finiteSet ..> set
+alphabet ..> finiteSet
+alphabet ..> letter
+language ..> set
+language ..> word
+word ..> letter
+word ..> sequence
+}
+@enduml
