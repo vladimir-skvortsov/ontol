@@ -27,7 +27,7 @@ class Parser:
 
         for index, line in enumerate(lines):
             line_number: int = index + 1
-            line: str = line.strip()
+            line = line.strip()
 
             if line.startswith('#') or not line:
                 continue
