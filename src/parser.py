@@ -84,7 +84,6 @@ class Parser:
 
         ontology.set_meta(Meta(**meta_data))
 
-        # Возвращаем объект онтологии и список предупреждений
         return ontology, self.warnings
 
     def _parse_meta_line(
