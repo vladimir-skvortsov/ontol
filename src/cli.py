@@ -10,7 +10,7 @@ from argparse import ArgumentParser, Namespace
 from src import Parser, JSONSerializer, PlantUML
 
 
-VERSION: str = '2.4.2'
+VERSION: str = '2.5.0'
 
 
 class CLI:

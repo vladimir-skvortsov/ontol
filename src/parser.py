@@ -79,7 +79,7 @@ class Parser:
 
             except Exception as e:
                 raise Exception(
-                    f'File "{file_path}", line {line_number}\n    {line}\n{type(e).__name__}: {e}'
+                    f'File "{file_path}", line {line_number}\n    {line}\n\033[31m{type(e).__name__}: \033[0m{e}'
                 )
 
         ontology.set_meta(Meta(**meta_data))
@@ -185,7 +185,5 @@ class Parser:
     def _add_warning(
         self, file_path: str, line_number: int, line: str, message: str
     ) -> None:
-        warning: str = (
-            f'File "{file_path}", line {line_number}\n    {line}\nWarning: {message}'
-        )
+        warning: str = f'File "{file_path}", line {line_number}\n    {line}\n\033[33mWarning: \033[0m{message}'
         self.warnings.append(warning)
