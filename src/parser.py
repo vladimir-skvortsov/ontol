@@ -35,6 +35,8 @@ class Parser:
                 meta_data['author'] = Parser._parse_meta_line(line, 'author')
             elif re.match(r'^desc\s+', line):
                 meta_data['description'] = Parser._parse_meta_line(line, 'desc')
+            elif re.match(r'^type\s+', line):
+                meta_data['type'] = Parser._parse_meta_line(line, 'type')
 
             elif line.startswith('types:'):
                 current_block = 'types'

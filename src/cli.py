@@ -1,15 +1,13 @@
 import os
 import time
 
-from plantuml import PlantUML
-
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.api import BaseObserver
 
 from argparse import ArgumentParser, Namespace
 
-from src import Ontology, Parser, JSONSerializer, PlantUMLGenerator
+from src import Ontology, Parser, JSONSerializer, PlantUML
 
 
 VERSION: str = '2.0.0'
@@ -37,7 +35,7 @@ class CLI:
 
         self.parser: Parser = Parser()
         self.serializer: JSONSerializer = JSONSerializer()
-        self.plantuml_generator: PlantUMLGenerator = PlantUMLGenerator()
+        self.plantuml: PlantUML = PlantUML()
 
     # TODO: allow work with directories. Should parse recursively
     def run(self) -> None:
@@ -60,7 +58,7 @@ class CLI:
                 json_file.write(json_content)
 
             # PlantUML
-            plantuml_content: str = self.plantuml_generator.generate(ontology)
+            plantuml_content: str = self.plantuml.generate(ontology)
             puml_file_path: str = os.path.splitext(file_path)[0] + '.puml'
             with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
                 puml_file.write(plantuml_content)
@@ -68,9 +66,8 @@ class CLI:
             self.render_plantuml_to_png(puml_file_path)
 
     def render_plantuml_to_png(self, puml_file_path):
-        server: PlantUML = PlantUML(url='http://www.plantuml.com/plantuml/img/')
         # TODO: properly handle errors from the PlantUML server. For example, when the syntax of PlantUML is incorrect due to our mistake
-        server.processes_file(puml_file_path)
+        self.plantuml.processes_file(puml_file_path)
 
     # TODO: parse immediately, don't wait for changes
     def watch_file(self, file_path):
