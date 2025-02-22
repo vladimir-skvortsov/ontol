@@ -8,10 +8,7 @@ from watchdog.observers import Observer
 from watchdog.observers.api import BaseObserver
 
 from argparse import ArgumentParser, Namespace
-from parser import Parser
-from oast import Ontology
-from plantuml_generator import PlantUMLGenerator
-from serializer import JSONSerializer
+from parser import Parser, Ontology, PlantUMLGenerator, JSONSerializer
 
 
 VERSION: str = '2.0.0'

@@ -1,4 +1,4 @@
-from oast import Function, Ontology, Relationship, Term
+from parser import Function, Ontology, Relationship, Term
 
 
 # TODO: make look like in technical task
