@@ -39,7 +39,6 @@ class CLI:
         self.serializer: JSONSerializer = JSONSerializer()
         self.plantuml_generator: PlantUMLGenerator = PlantUMLGenerator()
 
-    # TODO: allow work with directories. Should parse recursively
     def run(self) -> None:
         args: Namespace = self.args_parser.parse_args()
 
@@ -49,32 +48,29 @@ class CLI:
             self.parse_file(args.file)
 
     def parse_file(self, file_path: str) -> None:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            content: str = file.read()
+        try:
+            with open(file_path, 'r', encoding='utf-8') as file:
+                content: str = file.read()
+                ontology: Ontology = self.parser.parse(content, file_path)
 
-            try:
-                ontology: Ontology = self.parser.parse(content)
-            except Exception as e:
-                print(e)
-                return
+                # JSON
+                json_content: str = self.serializer.serialize(ontology)
+                json_file_path: str = os.path.splitext(file_path)[0] + '.json'
+                with open(json_file_path, 'w', encoding='utf-8') as json_file:
+                    json_file.write(json_content)
 
-            # JSON
-            json_content: str = self.serializer.serialize(ontology)
-            json_file_path: str = os.path.splitext(file_path)[0] + '.json'
-            with open(json_file_path, 'w', encoding='utf-8') as json_file:
-                json_file.write(json_content)
+                # PlantUML
+                plantuml_content: str = self.plantuml_generator.generate(ontology)
+                puml_file_path: str = os.path.splitext(file_path)[0] + '.puml'
+                with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
+                    puml_file.write(plantuml_content)
 
-            # PlantUML
-            plantuml_content: str = self.plantuml_generator.generate(ontology)
-            puml_file_path: str = os.path.splitext(file_path)[0] + '.puml'
-            with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
-                puml_file.write(plantuml_content)
-
-            self.render_plantuml_to_png(puml_file_path)
+                self.render_plantuml_to_png(puml_file_path)
+        except Exception as e:
+            print(e)
 
     def render_plantuml_to_png(self, puml_file_path):
         server: PlantUML = PlantUML(url='http://www.plantuml.com/plantuml/img/')
-        # TODO: properly handle errors from the PlantUML server. For example, when the syntax of PlantUML is incorrect due to our mistake
         server.processes_file(puml_file_path)
 
     def watch_file(self, file_path):
@@ -92,7 +88,6 @@ class CLI:
 
         event_handler = FileChangeHandler(self.parse_file)
 
-        # FIX: works with directories, doesn't work with files
         observer: BaseObserver = Observer()
         observer.schedule(event_handler, path=file_path, recursive=True)
         observer.start()
