@@ -78,7 +78,6 @@ class Parser:
                 Parser._parse_attributes(match.group(5)) if match.group(5) else {}
             )
             return Term(name, label, description, attributes)
-        print(match, line)
         raise ValueError('Invalid type format')
 
     @staticmethod
