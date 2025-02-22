@@ -77,8 +77,9 @@ class CLI:
         # TODO: properly handle errors from the PlantUML server. For example, when the syntax of PlantUML is incorrect due to our mistake
         server.processes_file(puml_file_path)
 
-    # TODO: parse immediately, don't wait for changes
     def watch_file(self, file_path):
+        self.parse_file(file_path)
+
         class FileChangeHandler(FileSystemEventHandler):
             def __init__(self, parse_callback):
                 super().__init__()
@@ -93,7 +94,7 @@ class CLI:
 
         # FIX: works with directories, doesn't work with files
         observer: BaseObserver = Observer()
-        observer.schedule(event_handler, path=file_path, recursive=False)
+        observer.schedule(event_handler, path=file_path, recursive=True)
         observer.start()
 
         try:

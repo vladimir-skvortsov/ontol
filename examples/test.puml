@@ -18,5 +18,5 @@ class isSetElem <<Function>> {
   +isSetElem(element) : (bool)
   Проверка принадлежности
 }
-note "multiset subclass set" as N7634
+note "multiset subclass set" as N5801
 @enduml
