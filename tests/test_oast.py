@@ -13,6 +13,19 @@ def test_term_creation() -> None:
         == 'Term(name=test_term, label=TestTerm, description=A test term, attributes={})'
     )
 
+    attributes = {'color': 'red'}
+    term_with_attributes: Term = Term(
+        name='test_term',
+        label='TestTerm',
+        description='A test term',
+        attributes=attributes,
+    )
+    assert term_with_attributes.attributes == attributes
+    assert (
+        repr(term_with_attributes)
+        == "Term(name=test_term, label=TestTerm, description=A test term, attributes={'color': 'red'})"
+    )
+
 
 def test_function_creation():
     func: Function = Function(
