@@ -12,7 +12,7 @@ from argparse import ArgumentParser, Namespace
 from src import Ontology, Parser, JSONSerializer, PlantUMLGenerator
 
 
-VERSION: str = '2.0.0'
+VERSION: str = '2.0.1'
 
 
 class CLI:
