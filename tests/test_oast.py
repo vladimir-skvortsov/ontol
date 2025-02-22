@@ -13,6 +13,8 @@ def test_term_creation() -> None:
         == 'Term(name=test_term, label=TestTerm, description=A test term, attributes={})'
     )
 
+
+def test_term_with_attributes_creation() -> None:
     attributes = {'color': 'red'}
     term_with_attributes: Term = Term(
         name='test_term',
@@ -24,6 +26,17 @@ def test_term_creation() -> None:
     assert (
         repr(term_with_attributes)
         == "Term(name=test_term, label=TestTerm, description=A test term, attributes={'color': 'red'})"
+    )
+
+
+def test_term_with_empty_label_creation() -> None:
+    term: Term = Term(name='test_term', label='', description='A test term')
+    assert term.name == 'test_term'
+    assert term.label == ''
+    assert term.description == 'A test term'
+    assert (
+        repr(term)
+        == 'Term(name=test_term, label=, description=A test term, attributes={})'
     )
 
 
