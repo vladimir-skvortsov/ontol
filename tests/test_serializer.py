@@ -24,6 +24,7 @@ def sample_ontology():
             name='SampleOntology',
             author='Author',
             description='Sample description',
+            type='Базовый',
             date_created='2024-01-01',
         )
     )
@@ -60,6 +61,7 @@ def test_serialize_ontology(serializer, sample_ontology):
         'name': 'SampleOntology',
         'author': 'Author',
         'description': 'Sample description',
+        'type': 'Базовый',
         'date_created': '2024-01-01',
     }
 
@@ -101,6 +103,7 @@ def test_serialize_meta(serializer):
         name='TestOntology',
         author='Author',
         description='A test ontology',
+        type='Базовый',
         date_created='2024-01-01',
     )
     serialized_meta = serializer._serialize_meta(meta)
@@ -109,6 +112,7 @@ def test_serialize_meta(serializer):
         'name': 'TestOntology',
         'author': 'Author',
         'description': 'A test ontology',
+        'type': 'Базовый',
         'date_created': '2024-01-01',
     }
 

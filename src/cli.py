@@ -1,18 +1,16 @@
 import os
 import time
 
-from plantuml import PlantUML
-
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
 from watchdog.observers.api import BaseObserver
 
 from argparse import ArgumentParser, Namespace
 
-from src import Ontology, Parser, JSONSerializer, PlantUMLGenerator
+from src import Ontology, Parser, JSONSerializer, PlantUML
 
 
-VERSION: str = '2.0.1'
+VERSION: str = '2.1.1'
 
 
 class CLI:
@@ -37,7 +35,7 @@ class CLI:
 
         self.parser: Parser = Parser()
         self.serializer: JSONSerializer = JSONSerializer()
-        self.plantuml_generator: PlantUMLGenerator = PlantUMLGenerator()
+        self.plantuml: PlantUML = PlantUML()
 
     def run(self) -> None:
         args: Namespace = self.args_parser.parse_args()
@@ -60,18 +58,14 @@ class CLI:
                     json_file.write(json_content)
 
                 # PlantUML
-                plantuml_content: str = self.plantuml_generator.generate(ontology)
+                plantuml_content: str = self.plantuml.generate(ontology)
                 puml_file_path: str = os.path.splitext(file_path)[0] + '.puml'
                 with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
                     puml_file.write(plantuml_content)
 
-                self.render_plantuml_to_png(puml_file_path)
+                self.plantuml.processes_puml_to_png(puml_file_path)
         except Exception as e:
             print(e)
-
-    def render_plantuml_to_png(self, puml_file_path):
-        server: PlantUML = PlantUML(url='http://www.plantuml.com/plantuml/img/')
-        server.processes_file(puml_file_path)
 
     def watch_file(self, file_path):
         self.parse_file(file_path)

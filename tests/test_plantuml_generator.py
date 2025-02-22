@@ -1,5 +1,5 @@
 from src.oast import Function, Meta, Ontology, Relationship, Term
-from src.plantuml_generator import PlantUMLGenerator
+from src.plantuml import PlantUML
 
 import pytest
 
@@ -13,6 +13,7 @@ def mock_ontology():
             name='TestOntology',
             author='Author',
             description='Test ontology',
+            type='Базовый',
             date_created='2024-01-01',
         )
     )
@@ -31,7 +32,7 @@ def mock_ontology():
 
 @pytest.fixture
 def generator():
-    return PlantUMLGenerator()
+    return PlantUML()
 
 
 def test_generate_full_uml(generator, mock_ontology):
