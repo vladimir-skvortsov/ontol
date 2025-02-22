@@ -66,24 +66,27 @@ class Parser:
     @staticmethod
     def _parse_meta_line(line: str, key: str) -> str:
         match = re.match(rf"{key}\s+['\"](.*?)['\"]", line)
-        if match:
-            return match.group(1)
-        raise ValueError(f'Invalid {key} format')
+
+        if not match:
+            raise ValueError(f'Invalid {key} format')
+
+        return match.group(1)
 
     @staticmethod
     def _parse_type(line: str) -> Term:
         match = re.match(
             r"(\w+):\s*['\"](.*?)['\"],\s*['\"](.*?)['\"](,\s*\{(.*?)\})?$", line
         )
-        if match:
-            name = match.group(1)
-            label = match.group(2)
-            description = match.group(3)
-            attributes = (
-                Parser._parse_attributes(match.group(5)) if match.group(5) else {}
-            )
-            return Term(name, label, description, attributes)
-        raise ValueError('Invalid type format')
+
+        if not match:
+            raise ValueError('Invalid type format')
+
+        name = match.group(1)
+        label = match.group(2)
+        description = match.group(3)
+        attributes = Parser._parse_attributes(match.group(5)) if match.group(5) else {}
+
+        return Term(name, label, description, attributes)
 
     @staticmethod
     def _parse_attributes(attr_string: str) -> dict:
@@ -104,30 +107,38 @@ class Parser:
             r"(\w+):\s*['\"](.*?)['\"]\s*\((.*?)\)\s*->\s*(\w+):\s*['\"](.*?)['\"]$",
             line,
         )
-        if match:
-            name = match.group(1)
-            label = match.group(2)
-            input_params = Parser._parse_parameters(match.group(3))
-            output_type = match.group(4)
-            output_label = match.group(5)
-            return Function(name, label, input_params, (output_type, output_label))
-        raise ValueError('Invalid function format')
+
+        if not match:
+            raise ValueError('Invalid function format')
+
+        name = match.group(1)
+        label = match.group(2)
+        input_params = Parser._parse_parameters(match.group(3))
+        output_type = match.group(4)
+        output_label = match.group(5)
+
+        return Function(name, label, input_params, (output_type, output_label))
 
     @staticmethod
     def _parse_parameters(param_string: str) -> list:
         params = []
+
         for param in param_string.split(','):
             param = param.strip()
             match = re.match(r"(\w+):\s*['\"](.*?)['\"]$", param)
+
             if match:
                 param_name = match.group(1)
                 param_description = match.group(2) if match.group(2) else None
                 params.append((param_name, param_description))
+
         return params
 
     @staticmethod
     def _parse_relationship(line: str) -> Relationship:
         parts = line.split()
-        if len(parts) == 3:
-            return Relationship(parts[0], parts[1], parts[2])
-        raise ValueError('Invalid hierarchy format')
+
+        if len(parts) != 3:
+            raise ValueError('Invalid hierarchy format')
+
+        return Relationship(parts[0], parts[1], parts[2])
