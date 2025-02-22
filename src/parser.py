@@ -21,8 +21,6 @@ class Parser:
         for line in lines:
             line = line.strip()
 
-            # TODO: handle the case where # is not the first symbol, but the line is still empty
-            # Example: "   # some comment"
             if line.startswith('#') or not line:
                 continue
 
