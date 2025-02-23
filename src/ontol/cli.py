@@ -10,7 +10,7 @@ from argparse import ArgumentParser, Namespace
 from ontol import Parser, JSONSerializer, PlantUML
 
 
-VERSION: str = '2.6.1'
+VERSION: str = '2.6.2'
 
 
 class CLI:
@@ -52,7 +52,7 @@ class CLI:
                 ontology, warnings = self.parser.parse(content, file_path)
 
                 # Print warnings
-                if warnings
+                if warnings:
                     print('\n\n'.join(warnings))
 
                 # JSON
