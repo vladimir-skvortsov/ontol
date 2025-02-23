@@ -1,4 +1,4 @@
-from src.parser import Parser
+from src.ontol import Parser
 
 import pytest
 

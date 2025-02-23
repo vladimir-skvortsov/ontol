@@ -1,6 +1,6 @@
 import json
-from src.oast import Function, Meta, Ontology, Relationship, Term
-from src.serializer import JSONSerializer
+from src.ontol import Function, Meta, Ontology, Relationship, Term
+from src.ontol import JSONSerializer
 
 import pytest
 

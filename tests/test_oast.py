@@ -1,4 +1,4 @@
-from src.oast import Function, Meta, Ontology, Relationship, Term
+from src.ontol import Function, Meta, Ontology, Relationship, Term
 
 import pytest
 

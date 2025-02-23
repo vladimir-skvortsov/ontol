@@ -1,5 +1,5 @@
-from src.oast import Function, Meta, Ontology, Relationship, Term
-from src.plantuml import PlantUML
+from src.ontol import Function, Meta, Ontology, Relationship, Term
+from src.ontol import PlantUML
 
 import pytest
 
