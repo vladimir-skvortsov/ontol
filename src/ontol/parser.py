@@ -134,8 +134,8 @@ class Parser:
         return attributes
 
     def _parse_function(self, line: str, file_path: str, line_number: int) -> Function:
-        line = line.split('#', 1)[0].strip()
-        pattern = r"^(.*?)(\{.*\})?$"
+        # line = line.split('#', 1)[0].strip()
+        pattern = r"^(.+?)\s*(\{.*\})?$"
         match = re.match(pattern, line)
         if not match:
             raise SyntaxError('Invalid function format')
@@ -146,17 +146,16 @@ class Parser:
         attributes_dict = {
             'color': '#white',
             'colorArrow': '#black',
-            'title': '',
+            'inputTitle': '',
+            'outputTitle': '',
             'leftChar': '',
             'rightChar': '',
             'direction': 'forward',
-            'type': 'depends'
+            'type': 'directAssociation'
         }
 
-        if attributes:
-            for item in attributes.split(', '):
-                key, value = item.split(': ', 1)
-                attributes_dict[key.strip()] = value.strip().strip('"\'')
+        for k, v in self._parse_attributes(attributes).items():
+            attributes_dict[k] = v
 
         match = re.match(
             r"(\w+):\s*['\"](.*?)['\"]\s*\((.*?)\)\s*->\s*(\w+):\s*['\"](.*?)['\"]$",

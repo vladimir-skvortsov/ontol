@@ -1,0 +1,53 @@
+# Пример файла онтологии
+version: '1.0' # Можно использовать двойные или одинарные кавычки
+title: 'Иерархия обобщений, агрегация и композиция, ассоциация'
+author: 'Иван Иванов'
+desc: 'Описание онтологии'
+type: 'Базовый'
+
+types:
+abstract: 'Абстрактное свойство', '', { color: '#e6b7e0' }
+general: 'Общее понятие', '', { color: '#E6E0B7' }
+specific: 'Частное понятие', '', { color: '#f6f0da' }
+single: 'Единичный объект', '', { color: '#ffffff' }
+
+whole: 'Целое', '', { color: '#E6E0B7' }
+optional: 'Необязательная часть', '', { color: '#E6E0B7' }
+essential: 'Неотъемлемая часть', '', { color: '#E6E0B7' }
+
+subject: 'Субъект', '', { color: '#E6E0B7' }
+object: 'Объект', '', { color: '#E6E0B7' }
+
+boolean: 'Булеан', '', { color: '#E6E0B7' }
+enumerable: 'Перечислимое', '', { color: '#e6b7e0' }
+empty: 'Пустое', '', { color: '#ffffff' }
+
+element: 'Элемент', '', { color: '#f6f0da' }
+set: 'Множество', '', { color: '#E6E0B7' }
+infinite: 'Бесконечное', '', { color: '#f6f0da' }
+finite: 'Конечное', '', { color: '#f6f0da' }
+
+# Определение функций (если нужно добавить функциональность)
+functions:
+
+# Иерархическое выражение
+hierarchy:
+general inheritance abstract
+specific inheritance general
+single  directAssociation specific { title: '<<instance of>>' }
+
+optional aggregation whole
+essential composition whole
+
+subject directAssociation object { title: 'воздействует на' }
+
+set composition boolean { leftChar: '*' }
+set inheritance enumerable
+set directAssociation empty { title: 'включает' }
+set inheritance element
+element composition set { leftChar: '*' }
+
+empty directAssociation finite  { title: '<<instance of>>' }
+infinite inheritance set
+finite inheritance set
+finite association infinite { title: 'XOR' }
