@@ -4,62 +4,104 @@ import pytest
 
 
 def test_term_creation() -> None:
-    term: Term = Term(name='TestTerm', description='A test term')
-    assert term.name == 'TestTerm'
+    term: Term = Term(name='test_term', label='TestTerm', description='A test term')
+    assert term.name == 'test_term'
+    assert term.label == 'TestTerm'
     assert term.description == 'A test term'
-    assert repr(term) == 'Term(name=TestTerm, description=A test term)'
+    assert (
+        repr(term)
+        == 'Term(name=test_term, label=TestTerm, description=A test term, attributes={})'
+    )
 
-    term_no_desc: Term = Term(name='NoDescTerm')
-    assert term_no_desc.description is None
-    assert repr(term_no_desc) == 'Term(name=NoDescTerm, description=None)'
+
+def test_term_with_attributes_creation() -> None:
+    attributes = {'color': 'red'}
+    term_with_attributes: Term = Term(
+        name='test_term',
+        label='TestTerm',
+        description='A test term',
+        attributes=attributes,
+    )
+    assert term_with_attributes.attributes == attributes
+    assert (
+        repr(term_with_attributes)
+        == f'Term(name=test_term, label=TestTerm, description=A test term, attributes={attributes})'
+    )
+
+
+def test_term_with_empty_label_creation() -> None:
+    term: Term = Term(name='test_term', label='', description='A test term')
+    assert term.label == ''
+    assert (
+        repr(term)
+        == 'Term(name=test_term, label=, description=A test term, attributes={})'
+    )
+
+
+def test_term_with_empty_description_creation() -> None:
+    term: Term = Term(name='test_term', label='TestTerm', description='')
+    assert term.description == ''
+    assert (
+        repr(term)
+        == 'Term(name=test_term, label=TestTerm, description=, attributes={})'
+    )
 
 
 def test_function_creation():
     func: Function = Function(
-        name='TestFunction',
-        input_types=['int', 'str'],
-        output_types=['bool'],
-        description='A test function',
+        name='sum',
+        label='Sum',
+        input_types=[('int', 'First number'), ('int', 'Second number')],
+        output_type=('int', 'Result'),
     )
-    assert func.name == 'TestFunction'
-    assert func.input_types == ['int', 'str']
-    assert func.output_types == ['bool']
-    assert func.description == 'A test function'
+    assert func.name == 'sum'
+    assert func.label == 'Sum'
+    assert func.input_types == [('int', 'First number'), ('int', 'Second number')]
+    assert func.output_type == ('int', 'Result')
     assert (
         repr(func)
-        == "Function(name=TestFunction, input_types=['int', 'str'], output_types=['bool'], label=None, description=A test function)"
+        == "Function(name=sum, label=Sum, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'))"
     )
 
-    func_no_desc: Function = Function(
-        name='NoDescFunction', input_types=['float'], output_types=['str']
+
+def test_function_wth_empty_label_creation():
+    func: Function = Function(
+        name='sum',
+        label='',
+        input_types=[('int', 'First number'), ('int', 'Second number')],
+        output_type=('int', 'Result'),
     )
-    assert func_no_desc.description is None
+    assert func.label == ''
     assert (
-        repr(func_no_desc)
-        == "Function(name=NoDescFunction, input_types=['float'], output_types=['str'], label=None, description=None)"
+        repr(func)
+        == "Function(name=sum, label=, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'))"
     )
 
-    func_with_label: Function = Function(
-        name='LabeledFunction',
-        input_types=['int'],
-        output_types=['str'],
-        label='SomeLabel',
+
+def test_function_wth_empty_input_types_creation():
+    func: Function = Function(
+        name='sum',
+        label='Sum',
+        input_types=[],
+        output_type=('int', 'Result'),
     )
-    assert func_with_label.label == 'SomeLabel'
+    assert func.input_types == []
     assert (
-        repr(func_with_label)
-        == "Function(name=LabeledFunction, input_types=['int'], output_types=['str'], label=SomeLabel, description=None)"
+        repr(func)
+        == "Function(name=sum, label=Sum, input_types=[], output_type=('int', 'Result'))"
     )
 
 
 def test_relationship_creation() -> None:
-    rel: Relationship = Relationship(expression='A > B')
-    assert rel.expression == 'A > B'
-    assert repr(rel) == 'Relationship(expression=A > B)'
-
-    rel2: Relationship = Relationship(expression='C < D')
-    assert rel2.expression == 'C < D'
-    assert repr(rel2) == 'Relationship(expression=C < D)'
+    rel: Relationship = Relationship(
+        parent='set', relationship='composite', child='element'
+    )
+    assert rel.parent == 'set'
+    assert rel.relationship == 'composite'
+    assert rel.child == 'element'
+    assert (
+        repr(rel) == 'Relationship(parent=set, relationship=composite, child=element)'
+    )
 
 
 def test_meta_creation():
@@ -68,85 +110,70 @@ def test_meta_creation():
         name='TestOntology',
         author='Author',
         description='A test ontology',
+        type='Base',
         date_created='2024-01-01',
     )
     assert meta.version == '1.0'
     assert meta.name == 'TestOntology'
     assert meta.author == 'Author'
     assert meta.description == 'A test ontology'
+    assert meta.type == 'Base'
     assert meta.date_created == '2024-01-01'
     assert (
         repr(meta)
-        == 'Meta(version=1.0, name=TestOntology, author=Author, description=A test ontology, date_created=2024-01-01)'
+        == 'Meta(version=1.0, name=TestOntology, author=Author, description=A test ontology, type=Base, date_created=2024-01-01)'
     )
 
+
+def test_meta_with_empty_description_creation():
     meta_no_optional: Meta = Meta(
         version='1.0',
         name='TestOntology',
         author='Author',
         description=None,
-        date_created=None,
+        type='Base',
+        date_created='2024-01-01',
     )
     assert meta_no_optional.description is None
-    assert meta_no_optional.date_created is None
     assert (
         repr(meta_no_optional)
-        == 'Meta(version=1.0, name=TestOntology, author=Author, description=None, date_created=None)'
+        == 'Meta(version=1.0, name=TestOntology, author=Author, description=None, type=Base, date_created=2024-01-01)'
     )
 
 
 def test_ontology_operations():
     ontology: Ontology = Ontology()
-    term: Term = Term(name='TestTerm')
-    func: Function = Function(
-        name='TestFunction', input_types=['int'], output_types=['str']
+    char: Term = Term(name='str', label='String', description='')
+    string: Term = Term(name='string', label='String', description='')
+    concatanate: Function = Function(
+        name='concatanate',
+        label='Concatanate',
+        input_types=[('str', ''), ('str', '')],
+        output_type=('str', 'Result'),
     )
-    rel: Relationship = Relationship(expression='A > B')
+    rel: Relationship = Relationship(
+        parent='string', relationship='composition', child='char'
+    )
     meta: Meta = Meta(
         version='1.0',
-        name='TestOntology',
+        name='StringOntology',
         author='Author',
-        description='A test ontology',
+        description='A string ontology',
         date_created='2024-01-01',
     )
 
-    ontology.add_type(term)
-    ontology.add_function(func)
+    ontology.add_type(char)
+    ontology.add_type(string)
+    ontology.add_function(concatanate)
     ontology.add_relationship(rel)
     ontology.set_meta(meta)
 
-    assert ontology.types == [term]
-    assert ontology.functions == [func]
+    assert ontology.types == [char, string]
+    assert ontology.functions == [concatanate]
     assert ontology.hierarchy == [rel]
     assert ontology.meta == meta
 
-    with pytest.raises(
-        ValueError, match='Meta information is already set and can only be set once.'
-    ):
-        ontology.set_meta(meta)
-
-    assert 'Ontology(types=[Term(name=TestTerm, description=None)]' in repr(ontology)
-
-    new_term: Term = Term(name='NewTerm')
-    new_func: Function = Function(
-        name='NewFunction', input_types=['str'], output_types=['int']
-    )
-    new_rel: Relationship = Relationship(expression='B < A')
-
-    ontology.add_type(new_term)
-    ontology.add_function(new_func)
-    ontology.add_relationship(new_rel)
-
-    assert ontology.types == [term, new_term]
-    assert ontology.functions == [func, new_func]
-    assert ontology.hierarchy == [rel, new_rel]
-
-    repr_str: str = repr(ontology)
-    assert (
-        'Ontology(types=[Term(name=TestTerm, description=None), Term(name=NewTerm, description=None)]'
-        in repr_str
-    )
-    assert (
-        "functions=[Function(name=TestFunction, input_types=['int'], output_types=['str'], label=None, description=None), Function(name=NewFunction, input_types=['str'], output_types=['int'], label=None, description=None)]"
-        in repr_str
-    )
+    assert repr([char, string]) in repr(ontology)
+    assert repr([concatanate]) in repr(ontology)
+    assert repr([rel]) in repr(ontology)
+    assert repr(meta) in repr(ontology)

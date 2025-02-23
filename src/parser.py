@@ -1,6 +1,6 @@
 import re
 
-from typing import Optional
+from typing import Optional, Literal
 from src import Ontology, Term, Function, Relationship, Meta
 from datetime import datetime
 
@@ -15,7 +15,7 @@ class Parser:
         ontology: Ontology = Ontology()
 
         lines: list[str] = file_content.splitlines()
-        current_block = None
+        current_block: Optional[Literal['types', 'functions', 'hierarchy']] = None
         meta_data: dict[str, Optional[str]] = {
             'version': None,
             'name': None,
@@ -27,7 +27,7 @@ class Parser:
 
         for index, line in enumerate(lines):
             line_number: int = index + 1
-            line: str = line.strip()
+            line = line.strip()
 
             if line.startswith('#') or not line:
                 continue
@@ -84,7 +84,6 @@ class Parser:
 
         ontology.set_meta(Meta(**meta_data))
 
-        # Возвращаем объект онтологии и список предупреждений
         return ontology, self.warnings
 
     def _parse_meta_line(
@@ -115,11 +114,9 @@ class Parser:
         description: str = match.group(3)
 
         if not label:
-            self._add_warning(file_path, line_number, line, 'Label is empty for type.')
+            self._add_warning(file_path, line_number, line, 'Label is empty')
         if not description:
-            self._add_warning(
-                file_path, line_number, line, 'Description is empty for type.'
-            )
+            self._add_warning(file_path, line_number, line, 'Description is empty')
 
         attributes = self._parse_attributes(match.group(5)) if match.group(5) else {}
 

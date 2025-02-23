@@ -71,7 +71,7 @@ class Ontology(ASTNode):
     types: list[Term] = field(default_factory=list)
     functions: list[Function] = field(default_factory=list)
     hierarchy: list[Relationship] = field(default_factory=list)
-    meta: Optional[Meta] = None
+    meta: Meta = field(default_factory=Meta)
 
     def add_type(self, type_def: Term) -> None:
         self.types.append(type_def)
@@ -83,10 +83,6 @@ class Ontology(ASTNode):
         self.hierarchy.append(logical_expr)
 
     def set_meta(self, meta: Meta) -> None:
-        if self.meta is not None:
-            raise ValueError(
-                'Meta information is already set and can only be set once.'
-            )
         self.meta = meta
 
     def __repr__(self) -> str:
