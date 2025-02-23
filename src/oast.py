@@ -68,7 +68,7 @@ class Ontology(ASTNode):
     types: list[Term] = field(default_factory=list)
     functions: list[Function] = field(default_factory=list)
     hierarchy: list[Relationship] = field(default_factory=list)
-    meta: Meta = Meta()
+    meta: Meta = field(default_factory=Meta)
 
     def add_type(self, type_def: Term) -> None:
         self.types.append(type_def)
