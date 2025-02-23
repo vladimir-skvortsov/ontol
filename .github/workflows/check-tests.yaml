@@ -36,4 +36,4 @@ jobs:
           pip install -e .
 
       - name: Run tests with pytest
-        run: pytest --maxfail=1 --disable-warnings -v
+        run: pytest --continue-on-collection-errors --disable-warnings -v
