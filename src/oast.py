@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List, Dict
 from dataclasses import dataclass, field
 
 
@@ -40,10 +40,13 @@ class Relationship(ASTNode):
     # TODO: replace str with enum type
     relationship: str
     # TODO: replace str with Term
-    child: str
+    child: List[str]
+    info: Dict[str, str] = field(default_factory=dict)
 
     def __repr__(self) -> str:
-        return f'Relationship(parent={self.parent}, relationship={self.relationship}, child={self.child})'
+        return (f'Relationship(parent={self.parent}, '
+                f'relationship={self.relationship}, '
+                f'child={self.child}, info={self.info})')
 
 
 @dataclass

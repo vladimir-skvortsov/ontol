@@ -1,5 +1,4 @@
 import os
-import re
 import zlib
 
 import requests
@@ -72,11 +71,68 @@ class PlantUML:
 
     def _generate_base_hierarchy(self, relationship: Relationship) -> str:
         relationships = {
-            'depends': '..>'
+            'depends': {
+                'forward': '...>',
+                'backward': '<...',
+                'bidirectional': '<...>'
+            },
+            'association': {
+                'forward': '---',
+                'backward': '---',
+                'bidirectional': '---'
+            },
+            'directAssociation': {
+                'forward': '--->',
+                'backward': '<---',
+                'bidirectional': '<--->'
+            },
+            'inheritance': {
+                'forward': '---|>',
+                'backward': '<|---',
+                'bidirectional': '<|---|>'
+            },
+            'realization': {
+                'forward': '...|>',
+                'backward': '<|...',
+                'bidirectional': '<|...|>'
+            },
+            'aggregation': {
+                'forward': '---o',
+                'backward': 'o---',
+                'bidirectional': 'o---o'
+            },
+            'composition': {
+                'forward': '---*',
+                'backward': '*---',
+                'bidirectional': '*---*'
+            },
+            'usage': {
+                'forward': '...>',
+                'backward': '<...',
+                'bidirectional': '<...>'
+            }
         }
-        return (f'{relationship.parent} '
-                f'{relationships[relationship.relationship]} '
-                f'{relationship.child}')
+        leftchar = '"' + relationship.info['leftChar'] + '"' if relationship.info['leftChar'] else ''
+        rightchar = '"' + relationship.info['rightChar'] + '"' if relationship.info['rightChar'] else ''
+        title = ': "' + relationship.info['title'] + '"' if relationship.info['title'] else ''
+        color = '[' + relationship.info['color'] + ']'
+        relation = relationships[relationship.relationship][relationship.info["direction"]][:2] + color + relationships[relationship.relationship][relationship.info["direction"]][2:]
+        res = ''
+        res += (f'{relationship.parent} {leftchar} '
+                f'{relation} '
+                f'{rightchar} '
+                f'{relationship.child[0]} {title}') + '\n'
+        # if len(relationship.child) == 2:
+        #     res += (f'{relationship.child[1]} {leftchar} '
+        #             f' -- '
+        #             f'{rightchar} '
+        #             f'({relationship.parent + ", " + relationship.child[0]})') + '\n'
+        # elif len(relationship.child) == 3:
+        #     res += (f'({relationship.child[1] + ", " + relationship.child[2]}) {leftchar} '
+        #             f' -- '
+        #             f'{rightchar} '
+        #             f'({relationship.parent + ", " + relationship.child[0]})') + '\n'
+        return res
 
     def _generate_type(self, term: Term) -> str:
         return f'class {term.name} {{\n  {term.description}\n}}'
