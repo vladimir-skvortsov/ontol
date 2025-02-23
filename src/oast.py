@@ -80,10 +80,6 @@ class Ontology(ASTNode):
         self.hierarchy.append(logical_expr)
 
     def set_meta(self, meta: Meta) -> None:
-        if self.meta is not None:
-            raise ValueError(
-                'Meta information is already set and can only be set once.'
-            )
         self.meta = meta
 
     def __repr__(self) -> str:

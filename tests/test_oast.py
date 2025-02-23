@@ -173,11 +173,6 @@ def test_ontology_operations():
     assert ontology.hierarchy == [rel]
     assert ontology.meta == meta
 
-    with pytest.raises(
-        ValueError, match='Meta information is already set and can only be set once.'
-    ):
-        ontology.set_meta(meta)
-
     assert repr([char, string]) in repr(ontology)
     assert repr([concatanate]) in repr(ontology)
     assert repr([rel]) in repr(ontology)
