@@ -1,0 +1,361 @@
+{
+    "terms": [
+        {
+            "name": "element",
+            "label": "Элемент",
+            "description": "",
+            "attributes": {
+                "color": "#E6B8B7"
+            }
+        },
+        {
+            "name": "set",
+            "label": "Множество",
+            "description": "",
+            "attributes": {
+                "color": "#E6B8B7"
+            }
+        },
+        {
+            "name": "add",
+            "label": "Добавить",
+            "description": "",
+            "attributes": {
+                "color": "#C6F6C6"
+            }
+        },
+        {
+            "name": "remove",
+            "label": "Удалить",
+            "description": "",
+            "attributes": {
+                "color": "#C6F6C6"
+            }
+        },
+        {
+            "name": "union",
+            "label": "Объединение",
+            "description": "",
+            "attributes": {
+                "color": "#D0FFD0"
+            }
+        },
+        {
+            "name": "intersect",
+            "label": "Пересечение",
+            "description": "",
+            "attributes": {
+                "color": "#D0FFD0"
+            }
+        },
+        {
+            "name": "difference",
+            "label": "Разность",
+            "description": "",
+            "attributes": {
+                "color": "#D0FFD0"
+            }
+        },
+        {
+            "name": "symDiff",
+            "label": "Симметрическая разность",
+            "description": "",
+            "attributes": {
+                "color": "#D0FFD0"
+            }
+        },
+        {
+            "name": "pierce",
+            "label": "Стрелка Пирса",
+            "description": "",
+            "attributes": {
+                "color": "#D0FFD0"
+            }
+        },
+        {
+            "name": "sheffer",
+            "label": "Штрих Шеффера",
+            "description": "",
+            "attributes": {
+                "color": "#D0FFD0"
+            }
+        }
+    ],
+    "functions": [],
+    "hierarchy": [
+        {
+            "parent": "element",
+            "relationship": "directAssociation",
+            "child": [
+                "add"
+            ],
+            "attributes": {
+                "color": "#red",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "element",
+            "relationship": "directAssociation",
+            "child": [
+                "remove"
+            ],
+            "attributes": {
+                "color": "#blue",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "element",
+            "relationship": "inheritance",
+            "child": [
+                "set"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "add",
+            "relationship": "directAssociation",
+            "child": [
+                "set"
+            ],
+            "attributes": {
+                "color": "#red",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "backward"
+            }
+        },
+        {
+            "parent": "add",
+            "relationship": "directAssociation",
+            "child": [
+                "set"
+            ],
+            "attributes": {
+                "color": "#red",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "remove",
+            "relationship": "directAssociation",
+            "child": [
+                "set"
+            ],
+            "attributes": {
+                "color": "#blue",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "remove",
+            "relationship": "directAssociation",
+            "child": [
+                "set"
+            ],
+            "attributes": {
+                "color": "#blue",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "backward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "union"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "*",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "union"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "backward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "intersect"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "*",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "intersect"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "backward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "difference"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "2",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "difference"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "backward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "symDiff"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "2",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "symDiff"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "backward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "pierce"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "2",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "pierce"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "backward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "sheffer"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "2",
+                "direction": "forward"
+            }
+        },
+        {
+            "parent": "set",
+            "relationship": "directAssociation",
+            "child": [
+                "sheffer"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "backward"
+            }
+        }
+    ],
+    "meta": {
+        "version": "1.0",
+        "name": "Алгебра подмножеств - алогритмические аспекты",
+        "author": "Иван Иванов",
+        "description": "Описание онтологии",
+        "type": "Базовый",
+        "date_created": "2025-02-23"
+    }
+}

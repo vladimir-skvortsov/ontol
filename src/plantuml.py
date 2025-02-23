@@ -43,6 +43,10 @@ class PlantUML:
             'skinparam backgroundColor #F0F8FF',
             'skinparam defaultTextAlignment center',
             'skinparam shadowing false',
+            'skinparam dpi 150',
+            'skinparam linetype ortho',
+            'skinparam ranksep 40',
+            'skinparam nodesep 30',
         ]
 
         if not ontology.meta:
@@ -73,12 +77,87 @@ class PlantUML:
         )
 
     def _generate_base_hierarchy(self, relationship: Relationship) -> str:
-        relationships = {'depends': '..>'}
-        return (
-            f'{relationship.parent} '
-            f'{relationships[relationship.relationship]} '
-            f'{relationship.child}'
+        relationships = {
+            'depends': {
+                'forward': '...>',
+                'backward': '<...',
+                'bidirectional': '<...>',
+            },
+            'association': {
+                'forward': '---',
+                'backward': '---',
+                'bidirectional': '---',
+            },
+            'directAssociation': {
+                'forward': '--->',
+                'backward': '<---',
+                'bidirectional': '<--->',
+            },
+            'inheritance': {
+                'forward': '---|>',
+                'backward': '<|---',
+                'bidirectional': '<|---|>',
+            },
+            'realization': {
+                'forward': '...|>',
+                'backward': '<|...',
+                'bidirectional': '<|...|>',
+            },
+            'aggregation': {
+                'forward': '---o',
+                'backward': 'o---',
+                'bidirectional': 'o---o',
+            },
+            'composition': {
+                'forward': '---*',
+                'backward': '*---',
+                'bidirectional': '*---*',
+            },
+            'usage': {'forward': '...>', 'backward': '<...', 'bidirectional': '<...>'},
+        }
+        leftchar = (
+            '"' + relationship.attributes['leftChar'] + '"'
+            if relationship.attributes['leftChar']
+            else ''
         )
+        rightchar = (
+            '"' + relationship.attributes['rightChar'] + '"'
+            if relationship.attributes['rightChar']
+            else ''
+        )
+        title = (
+            ': "' + relationship.attributes['title'] + '"'
+            if relationship.attributes['title']
+            else ''
+        )
+        color = '[' + relationship.attributes['color'] + ']'
+        relation = (
+            relationships[relationship.relationship][
+                relationship.attributes['direction']
+            ][:2]
+            + color
+            + relationships[relationship.relationship][
+                relationship.attributes['direction']
+            ][2:]
+        )
+        res = ''
+        res += (
+            f'{relationship.parent} {leftchar} '
+            f'{relation} '
+            f'{rightchar} '
+            f'{relationship.child[0]} {title}'
+        ) + '\n'
+        # if len(relationship.child) == 2:
+        #     res += (f'{relationship.child[1]} {leftchar} '
+        #             f' -- '
+        #             f'{rightchar} '
+        #             f'({relationship.parent + ", " + relationship.child[0]})') + '\n'
+        # elif len(relationship.child) == 3:
+        #     res += (f'({relationship.child[1] + ", " + relationship.child[2]}) {leftchar} '
+        #             f' -- '
+        #             f'{rightchar} '
+        #             f'({relationship.parent + ", " + relationship.child[0]})') + '\n'
+        return res
 
     def _generate_type(self, term: Term) -> str:
         return f'class {term.name} {{\n  {term.description}\n}}'

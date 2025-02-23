@@ -1,0 +1,45 @@
+# Пример файла онтологии
+version: '1.0' # Можно использовать двойные или одинарные кавычки
+title: 'Алгебра подмножеств - алогритмические аспекты'
+author: 'Иван Иванов'
+desc: 'Описание онтологии'
+type: 'Базовый'
+
+types:
+element: 'Элемент', '', { color: '#E6B8B7' }
+set: 'Множество', '', { color: '#E6B8B7' }
+add: 'Добавить', '', { color: '#C6F6C6' }
+remove: 'Удалить', '', { color: '#C6F6C6' }
+union: 'Объединение', '', { color: '#D0FFD0' }
+intersect: 'Пересечение', '', { color: '#D0FFD0' }
+difference: 'Разность', '', { color: '#D0FFD0' }
+symDiff: 'Симметрическая разность', '', { color: '#D0FFD0' }
+pierce: 'Стрелка Пирса', '', { color: '#D0FFD0' }
+sheffer: 'Штрих Шеффера', '', { color: '#D0FFD0' }
+
+# Определение функций (если нужно добавить функциональность)
+functions:
+
+# Иерархическое выражение
+hierarchy:
+element directAssociation add { color: '#red' }
+element directAssociation remove { color: '#blue' }
+element inheritance set
+
+add directAssociation set { color: '#red', direction: 'backward' }
+add directAssociation set { color: '#red' }
+remove directAssociation set { color: '#blue' }
+remove directAssociation set { color: '#blue', direction: 'backward' }
+
+set directAssociation union { title: '*' }
+set directAssociation union { direction: 'backward' }
+set directAssociation intersect { title: '*' }
+set directAssociation intersect { direction: 'backward' }
+set directAssociation difference { rightChar: '2' }
+set directAssociation difference { direction: 'backward' }
+set directAssociation symDiff { rightChar: '2' }
+set directAssociation symDiff { direction: 'backward' }
+set directAssociation pierce { rightChar: '2' }
+set directAssociation pierce { direction: 'backward' }
+set directAssociation sheffer { rightChar: '2' }
+set directAssociation sheffer { direction: 'backward' }
