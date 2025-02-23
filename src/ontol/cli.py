@@ -10,7 +10,7 @@ from argparse import ArgumentParser, Namespace
 from ontol import Parser, JSONSerializer, PlantUML
 
 
-VERSION: str = '2.6.0'
+VERSION: str = '2.6.1'
 
 
 class CLI:
@@ -52,7 +52,8 @@ class CLI:
                 ontology, warnings = self.parser.parse(content, file_path)
 
                 # Print warnings
-                print('\n\n'.join(warnings))
+                if warnings
+                    print('\n\n'.join(warnings))
 
                 # JSON
                 json_content: str = self.serializer.serialize(ontology)
@@ -95,6 +96,7 @@ class CLI:
         except KeyboardInterrupt:
             observer.stop()
         observer.join()
+
 
 def main():
     cli: CLI = CLI()
