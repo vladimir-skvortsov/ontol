@@ -134,7 +134,6 @@ class Parser:
         return attributes
 
     def _parse_function(self, line: str, file_path: str, line_number: int) -> Function:
-        # line = line.split('#', 1)[0].strip()
         pattern = r'^(.+?)\s*(\{.*\})?$'
         match = re.match(pattern, line)
         if not match:
