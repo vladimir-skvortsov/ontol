@@ -32,6 +32,9 @@ jobs:
         run: |
           pip install --upgrade pip build
           pip install setuptools wheel twine
+      
+      - name: Set environment variable
+        run: echo "ONTOL_VERSION=${{ github.event.inputs.VERSION }}" >> $GITHUB_ENV
 
       - name: Update version in pyproject.toml
         run: |
