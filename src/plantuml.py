@@ -43,6 +43,10 @@ class PlantUML:
             'skinparam backgroundColor #F0F8FF',
             'skinparam defaultTextAlignment center',
             'skinparam shadowing false',
+            'skinparam dpi 150',
+            'skinparam linetype ortho',
+            'skinparam ranksep 40',
+            'skinparam nodesep 30',
         ]
 
         if not ontology.meta:
@@ -119,7 +123,8 @@ class PlantUML:
         rightchar = '"' + relationship.info['rightChar'] + '"' if relationship.info['rightChar'] else ''
         title = ': "' + relationship.info['title'] + '"' if relationship.info['title'] else ''
         color = '[' + relationship.info['color'] + ']'
-        relation = relationships[relationship.relationship][relationship.info["direction"]][:2] + color + relationships[relationship.relationship][relationship.info["direction"]][2:]
+        relation = relationships[relationship.relationship][relationship.info["direction"]][:2] + color + \
+                   relationships[relationship.relationship][relationship.info["direction"]][2:]
         res = ''
         res += (f'{relationship.parent} {leftchar} '
                 f'{relation} '
