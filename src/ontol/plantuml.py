@@ -1,3 +1,4 @@
+import collections
 import os
 import zlib
 
@@ -51,13 +52,17 @@ class PlantUML:
 
         if not ontology.meta:
             raise ValueError('No meta defined for ontology')
-        if ontology.functions:
-            raise ValueError('Functions is not available for these diagram types')
 
         uml_lines.append(f'package "{ontology.meta.name}" {{')
 
         for term in ontology.types:
             uml_lines.append(self._generate_rectangle(term))
+
+        for function in ontology.functions:
+            uml_lines.append(self._generate_rectangle(self.__prepare_function_term(function)))
+
+        for function in ontology.functions:
+            uml_lines.extend(self._generate_base_hierarchy(self.__prepare_function_hierarchy(function)))
 
         for relationship in ontology.hierarchy:
             uml_lines.append(self._generate_base_hierarchy(relationship))
@@ -155,6 +160,39 @@ class PlantUML:
         #             f'{rightchar} '
         #             f'({relationship.parent + ", " + relationship.child[0]})') + '\n'
         return res
+
+    def __prepare_function_term(self, function: Function):
+        input = [f'{el1}: {el2}' for el1, el2 in function.input_types]
+        output = [f'{el1}: {el2}' for el1, el2 in function.output_types]
+        desc = f'{", ".join(input)} -> {", ".join(output)}'
+        return Term(function.name, function.label, desc, {'color': function.attributes['color']})
+
+    def __prepare_function_hierarchy(self, function: Function):
+        relations = []
+        input, output = collections.defaultdict(int), collections.defaultdict(int)
+        for type, _ in function.input_types:
+            input[type] += 1
+        for type, _ in function.output_types:
+            output[type] += 1
+        for k, v in input.items():
+            attributes_dict = {
+                'color': function.attributes['colorArrow'],
+                'title': '',
+                'leftChar': f'{v}',
+                'rightChar': '',
+                'direction': 'forward',
+            }
+            relations.append(Relationship(k, function.attributes['type'], [function.name], attributes_dict))
+        for k, v in output.items():
+            attributes_dict = {
+                'color': function.attributes['colorArrow'],
+                'title': '',
+                'leftChar': '',
+                'rightChar': f'{v}',
+                'direction': 'forward',
+            }
+            relations.append(Relationship(function.name, function.attributes['type'], k, attributes_dict))
+        return relations
 
     def _generate_type(self, term: Term) -> str:
         return f'class {term.name} {{\n  {term.description}\n}}'

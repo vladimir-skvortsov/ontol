@@ -27,9 +27,12 @@ class Function(ASTNode):
     # TODO: replace tuple[str, str] with dict { name: str, label: str }
     # TODO: replace str with Term
     output_type: tuple[str, str]
+    attributes: dict = field(default_factory=dict)
 
     def __repr__(self) -> str:
-        return f'Function(name={self.name}, label={self.label}, input_types={self.input_types}, output_type={self.output_type})'
+        return (f'Function(name={self.name}, label={self.label}, input_types={self.input_types},'
+                f' output_type={self.output_type} '
+                f'attributes={self.attributes})')
 
 
 # TODO: implmenent structure from technical task. Must contain parent, child, and relationship type
