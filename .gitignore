@@ -19,3 +19,8 @@ venv
 # Dist
 dist/
 src/ontol.egg-info/
+
+# Compiled examples
+examples/*.json
+examples/*.puml
+examples/*.png
