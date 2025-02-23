@@ -4,7 +4,6 @@ __pycache__/
 *$py.class
 .coverage
 .pytest_cache
-src/ontol/ontol.egg-info/*
 
 # mypy
 .mypy_cache/
@@ -19,3 +18,4 @@ venv
 
 # Dist
 dist/
+src/ontol.egg-info/
