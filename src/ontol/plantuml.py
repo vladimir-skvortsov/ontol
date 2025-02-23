@@ -1,3 +1,4 @@
+import collections
 import os
 import zlib
 
@@ -51,13 +52,20 @@ class PlantUML:
 
         if not ontology.meta:
             raise ValueError('No meta defined for ontology')
-        if ontology.functions:
-            raise ValueError('Functions is not available for these diagram types')
 
         uml_lines.append(f'package "{ontology.meta.name}" {{')
 
         for term in ontology.types:
             uml_lines.append(self._generate_rectangle(term))
+
+        for function in ontology.functions:
+            uml_lines.append(
+                self._generate_rectangle(self.__prepare_function_term(function))
+            )
+
+        for function in ontology.functions:
+            for relations in self.__prepare_function_hierarchy(function):
+                uml_lines.append(self._generate_base_hierarchy(relations))
 
         for relationship in ontology.hierarchy:
             uml_lines.append(self._generate_base_hierarchy(relationship))
@@ -144,17 +152,61 @@ class PlantUML:
             f'{rightchar} '
             f'{relationship.child[0]} {title}'
         ) + '\n'
-        # if len(relationship.child) == 2:
-        #     res += (f'{relationship.child[1]} {leftchar} '
-        #             f' -- '
-        #             f'{rightchar} '
-        #             f'({relationship.parent + ", " + relationship.child[0]})') + '\n'
-        # elif len(relationship.child) == 3:
-        #     res += (f'({relationship.child[1] + ", " + relationship.child[2]}) {leftchar} '
-        #             f' -- '
-        #             f'{rightchar} '
-        #             f'({relationship.parent + ", " + relationship.child[0]})') + '\n'
         return res
+
+    def __prepare_function_term(self, function: Function):
+        input = [
+            f'{el1}: {el2}' if el2 else f'{el1}' for el1, el2 in function.input_types
+        ]
+        output = (
+            (f'{function.output_type[0]}: {function.output_type[1]}')
+            if function.output_type[1]
+            else f'{function.output_type[0]}'
+        )
+        desc = f'{", ".join(input)} -> {output}'
+        return Term(
+            function.name,
+            function.label,
+            desc,
+            {'color': function.attributes.get('color', '#white')},
+        )
+
+    def __prepare_function_hierarchy(self, function: Function):
+        relations = []
+
+        input = collections.defaultdict(int)
+        for type, _ in function.input_types:
+            input[type] += 1
+
+        for k, v in input.items():
+            attributes_dict = {
+                'color': function.attributes.get('colorArrow', '#black'),
+                'title': function.attributes.get('inputTitle', ''),
+                'leftChar': f'{v if v != 1 else ""}',
+                'rightChar': '',
+                'direction': 'forward',
+            }
+            relations.append(
+                Relationship(
+                    k, function.attributes['type'], [function.name], attributes_dict
+                )
+            )
+        attributes_dict = {
+            'color': function.attributes.get('colorArrow', '#black'),
+            'title': function.attributes.get('outputTitle', ''),
+            'leftChar': '',
+            'rightChar': '',
+            'direction': 'forward',
+        }
+        relations.append(
+            Relationship(
+                function.name,
+                function.attributes.get('type', 'directAssociation'),
+                [function.output_type[0]],
+                attributes_dict,
+            )
+        )
+        return relations
 
     def _generate_type(self, term: Term) -> str:
         return f'class {term.name} {{\n  {term.description}\n}}'
