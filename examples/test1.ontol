@@ -11,14 +11,14 @@ set: 'Множество\n\n\n\n\n', '', { color: '#E6B8B7' }
 
 # Определение функций (если нужно добавить функциональность)
 functions:
-add: 'Добавить' (set: '', element: '') -> set: '' { color: '#D0FFD0', colorArrow: '#red' }
-remove: 'Удалить' (set: '', element: '') -> set: '' { color: '#D0FFD0', colorArrow: '#blue' }
-union: 'Объединение' (set: '') -> set: '' { color: '#D0FFD0', inputTitle: '*' }
-intersect: 'Пересечение' (set: '') -> set: '' { color: '#D0FFD0', inputTitle: '*' }
-difference: 'Разность' (set: '', set: '') -> set: '' { color: '#D0FFD0' }
-symDiff: 'Симметрическая разность' (set: '', set: '') -> set: '' { color: '#D0FFD0' }
-pierce: 'Стрелка Пирса' (set: '', set: '') -> set: '' { color: '#D0FFD0' }
-sheffer: 'Штрих Шеффера' (set: '', set: '') -> set: '' { color: '#D0FFD0' }
+add: 'Добавить' (set: '', element: '') -> set: '', { color: '#D0FFD0', colorArrow: '#red' }
+remove: 'Удалить' (set: '', element: '') -> set: '', { color: '#D0FFD0', colorArrow: '#blue' }
+union: 'Объединение' (set: '') -> set: '', { color: '#D0FFD0', inputTitle: '*' }
+intersect: 'Пересечение' (set: '') -> set: '', { color: '#D0FFD0', inputTitle: '*' }
+difference: 'Разность' (set: '', set: '') -> set: '', { color: '#D0FFD0' }
+symDiff: 'Симметрическая разность' (set: '', set: '') -> set: '', { color: '#D0FFD0' }
+pierce: 'Стрелка Пирса' (set: '', set: '') -> set: '', { color: '#D0FFD0' }
+sheffer: 'Штрих Шеффера' (set: '', set: '') -> set: '', { color: '#D0FFD0' }
 
 # Иерархическое выражение
 hierarchy:

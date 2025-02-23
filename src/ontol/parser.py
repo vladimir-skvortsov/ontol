@@ -118,11 +118,13 @@ class Parser:
         if not description:
             self._add_warning(file_path, line_number, line, 'Description is empty')
 
-        attributes = self._parse_attributes(match.group(5)) if match.group(5) else {}
+        attributes: dict[str, str] = (
+            self._parse_attributes(match.group(5)) if match.group(5) else {}
+        )
 
         return Term(name, label, description, attributes)
 
-    def _parse_attributes(self, attr_string: str) -> dict:
+    def _parse_attributes(self, attr_string: str) -> dict[str, str]:
         attributes: dict[str, str] = {}
 
         if attr_string:
@@ -134,31 +136,9 @@ class Parser:
         return attributes
 
     def _parse_function(self, line: str, file_path: str, line_number: int) -> Function:
-        pattern = r'^(.+?)\s*(\{.*\})?$'
-        match = re.match(pattern, line)
-        if not match:
-            raise SyntaxError('Invalid function format')
-
-        function = match.group(1).strip()
-        attributes = match.group(2).strip() if match.group(2) else ''
-
-        attributes_dict = {
-            'color': '#white',
-            'colorArrow': '#black',
-            'inputTitle': '',
-            'outputTitle': '',
-            'leftChar': '',
-            'rightChar': '',
-            'direction': 'forward',
-            'type': 'directAssociation',
-        }
-
-        for k, v in self._parse_attributes(attributes).items():
-            attributes_dict[k] = v
-
         match = re.match(
-            r"(\w+):\s*['\"](.*?)['\"]\s*\((.*?)\)\s*->\s*(\w+):\s*['\"](.*?)['\"]$",
-            function,
+            r"(\w+):\s*['\"](.*?)['\"]\s*\((.*?)\)\s*->\s*(\w+):\s*['\"](.*?)['\"](,\s*\{(.*?)\})?$",
+            line,
         )
 
         if not match:
@@ -169,6 +149,9 @@ class Parser:
         input_params: list[tuple[str, str]] = self._parse_parameters(match.group(3))
         output_type: str = match.group(4)
         output_label: str = match.group(5)
+        attributes: dict[str, str] = (
+            self._parse_attributes(match.group(7)) if match.group(7) else {}
+        )
 
         if not label:
             self._add_warning(file_path, line_number, line, 'Label is empty')
@@ -176,7 +159,7 @@ class Parser:
             self._add_warning(file_path, line_number, line, 'Output label is empty')
 
         return Function(
-            name, label, input_params, (output_type, output_label), attributes_dict
+            name, label, input_params, (output_type, output_label), attributes
         )
 
     def _parse_parameters(self, param_string: str) -> list[tuple[str, str]]:

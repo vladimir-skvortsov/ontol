@@ -165,18 +165,23 @@ class PlantUML:
         )
         desc = f'{", ".join(input)} -> {output}'
         return Term(
-            function.name, function.label, desc, {'color': function.attributes['color']}
+            function.name,
+            function.label,
+            desc,
+            {'color': function.attributes.get('color', '#white')},
         )
 
     def __prepare_function_hierarchy(self, function: Function):
         relations = []
+
         input = collections.defaultdict(int)
         for type, _ in function.input_types:
             input[type] += 1
+
         for k, v in input.items():
             attributes_dict = {
-                'color': function.attributes['colorArrow'],
-                'title': f'{function.attributes["inputTitle"]}',
+                'color': function.attributes.get('colorArrow', '#black'),
+                'title': function.attributes.get('inputTitle', ''),
                 'leftChar': f'{v if v != 1 else ""}',
                 'rightChar': '',
                 'direction': 'forward',
@@ -187,8 +192,8 @@ class PlantUML:
                 )
             )
         attributes_dict = {
-            'color': function.attributes['colorArrow'],
-            'title': f'{function.attributes["outputTitle"]}',
+            'color': function.attributes.get('colorArrow', '#black'),
+            'title': function.attributes.get('outputTitle', ''),
             'leftChar': '',
             'rightChar': '',
             'direction': 'forward',
@@ -196,7 +201,7 @@ class PlantUML:
         relations.append(
             Relationship(
                 function.name,
-                function.attributes['type'],
+                function.attributes.get('type', 'directAssociation'),
                 [function.output_type[0]],
                 attributes_dict,
             )
