@@ -18,3 +18,4 @@ venv
 
 # Dist
 dist/
+src/ontol.egg-info/
