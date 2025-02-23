@@ -1,0 +1,59 @@
+@startuml
+skinparam backgroundColor #F0F8FF
+skinparam defaultTextAlignment center
+skinparam shadowing false
+skinparam dpi 150
+skinparam linetype ortho
+skinparam ranksep 40
+skinparam nodesep 30
+package "Алгебра подмножеств - алогритмические аспекты" {
+rectangle "Элемент" as element #E6B8B7
+rectangle "Множество" as set #E6B8B7
+rectangle "Добавить" as add #C6F6C6
+rectangle "Удалить" as remove #C6F6C6
+rectangle "Объединение" as union #D0FFD0
+rectangle "Пересечение" as intersect #D0FFD0
+rectangle "Разность" as difference #D0FFD0
+rectangle "Симметрическая разность" as symDiff #D0FFD0
+rectangle "Стрелка Пирса" as pierce #D0FFD0
+rectangle "Штрих Шеффера" as sheffer #D0FFD0
+element  --[#red]->  add 
+
+element  --[#blue]->  remove 
+
+element  --[#black]-|>  set 
+
+add  <-[#red]--  set 
+
+add  --[#red]->  set 
+
+remove  --[#blue]->  set 
+
+remove  <-[#blue]--  set 
+
+set  --[#black]->  union : "*"
+
+set  <-[#black]--  union 
+
+set  --[#black]->  intersect : "*"
+
+set  <-[#black]--  intersect 
+
+set  --[#black]-> "2" difference 
+
+set  <-[#black]--  difference 
+
+set  --[#black]-> "2" symDiff 
+
+set  <-[#black]--  symDiff 
+
+set  --[#black]-> "2" pierce 
+
+set  <-[#black]--  pierce 
+
+set  --[#black]-> "2" sheffer 
+
+set  <-[#black]--  sheffer 
+
+}
+@enduml

@@ -2,6 +2,10 @@
 skinparam backgroundColor #F0F8FF
 skinparam defaultTextAlignment center
 skinparam shadowing false
+skinparam dpi 150
+skinparam linetype ortho
+skinparam ranksep 40
+skinparam nodesep 30
 package "Множества - зависимости определений" {
 rectangle "Упорядоченность" as order #E6B8B7
 rectangle "Последовательность" as sequence #F2E6D9
@@ -13,16 +17,27 @@ rectangle "Алфавит" as alphabet #FFFFFF
 rectangle "Язык" as language #F2E6D9
 rectangle "Слово" as word #FFFFFF
 rectangle "Буква" as letter #FFFFFF
-sequence ..> multiset
-sequence ..> order
-multiset ..> set
-multiset ..> natural
-finiteSet ..> set
-alphabet ..> finiteSet
-alphabet ..> letter
-language ..> set
-language ..> word
-word ..> letter
-word ..> sequence
+sequence  ..[#black].>  multiset 
+
+sequence  ..[#black].>  order 
+
+multiset  ..[#black].>  set 
+
+multiset  ..[#black].>  natural 
+
+finiteSet  ..[#black].>  set 
+
+alphabet  ..[#black].>  finiteSet 
+
+alphabet  ..[#black].>  letter 
+
+language  ..[#black].>  set 
+
+language  ..[#black].>  word 
+
+word  ..[#black].>  letter 
+
+word  ..[#black].>  sequence 
+
 }
 @enduml

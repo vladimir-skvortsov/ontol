@@ -86,57 +86,156 @@
         {
             "parent": "sequence",
             "relationship": "depends",
-            "child": "multiset"
+            "child": [
+                "multiset"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         },
         {
             "parent": "sequence",
             "relationship": "depends",
-            "child": "order"
+            "child": [
+                "order"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         },
         {
             "parent": "multiset",
             "relationship": "depends",
-            "child": "set"
+            "child": [
+                "set"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         },
         {
             "parent": "multiset",
             "relationship": "depends",
-            "child": "natural"
+            "child": [
+                "natural"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         },
         {
             "parent": "finiteSet",
             "relationship": "depends",
-            "child": "set"
+            "child": [
+                "set"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         },
         {
             "parent": "alphabet",
             "relationship": "depends",
-            "child": "finiteSet"
+            "child": [
+                "finiteSet"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         },
         {
             "parent": "alphabet",
             "relationship": "depends",
-            "child": "letter"
+            "child": [
+                "letter"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         },
         {
             "parent": "language",
             "relationship": "depends",
-            "child": "set"
+            "child": [
+                "set"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         },
         {
             "parent": "language",
             "relationship": "depends",
-            "child": "word"
+            "child": [
+                "word"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         },
         {
             "parent": "word",
             "relationship": "depends",
-            "child": "letter"
+            "child": [
+                "letter"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         },
         {
             "parent": "word",
             "relationship": "depends",
-            "child": "sequence"
+            "child": [
+                "sequence"
+            ],
+            "attributes": {
+                "color": "#black",
+                "title": "",
+                "leftChar": "",
+                "rightChar": "",
+                "direction": "forward"
+            }
         }
     ],
     "meta": {

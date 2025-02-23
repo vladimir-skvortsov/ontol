@@ -172,12 +172,31 @@ class Parser:
         return params
 
     def _parse_relationship(self, line: str) -> Relationship:
-        parts: list[str] = line.split()
+        pattern = r'^(\w+)\s+(\w+)\s+(?:\(([^)]+)\)|(\w+))?\s*(?:\{([^}]*)\})?$'
+        match = re.match(pattern, line.strip())
+        if not match:
+            raise ValueError(f'Invalid line {line}')
 
-        if len(parts) != 3:
-            raise SyntaxError('Invalid hierarchy format')
+        parent = match.group(1)
+        relation = match.group(2)
 
-        return Relationship(parts[0], parts[1], parts[2])
+        child = match.group(3) or match.group(4)
+        children = child.split(', ') if child else []
+
+        attributes = match.group(5)
+        attributes_dict = {
+            'color': '#black',
+            'title': '',
+            'leftChar': '',
+            'rightChar': '',
+            'direction': 'forward',
+        }
+
+        if attributes:
+            for item in attributes.split(', '):
+                key, value = item.split(': ', 1)
+                attributes_dict[key.strip()] = value.strip().strip('"\'')
+        return Relationship(parent, relation, children, attributes_dict)
 
     def _add_warning(
         self, file_path: str, line_number: int, line: str, message: str
