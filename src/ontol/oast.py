@@ -30,9 +30,11 @@ class Function(ASTNode):
     attributes: dict = field(default_factory=dict)
 
     def __repr__(self) -> str:
-        return (f'Function(name={self.name}, label={self.label}, input_types={self.input_types},'
-                f' output_type={self.output_type}, '
-                f'attributes={self.attributes})')
+        return (
+            f'Function(name={self.name}, label={self.label}, input_types={self.input_types},'
+            f' output_type={self.output_type}, '
+            f'attributes={self.attributes})'
+        )
 
 
 # TODO: implmenent structure from technical task. Must contain parent, child, and relationship type

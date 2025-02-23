@@ -135,7 +135,7 @@ class Parser:
 
     def _parse_function(self, line: str, file_path: str, line_number: int) -> Function:
         # line = line.split('#', 1)[0].strip()
-        pattern = r"^(.+?)\s*(\{.*\})?$"
+        pattern = r'^(.+?)\s*(\{.*\})?$'
         match = re.match(pattern, line)
         if not match:
             raise SyntaxError('Invalid function format')
@@ -151,7 +151,7 @@ class Parser:
             'leftChar': '',
             'rightChar': '',
             'direction': 'forward',
-            'type': 'directAssociation'
+            'type': 'directAssociation',
         }
 
         for k, v in self._parse_attributes(attributes).items():
@@ -176,7 +176,9 @@ class Parser:
         if not output_label:
             self._add_warning(file_path, line_number, line, 'Output label is empty')
 
-        return Function(name, label, input_params, (output_type, output_label), attributes_dict)
+        return Function(
+            name, label, input_params, (output_type, output_label), attributes_dict
+        )
 
     def _parse_parameters(self, param_string: str) -> list[tuple[str, str]]:
         params: list[tuple[str, str]] = []

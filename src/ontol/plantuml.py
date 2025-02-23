@@ -59,7 +59,9 @@ class PlantUML:
             uml_lines.append(self._generate_rectangle(term))
 
         for function in ontology.functions:
-            uml_lines.append(self._generate_rectangle(self.__prepare_function_term(function)))
+            uml_lines.append(
+                self._generate_rectangle(self.__prepare_function_term(function))
+            )
 
         for function in ontology.functions:
             for relations in self.__prepare_function_hierarchy(function):
@@ -74,9 +76,9 @@ class PlantUML:
 
     def _generate_rectangle(self, term: Term) -> str:
         return (
-                f'rectangle "{term.label}'
-                + (f'\\n({term.description})' if term.description else '')
-                + f'" as {term.name} {term.attributes["color"]}'
+            f'rectangle "{term.label}'
+            + (f'\\n({term.description})' if term.description else '')
+            + f'" as {term.name} {term.attributes["color"]}'
         )
 
     def _generate_base_hierarchy(self, relationship: Relationship) -> str:
@@ -135,21 +137,21 @@ class PlantUML:
         )
         color = '[' + relationship.attributes['color'] + ']'
         relation = (
-                relationships[relationship.relationship][
-                    relationship.attributes['direction']
-                ][:2]
-                + color
-                + relationships[relationship.relationship][
-                      relationship.attributes['direction']
-                  ][2:]
+            relationships[relationship.relationship][
+                relationship.attributes['direction']
+            ][:2]
+            + color
+            + relationships[relationship.relationship][
+                relationship.attributes['direction']
+            ][2:]
         )
         res = ''
         res += (
-                   f'{relationship.parent} {leftchar} '
-                   f'{relation} '
-                   f'{rightchar} '
-                   f'{relationship.child[0]} {title}'
-               ) + '\n'
+            f'{relationship.parent} {leftchar} '
+            f'{relation} '
+            f'{rightchar} '
+            f'{relationship.child[0]} {title}'
+        ) + '\n'
         # if len(relationship.child) == 2:
         #     res += (f'{relationship.child[1]} {leftchar} '
         #             f' -- '
@@ -163,13 +165,18 @@ class PlantUML:
         return res
 
     def __prepare_function_term(self, function: Function):
-        input = [f'{el1}: {el2}' if el2 else f'{el1}' for el1, el2 in function.input_types]
+        input = [
+            f'{el1}: {el2}' if el2 else f'{el1}' for el1, el2 in function.input_types
+        ]
         output = (
-            f'{function.output_type[0]}: '
-            f'{function.output_type[1]}'
-        ) if function.output_type[1] else f'{function.output_type[0]}'
+            (f'{function.output_type[0]}: {function.output_type[1]}')
+            if function.output_type[1]
+            else f'{function.output_type[0]}'
+        )
         desc = f'{", ".join(input)} -> {output}'
-        return Term(function.name, function.label, desc, {'color': function.attributes['color']})
+        return Term(
+            function.name, function.label, desc, {'color': function.attributes['color']}
+        )
 
     def __prepare_function_hierarchy(self, function: Function):
         relations = []
@@ -184,7 +191,11 @@ class PlantUML:
                 'rightChar': '',
                 'direction': 'forward',
             }
-            relations.append(Relationship(k, function.attributes['type'], [function.name], attributes_dict))
+            relations.append(
+                Relationship(
+                    k, function.attributes['type'], [function.name], attributes_dict
+                )
+            )
         attributes_dict = {
             'color': function.attributes['colorArrow'],
             'title': f'{function.attributes["outputTitle"]}',
@@ -193,7 +204,13 @@ class PlantUML:
             'direction': 'forward',
         }
         relations.append(
-            Relationship(function.name, function.attributes['type'], [function.output_type[0]], attributes_dict))
+            Relationship(
+                function.name,
+                function.attributes['type'],
+                [function.output_type[0]],
+                attributes_dict,
+            )
+        )
         return relations
 
     def _generate_type(self, term: Term) -> str:
