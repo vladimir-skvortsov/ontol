@@ -152,16 +152,6 @@ class PlantUML:
             f'{rightchar} '
             f'{relationship.child[0]} {title}'
         ) + '\n'
-        # if len(relationship.child) == 2:
-        #     res += (f'{relationship.child[1]} {leftchar} '
-        #             f' -- '
-        #             f'{rightchar} '
-        #             f'({relationship.parent + ", " + relationship.child[0]})') + '\n'
-        # elif len(relationship.child) == 3:
-        #     res += (f'({relationship.child[1] + ", " + relationship.child[2]}) {leftchar} '
-        #             f' -- '
-        #             f'{rightchar} '
-        #             f'({relationship.parent + ", " + relationship.child[0]})') + '\n'
         return res
 
     def __prepare_function_term(self, function: Function):
