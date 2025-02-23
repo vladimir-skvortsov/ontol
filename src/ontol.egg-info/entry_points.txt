@@ -1,2 +1,0 @@
-[console_scripts]
-ontol = ontol.cli:main
