@@ -3,7 +3,7 @@ import zlib
 
 import requests
 
-from src import Function, Ontology, Relationship, Term
+from ontol import Function, Ontology, Relationship, Term
 
 
 # TODO: make look like in technical task
@@ -64,13 +64,10 @@ class PlantUML:
 
     def _generate_rectangle(self, term: Term) -> str:
         return (
-            f'rectangle "'
-            f'{term.label}'
-            f'{"\\n(" + term.description + ")" if term.description else ""}'
-            '"'
-            f' as {term.name}'
-            f' {term.attributes["color"]}'
-        )
+    f'rectangle "{term.label}' +
+    (f'\\n({term.description})' if term.description else '') +
+    f'" as {term.name} {term.attributes["color"]}'
+)
 
     def _generate_base_hierarchy(self, relationship: Relationship) -> str:
         relationships = {'depends': '..>'}

@@ -6,3 +6,36 @@ quote-style = 'single'
 
 [tool.ruff]
 indent-width = 4
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ontol"  
+version = "2.5.5"
+description = "A tool for parsing and visualizing ontology files written in the Ontol DSL"
+readme = "README.md"
+authors = [
+    {name = "Skvortsov Vladimir"},
+    {name = "Aptukov Mikhail"},
+    {name = "Markov Mikhail"},
+    {name = "Afanasyev Andrew"},
+    {name = "Khamidullin Ilsaf"}]
+license = { file = "LICENSE" }
+dependencies = [
+    "requests==2.32.3",
+    "watchdog==3.0.0",
+    "plantuml==0.3.0",
+    "pytest==8.3.4",
+    "six==1.17.0",
+    "pytest-cov==6.0.0"
+]
+
+[project.urls]
+Repository = "https://github.com/vladimir-skvortsov/ontol"
+
+
+[project.scripts]
+ontol = "ontol.cli:main"
+
