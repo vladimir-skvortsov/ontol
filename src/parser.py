@@ -114,11 +114,9 @@ class Parser:
         description: str = match.group(3)
 
         if not label:
-            self._add_warning(file_path, line_number, line, 'Label is empty for type.')
+            self._add_warning(file_path, line_number, line, 'Label is empty')
         if not description:
-            self._add_warning(
-                file_path, line_number, line, 'Description is empty for type.'
-            )
+            self._add_warning(file_path, line_number, line, 'Description is empty')
 
         attributes = self._parse_attributes(match.group(5)) if match.group(5) else {}
 
