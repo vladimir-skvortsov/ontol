@@ -81,55 +81,72 @@ class PlantUML:
             'depends': {
                 'forward': '...>',
                 'backward': '<...',
-                'bidirectional': '<...>'
+                'bidirectional': '<...>',
             },
             'association': {
                 'forward': '---',
                 'backward': '---',
-                'bidirectional': '---'
+                'bidirectional': '---',
             },
             'directAssociation': {
                 'forward': '--->',
                 'backward': '<---',
-                'bidirectional': '<--->'
+                'bidirectional': '<--->',
             },
             'inheritance': {
                 'forward': '---|>',
                 'backward': '<|---',
-                'bidirectional': '<|---|>'
+                'bidirectional': '<|---|>',
             },
             'realization': {
                 'forward': '...|>',
                 'backward': '<|...',
-                'bidirectional': '<|...|>'
+                'bidirectional': '<|...|>',
             },
             'aggregation': {
                 'forward': '---o',
                 'backward': 'o---',
-                'bidirectional': 'o---o'
+                'bidirectional': 'o---o',
             },
             'composition': {
                 'forward': '---*',
                 'backward': '*---',
-                'bidirectional': '*---*'
+                'bidirectional': '*---*',
             },
-            'usage': {
-                'forward': '...>',
-                'backward': '<...',
-                'bidirectional': '<...>'
-            }
+            'usage': {'forward': '...>', 'backward': '<...', 'bidirectional': '<...>'},
         }
-        leftchar = '"' + relationship.info['leftChar'] + '"' if relationship.info['leftChar'] else ''
-        rightchar = '"' + relationship.info['rightChar'] + '"' if relationship.info['rightChar'] else ''
-        title = ': "' + relationship.info['title'] + '"' if relationship.info['title'] else ''
-        color = '[' + relationship.info['color'] + ']'
-        relation = relationships[relationship.relationship][relationship.info["direction"]][:2] + color + \
-                   relationships[relationship.relationship][relationship.info["direction"]][2:]
+        leftchar = (
+            '"' + relationship.attributes['leftChar'] + '"'
+            if relationship.attributes['leftChar']
+            else ''
+        )
+        rightchar = (
+            '"' + relationship.attributes['rightChar'] + '"'
+            if relationship.attributes['rightChar']
+            else ''
+        )
+        title = (
+            ': "' + relationship.attributes['title'] + '"'
+            if relationship.attributes['title']
+            else ''
+        )
+        color = '[' + relationship.attributes['color'] + ']'
+        relation = (
+            relationships[relationship.relationship][
+                relationship.attributes['direction']
+            ][:2]
+            + color
+            + relationships[relationship.relationship][
+                relationship.attributes['direction']
+            ][2:]
+        )
         res = ''
-        res += (f'{relationship.parent} {leftchar} '
-                f'{relation} '
-                f'{rightchar} '
-                f'{relationship.child[0]} {title}') + '\n'
+        res += (
+            f'{relationship.parent} {leftchar} '
+            f'{relation} '
+            f'{rightchar} '
+            f'{relationship.child[0]} {title}'
+        ) + '\n'
         # if len(relationship.child) == 2:
         #     res += (f'{relationship.child[1]} {leftchar} '
         #             f' -- '

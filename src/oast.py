@@ -41,12 +41,14 @@ class Relationship(ASTNode):
     relationship: str
     # TODO: replace str with Term
     child: List[str]
-    info: Dict[str, str] = field(default_factory=dict)
+    attributes: Dict[str, str] = field(default_factory=dict)
 
     def __repr__(self) -> str:
-        return (f'Relationship(parent={self.parent}, '
-                f'relationship={self.relationship}, '
-                f'child={self.child}, info={self.info})')
+        return (
+            f'Relationship(parent={self.parent}, '
+            f'relationship={self.relationship}, '
+            f'child={self.child}, attributes={self.attributes})'
+        )
 
 
 @dataclass

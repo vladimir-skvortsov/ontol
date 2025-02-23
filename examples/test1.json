@@ -89,7 +89,7 @@
             "child": [
                 "add"
             ],
-            "info": {
+            "attributes": {
                 "color": "#red",
                 "title": "",
                 "leftChar": "",
@@ -103,7 +103,7 @@
             "child": [
                 "remove"
             ],
-            "info": {
+            "attributes": {
                 "color": "#blue",
                 "title": "",
                 "leftChar": "",
@@ -117,7 +117,7 @@
             "child": [
                 "set"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -131,7 +131,7 @@
             "child": [
                 "set"
             ],
-            "info": {
+            "attributes": {
                 "color": "#red",
                 "title": "",
                 "leftChar": "",
@@ -145,7 +145,7 @@
             "child": [
                 "set"
             ],
-            "info": {
+            "attributes": {
                 "color": "#red",
                 "title": "",
                 "leftChar": "",
@@ -159,7 +159,7 @@
             "child": [
                 "set"
             ],
-            "info": {
+            "attributes": {
                 "color": "#blue",
                 "title": "",
                 "leftChar": "",
@@ -173,7 +173,7 @@
             "child": [
                 "set"
             ],
-            "info": {
+            "attributes": {
                 "color": "#blue",
                 "title": "",
                 "leftChar": "",
@@ -187,7 +187,7 @@
             "child": [
                 "union"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "*",
                 "leftChar": "",
@@ -201,7 +201,7 @@
             "child": [
                 "union"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -215,7 +215,7 @@
             "child": [
                 "intersect"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "*",
                 "leftChar": "",
@@ -229,7 +229,7 @@
             "child": [
                 "intersect"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -243,7 +243,7 @@
             "child": [
                 "difference"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -257,7 +257,7 @@
             "child": [
                 "difference"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -271,7 +271,7 @@
             "child": [
                 "symDiff"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -285,7 +285,7 @@
             "child": [
                 "symDiff"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -299,7 +299,7 @@
             "child": [
                 "pierce"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -313,7 +313,7 @@
             "child": [
                 "pierce"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -327,7 +327,7 @@
             "child": [
                 "sheffer"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -341,7 +341,7 @@
             "child": [
                 "sheffer"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",

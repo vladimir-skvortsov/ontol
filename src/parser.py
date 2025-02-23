@@ -181,25 +181,25 @@ class Parser:
         relation = match.group(2)
 
         child = match.group(3) or match.group(4)
-        children = child.split(", ") if child else []
+        children = child.split(', ') if child else []
 
-        info = match.group(5)
-        info_dict = {
+        attributes = match.group(5)
+        attributes_dict = {
             'color': '#black',
             'title': '',
             'leftChar': '',
             'rightChar': '',
-            'direction': 'forward'
+            'direction': 'forward',
         }
 
-        if info:
-            for item in info.split(", "):
-                key, value = item.split(": ", 1)
-                info_dict[key.strip()] = value.strip().strip('"\'')
-        return Relationship(parent, relation, children, info_dict)
+        if attributes:
+            for item in attributes.split(', '):
+                key, value = item.split(': ', 1)
+                attributes_dict[key.strip()] = value.strip().strip('"\'')
+        return Relationship(parent, relation, children, attributes_dict)
 
     def _add_warning(
-            self, file_path: str, line_number: int, line: str, message: str
+        self, file_path: str, line_number: int, line: str, message: str
     ) -> None:
         warning: str = f'File "{file_path}", line {line_number}\n    {line}\n\033[33mWarning: \033[0m{message}'
         self.warnings.append(warning)

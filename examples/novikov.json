@@ -89,7 +89,7 @@
             "child": [
                 "multiset"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -103,7 +103,7 @@
             "child": [
                 "order"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -117,7 +117,7 @@
             "child": [
                 "set"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -131,7 +131,7 @@
             "child": [
                 "natural"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -145,7 +145,7 @@
             "child": [
                 "set"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -159,7 +159,7 @@
             "child": [
                 "finiteSet"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -173,7 +173,7 @@
             "child": [
                 "letter"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -187,7 +187,7 @@
             "child": [
                 "set"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -201,7 +201,7 @@
             "child": [
                 "word"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -215,7 +215,7 @@
             "child": [
                 "letter"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
@@ -229,7 +229,7 @@
             "child": [
                 "sequence"
             ],
-            "info": {
+            "attributes": {
                 "color": "#black",
                 "title": "",
                 "leftChar": "",
