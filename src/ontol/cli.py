@@ -7,7 +7,7 @@ from watchdog.observers.api import BaseObserver
 
 from argparse import ArgumentParser, Namespace
 
-from src.ontol import Parser, JSONSerializer, PlantUML
+from ontol import Parser, JSONSerializer, PlantUML
 
 
 VERSION: str = os.getenv('ONTOL_VERSION', 'unknown')

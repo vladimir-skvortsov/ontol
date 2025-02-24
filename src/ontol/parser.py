@@ -1,7 +1,7 @@
 import re
 
 from typing import Optional, Literal
-from src.ontol import Ontology, Term, Function, Relationship, Meta
+from ontol import Ontology, Term, Function, Relationship, Meta
 from datetime import datetime
 
 

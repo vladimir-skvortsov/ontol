@@ -2,7 +2,7 @@ import json
 
 from dataclasses import asdict
 
-from src.ontol import Ontology, Term, Function, Meta, Relationship
+from ontol import Ontology, Term, Function, Meta, Relationship
 
 
 class JSONSerializer:

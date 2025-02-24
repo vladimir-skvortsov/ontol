@@ -4,7 +4,7 @@ import zlib
 
 import requests
 
-from src.ontol import Function, Ontology, Relationship, Term
+from ontol import Function, Ontology, Relationship, Term
 
 
 # TODO: make look like in technical task
