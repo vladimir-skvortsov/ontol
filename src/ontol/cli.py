@@ -22,11 +22,13 @@ class CLI:
             'file', type=str, help='Path to the .ontol file to be parsed.'
         )
         self.args_parser.add_argument(
+            '-w',
             '--watch',
             action='store_true',
             help='Watch the specified file for changes and re-parse automatically.',
         )
         self.args_parser.add_argument(
+            '-v',
             '--version',
             action='version',
             version=f'%(prog)s {VERSION}',
