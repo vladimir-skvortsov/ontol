@@ -92,14 +92,14 @@ def test_function_wth_empty_input_types_creation():
 
 def test_relationship_creation() -> None:
     rel: Relationship = Relationship(
-        parent='set', relationship='composite', child='element'
+        parent='set', relationship='composite', child=['element']
     )
     assert rel.parent == 'set'
     assert rel.relationship == 'composite'
-    assert rel.child == 'element'
+    assert rel.child == ['element']
     assert (
         repr(rel)
-        == 'Relationship(parent=set, relationship=composite, child=element, attributes={})'
+        == "Relationship(parent=set, relationship=composite, child=['element'], attributes={})"
     )
 
 
