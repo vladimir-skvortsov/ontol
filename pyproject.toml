@@ -19,7 +19,7 @@ readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.9"
 authors = [
-    { name = "Skvortsov Vladimir" },
+    { name = "Skvortsov Vladimir", email = "mail@vladimirskvortsov.com" },
     { name = "Aptukov Mikhail" },
     { name = "Markov Mikhail" },
     { name = "Afanasyev Andrew" },
