@@ -1,4 +1,4 @@
-from src.ontol import Parser
+from src.ontol import Parser, Term, Function, Relationship
 
 import pytest
 
@@ -9,56 +9,89 @@ def parser():
 
 
 def test_parse_type(parser):
-    content = 'type set "Множество - это коллекция уникальных элементов"'
-    ontology = parser.parse(content)
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', {color: '#ffffff'}
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
     assert len(ontology.types) == 1
-    assert ontology.types[0].name == 'set'
-    assert (
-        ontology.types[0].description
-        == 'Множество - это коллекция уникальных элементов'
-    )
+
+    term: Term = ontology.types[0]
+    assert term.name == 'set'
+    assert term.label == 'Множество'
+    assert term.description == 'Коллекция уникальных элементов'
+    assert term.attributes == {'color': '#ffffff'}
 
 
 def test_parse_function(parser):
-    content = 'function decart (set,set) -> (set) "Декартово произведение" "Декартово произведение двух множеств"'
-    ontology = parser.parse(content)
+    content = """
+    functions:
+    descartes: 'Cartesian product' (set: 'First set', set: 'Second set') -> set: 'Result set'
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
     assert len(ontology.functions) == 1
-    func = ontology.functions[0]
-    assert func.name == 'decart'
-    assert func.input_types == ['set', 'set']
-    assert func.output_types == ['set']
-    assert func.label == 'Декартово произведение'
-    assert func.description == 'Декартово произведение двух множеств'
+
+    func: Function = ontology.functions[0]
+    assert func.name == 'descartes'
+    assert func.input_types == [('set', 'First set'), ('set', 'Second set')]
+    assert func.output_type == ('set', 'Result set')
+    assert func.label == 'Cartesian product'
 
 
 def test_parse_heierarchy(parser):
-    content = 'element1 in set1 and element2 in set2'
-    ontology = parser.parse(content)
+    content = """
+    hierarchy:
+    element inheritance set
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
     assert len(ontology.hierarchy) == 1
-    assert ontology.hierarchy[0].expression == 'element1 in set1 and element2 in set2'
+
+    rel: Relationship = ontology.hierarchy[0]
+    assert rel.parent == 'element'
+    assert rel.relationship == 'inheritance'
+    assert rel.child == ['set']
 
 
 def test_parse_meta(parser):
-    content = 'meta 1.0 "Пример Онтологии" "Алексей Иванов" "Описание онтологии"'
-    ontology = parser.parse(content)
+    content = """
+    version: '1.0'
+    title: 'Basic calculus'
+    author: 'Firstname Lastname'
+    desc: 'Limits, differentiation and integrals'
+    type: 'Базовый'
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
     assert ontology.meta is not None
     assert ontology.meta.version == '1.0'
-    assert ontology.meta.name == 'Пример Онтологии'
-    assert ontology.meta.author == 'Алексей Иванов'
-    assert ontology.meta.description == 'Описание онтологии'
+    assert ontology.meta.name == 'Basic calculus'
+    assert ontology.meta.author == 'Firstname Lastname'
+    assert ontology.meta.description == 'Limits, differentiation and integrals'
+    assert ontology.meta.type == 'Базовый'
 
 
 def test_combined_parsing(parser):
     content = """
-    # Комментарий
-    meta 1.0 "Пример Онтологии" "Алексей Иванов" "Описание онтологии"
-    type set "Множество - это коллекция уникальных элементов"
-    function decart (set, set) -> (set) "Декартово произведение" "Декартово произведение двух множеств"
-    element1 in set1 and element2 in set2
+    version: '1.0'
+    title: 'Basic linear algebra'
+
+    types:
+    number: 'Number', 'Some real number from R field'
+    matrix: 'Matrix', 'Rectangular array or table of numbers'
+
+    functions:
+    transpose: 'Transpose' (matrix) -> matrix: 'Transposed matrix'
+
+    hierarchy:
+    matrix composition number
     """
-    ontology = parser.parse(content)
-    assert len(ontology.comments) == 1
-    assert len(ontology.types) == 1
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.types) == 2
     assert len(ontology.functions) == 1
-    assert len(ontology.logical_expressions) == 1
+    assert len(ontology.hierarchy) == 1
+
     assert ontology.meta is not None
