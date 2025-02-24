@@ -13,18 +13,16 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ontol"
-dynamic = ["version"]
+version = "2.5.6"
 description = "A tool for parsing and visualizing ontology files written in the Ontol DSL"
 readme = "README.md"
-license = { file = "LICENSE" }
-requires-python = ">=3.9"
 authors = [
-    { name = "Skvortsov Vladimir", email = "mail@vladimirskvortsov.com" },
-    { name = "Aptukov Mikhail" },
-    { name = "Markov Mikhail" },
-    { name = "Afanasyev Andrew" },
-    { name = "Khamidullin Ilsaf" },
-]
+    {name = "Skvortsov Vladimir"},
+    {name = "Aptukov Mikhail"},
+    {name = "Markov Mikhail"},
+    {name = "Afanasyev Andrew"},
+    {name = "Khamidullin Ilsaf"}]
+license = { file = "LICENSE" }
 dependencies = [
     "requests==2.32.3",
     "watchdog==3.0.0",
@@ -36,6 +34,7 @@ dependencies = [
 
 [project.urls]
 Repository = "https://github.com/vladimir-skvortsov/ontol"
+
 
 [project.scripts]
 ontol = "ontol.cli:main"
