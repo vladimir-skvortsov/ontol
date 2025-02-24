@@ -125,7 +125,16 @@ def test_parse_function_with_empty_attributes(parser):
     assert len(warnings) == 0
 
 
-def test_parse_without_arguments(parser):
+def test_parse_function_with_missing_output(parser):
+    content = """
+    functions:
+    add: 'Addition' (number: 'First number', number: 'Second number') -> , {color: '#fff'}
+    """
+    with pytest.raises(SyntaxError):
+        ontology, warnings = parser.parse(content, 'test.ontol')
+
+
+def test_parse_function_without_arguments(parser):
     content = """
     functions:
     today: 'Returns current date' () -> date: 'Current date'
