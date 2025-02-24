@@ -86,7 +86,7 @@ class CLI:
                     print(f'File {event.src_path} modified, re-parsing...')
                     self.parse_callback(event.src_path)
 
-        event_handler = FileChangeHandler(self.parse_file)
+        event_handler: FileChangeHandler = FileChangeHandler(self.parse_file)
 
         observer: BaseObserver = Observer()
         observer.schedule(event_handler, path=file_path, recursive=True)

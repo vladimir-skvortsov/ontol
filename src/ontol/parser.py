@@ -195,11 +195,10 @@ class Parser:
         if not match:
             raise ValueError(f'Invalid line {line}')
 
-        parent = match.group(1)
-        relation = match.group(2)
-
-        child = match.group(3) or match.group(4)
-        children = child.split(', ') if child else []
+        parent: str = match.group(1)
+        relation: str = match.group(2)
+        child: str = match.group(3) or match.group(4)
+        children: list[str] = child.split(', ') if child else []
 
         attributes = match.group(5)
         attributes_dict = {
@@ -214,6 +213,7 @@ class Parser:
             for item in attributes.split(', '):
                 key, value = item.split(': ', 1)
                 attributes_dict[key.strip()] = value.strip().strip('"\'')
+
         return Relationship(parent, relation, children, attributes_dict)
 
     def _add_warning(
