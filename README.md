@@ -66,6 +66,14 @@ To display help information:
 ontol --help
 ```
 
+### Tests
+
+To display run tests:
+
+```bash
+pytest tests
+```
+
 ## Output
 
 - **JSON File**: A JSON representation of the ontology is saved with the same basename as the `.ontol` file.

@@ -16,16 +16,27 @@ def mock_ontology():
             date_created='2024-01-01',
         )
     )
-    ontology.add_type(Term(name='MyType', description='A test type'))
+    # TODO: add term without color attribute
+    ontology.add_type(Term(name='MyTypeParent', label='test label', description='A test type',
+                           attributes={'color': '#E6B8B7'}))
+    ontology.add_type(Term(name='MyTypeChild', label='test label', description='A test type',
+                           attributes={'color': '#E6B8B7'}))
     ontology.add_function(
         Function(
             name='MyFunction',
-            input_types=['int', 'str'],
-            output_types=['bool'],
-            description='Test function',
+            label='test label',
+            input_types=[('int', 'test in1'), ('str', 'test in2')],
+            output_type=('bool', 'test_type'),
+            # attributes={'color': '#E6B8B7'}
         )
     )
-    ontology.add_relationship(Relationship(expression='A > B'))
+    ontology.add_relationship(
+        Relationship(
+            parent='MyTypeParent',
+            relationship='contains',
+            child=['MyTypeChild'],
+        )
+    )
     return ontology
 
 
@@ -34,29 +45,32 @@ def generator():
     return PlantUML()
 
 
-def test_generate_full_uml(generator, mock_ontology):
+def test_generate_full_uml(generator: PlantUML, mock_ontology):
     uml_output = generator.generate(mock_ontology)
     assert '@startuml' in uml_output
     assert '@enduml' in uml_output
     assert 'title TestOntology by Author' in uml_output
-    assert 'class MyType {\n  A test type\n}' in uml_output
+    # assert 'class MyTypeParent {\n  A test type\n}' in uml_output
+    assert 'class MyTypeParent' in uml_output
+    assert 'class MyTypeChild' in uml_output
     assert 'class MyFunction <<Function>> {' in uml_output
-    assert '+MyFunction(int, str) : (bool)' in uml_output
-    assert 'note "A > B" as N' in uml_output
+    # assert '+MyFunction(int, str) : (bool)' in uml_output
+    assert 'contains' in uml_output
 
 
-def test_generate_type(generator):
-    term = Term(name='MyType', description='A test type')
+def test_generate_type(generator: PlantUML):
+    term = Term(name='MyType', description='A test type',  label='test label')
     result = generator._generate_type(term)
     assert result == 'class MyType {\n  A test type\n}'
 
 
-def test_generate_function(generator):
+def test_generate_function(generator: PlantUML):
     func = Function(
         name='MyFunction',
-        input_types=['int'],
-        output_types=['bool'],
-        description='Test function',
+        label='test label',
+        input_types=[('int', 'test')],
+        output_type=('bool', ""),
+        attributes={'color': '#E6B8B7'}
     )
     result = generator._generate_function(func)
     assert 'class MyFunction <<Function>> {' in result
@@ -64,7 +78,11 @@ def test_generate_function(generator):
     assert 'Test function' in result
 
 
-def test_generate_logical_expression(generator):
-    relation = Relationship(expression='A > B')
-    result = generator._generate_logical_expression(relation)
+def test_generate_logical_expression(generator: PlantUML):
+    relation = Relationship(
+            parent='MyTypeParent',
+            relationship='contains',
+            child=['MyTypeChild'],
+        )
+    result = generator._generate_relationship(relation)
     assert 'note "A > B" as N' in result

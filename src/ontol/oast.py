@@ -37,7 +37,7 @@ class Function(ASTNode):
         )
 
 
-# TODO: implmenent structure from technical task. Must contain parent, child, and relationship type
+# TODO: implement structure from technical task. Must contain parent, child, and relationship type
 @dataclass
 class Relationship(ASTNode):
     # TODO: replace str with Term
