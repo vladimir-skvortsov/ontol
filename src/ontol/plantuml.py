@@ -188,7 +188,10 @@ class PlantUML:
             }
             relations.append(
                 Relationship(
-                    k, function.attributes.get('type', 'directAssociation'), [function.name], attributes_dict
+                    k,
+                    function.attributes.get('type', 'directAssociation'),
+                    [function.name],
+                    attributes_dict,
                 )
             )
         attributes_dict = {
