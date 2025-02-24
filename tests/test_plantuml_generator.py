@@ -1,5 +1,4 @@
-from src.ontol import Function, Meta, Ontology, Relationship, Term
-from src.ontol import PlantUML
+from src.ontol import Function, Meta, Ontology, Relationship, Term, PlantUML
 
 import pytest
 

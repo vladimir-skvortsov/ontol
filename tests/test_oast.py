@@ -1,7 +1,5 @@
 from src.ontol import Function, Meta, Ontology, Relationship, Term
 
-import pytest
-
 
 def test_term_creation() -> None:
     term: Term = Term(name='test_term', label='TestTerm', description='A test term')
