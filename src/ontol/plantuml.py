@@ -78,7 +78,7 @@ class PlantUML:
         return (
             f'rectangle "{term.label}'
             + (f'\\n({term.description})' if term.description else '')
-            + f'" as {term.name} {term.attributes["color"]}'
+            + f'" as {term.name} {term.attributes.get("color", "#white")}'
         )
 
     def _generate_base_hierarchy(self, relationship: Relationship) -> str:
@@ -188,7 +188,10 @@ class PlantUML:
             }
             relations.append(
                 Relationship(
-                    k, function.attributes['type'], [function.name], attributes_dict
+                    k,
+                    function.attributes.get('type', 'directAssociation'),
+                    [function.name],
+                    attributes_dict,
                 )
             )
         attributes_dict = {
