@@ -121,14 +121,14 @@ class PlantUML:
             'usage': {'forward': '...>', 'backward': '<...', 'bidirectional': '<...>'},
         }
         leftchar = (
-            '"' + relationship.attributes.get('leftChar', '') + '"'
-        )
+            '"' + relationship.attributes['leftChar'] + '"'
+        ) if relationship.attributes.get('leftChar') else ''
         rightchar = (
-             '"' + relationship.attributes.get('leftChar', '') + '"'
-        )
+             '"' + relationship.attributes['rightChar'] + '"'
+        ) if relationship.attributes.get('rightChar') else ''
         title = (
-            ': "' + relationship.attributes.get('title', '') + '"'
-        )
+            ': "' + relationship.attributes['title'] + '"'
+        ) if relationship.attributes.get('title') else ''
         color = '[' + relationship.attributes.get('color', '#black') + ']'
         relation = (
             relationships[relationship.relationship][
