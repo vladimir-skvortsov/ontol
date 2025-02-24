@@ -100,9 +100,26 @@ def test_parse_function(parser):
 
     func: Function = ontology.functions[0]
     assert func.name == 'descartes'
+    assert func.label == 'Cartesian product'
     assert func.input_types == [('set', 'First set'), ('set', 'Second set')]
     assert func.output_type == ('set', 'Result set')
-    assert func.label == 'Cartesian product'
+    assert len(warnings) == 0
+
+
+def test_parse_without_arguments(parser):
+    content = """
+    functions:
+    today: 'Returns current date' () -> date: 'Current date'
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.functions) == 1
+
+    func: Function = ontology.functions[0]
+    assert func.name == 'today'
+    assert func.label == 'Returns current date'
+    assert func.input_types == []
+    assert func.output_type == ('date', 'Current date')
     assert len(warnings) == 0
 
 
