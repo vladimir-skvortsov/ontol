@@ -1,7 +1,5 @@
 from src.ontol import Function, Meta, Ontology, Relationship, Term
 
-import pytest
-
 
 def test_term_creation() -> None:
     term: Term = Term(name='test_term', label='TestTerm', description='A test term')
@@ -60,7 +58,7 @@ def test_function_creation():
     assert func.output_type == ('int', 'Result')
     assert (
         repr(func)
-        == "Function(name=sum, label=Sum, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'))"
+        == "Function(name=sum, label=Sum, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes={})"
     )
 
 
@@ -74,7 +72,7 @@ def test_function_wth_empty_label_creation():
     assert func.label == ''
     assert (
         repr(func)
-        == "Function(name=sum, label=, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'))"
+        == "Function(name=sum, label=, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes={})"
     )
 
 
@@ -88,19 +86,20 @@ def test_function_wth_empty_input_types_creation():
     assert func.input_types == []
     assert (
         repr(func)
-        == "Function(name=sum, label=Sum, input_types=[], output_type=('int', 'Result'))"
+        == "Function(name=sum, label=Sum, input_types=[], output_type=('int', 'Result'), attributes={})"
     )
 
 
 def test_relationship_creation() -> None:
     rel: Relationship = Relationship(
-        parent='set', relationship='composite', child='element'
+        parent='set', relationship='composite', child=['element']
     )
     assert rel.parent == 'set'
     assert rel.relationship == 'composite'
-    assert rel.child == 'element'
+    assert rel.child == ['element']
     assert (
-        repr(rel) == 'Relationship(parent=set, relationship=composite, child=element)'
+        repr(rel)
+        == "Relationship(parent=set, relationship=composite, child=['element'], attributes={})"
     )
 
 

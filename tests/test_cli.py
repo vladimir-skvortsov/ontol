@@ -1,5 +1,7 @@
 import os
 import tempfile
+
+from src.ontol import Ontology
 from src.ontol import CLI
 from unittest.mock import MagicMock, patch
 
@@ -21,7 +23,7 @@ def sample_ontology_file():
 
 
 def test_parse_file(cli, sample_ontology_file):
-    cli.parser.parse = MagicMock()
+    cli.parser.parse = MagicMock(return_value=(Ontology, []))
     cli.serializer.serialize = MagicMock(return_value='{}')
     cli.plantuml.generate = MagicMock(return_value='@startuml\n@enduml')
     cli.render_plantuml_to_png = MagicMock()

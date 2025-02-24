@@ -4,7 +4,7 @@ import zlib
 
 import requests
 
-from ontol import Function, Ontology, Relationship, Term
+from src.ontol import Function, Ontology, Relationship, Term
 
 
 # TODO: make look like in technical task
@@ -121,28 +121,22 @@ class PlantUML:
             'usage': {'forward': '...>', 'backward': '<...', 'bidirectional': '<...>'},
         }
         leftchar = (
-            '"' + relationship.attributes['leftChar'] + '"'
-            if relationship.attributes['leftChar']
-            else ''
+            '"' + relationship.attributes.get('leftChar', '') + '"'
         )
         rightchar = (
-            '"' + relationship.attributes['rightChar'] + '"'
-            if relationship.attributes['rightChar']
-            else ''
+             '"' + relationship.attributes.get('leftChar', '') + '"'
         )
         title = (
-            ': "' + relationship.attributes['title'] + '"'
-            if relationship.attributes['title']
-            else ''
+            ': "' + relationship.attributes.get('title', '') + '"'
         )
-        color = '[' + relationship.attributes['color'] + ']'
+        color = '[' + relationship.attributes.get('color', '#black') + ']'
         relation = (
             relationships[relationship.relationship][
-                relationship.attributes['direction']
+                relationship.attributes.get('direction', 'forward')
             ][:2]
             + color
             + relationships[relationship.relationship][
-                relationship.attributes['direction']
+                relationship.attributes.get('direction', 'forward')
             ][2:]
         )
         res = ''
@@ -214,6 +208,7 @@ class PlantUML:
     def _generate_type(self, term: Term) -> str:
         return f'class {term.name} {{\n  {term.description}\n}}'
 
+    # TODO: add comments to input and output types and add color for block
     def _generate_function(self, function: Function) -> str:
         inputs: str = ', '.join(map(lambda t: t[0], function.input_types))
         outputs: str = function.output_type[0]
@@ -223,6 +218,7 @@ class PlantUML:
             f'  {function.label}\n}}'
         )
 
+    # TODO: check type of relationship
     def _generate_relationship(self, relationship: Relationship) -> str:
         return f'note "{relationship.parent} {relationship.relationship} {relationship.child}" as N{hash(relationship.parent) % 10000}'
 
