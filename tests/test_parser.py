@@ -92,7 +92,7 @@ def test_parse_type_without_label_and_desc(parser):
 def test_parse_function(parser):
     content = """
     functions:
-    descartes: 'Cartesian product' (set: 'First set', set: 'Second set') -> set: 'Result set'
+    descartes: 'Cartesian product' (set: 'First set', set: 'Second set') -> set: 'Result set', { color: '#fff }
     """
     ontology, warnings = parser.parse(content, 'test.ontol')
 
@@ -103,6 +103,25 @@ def test_parse_function(parser):
     assert func.label == 'Cartesian product'
     assert func.input_types == [('set', 'First set'), ('set', 'Second set')]
     assert func.output_type == ('set', 'Result set')
+    assert func.attributes == {'color': '#fff'}
+    assert len(warnings) == 0
+
+
+def test_parse_function_with_empty_attributes(parser):
+    content = """
+    functions:
+    divide: 'Divide two numbers' (number: 'Dividend', number: 'Divisor') -> number: 'Quotient', {}
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.functions) == 1
+
+    func: Function = ontology.functions[0]
+    assert func.name == 'divide'
+    assert func.label == 'Divide two numbers'
+    assert func.input_types == [('number', 'Dividend'), ('number', 'Divisor')]
+    assert func.output_type == ('number', 'Quotient')
+    assert func.attributes == {}
     assert len(warnings) == 0
 
 
