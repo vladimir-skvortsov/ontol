@@ -16,6 +16,7 @@ name = "ontol"
 version = "2.5.6"
 description = "A tool for parsing and visualizing ontology files written in the Ontol DSL"
 readme = "README.md"
+requires-python = ">=3.9"
 authors = [
     {name = "Skvortsov Vladimir"},
     {name = "Aptukov Mikhail"},
