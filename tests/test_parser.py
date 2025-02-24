@@ -159,7 +159,7 @@ def test_parse_heierarchy(parser):
 def test_parse_meta(parser):
     content = """
     version: '1.0'
-    title: 'Basic calculus'
+    title: 'Basic calculus' # can we come up with a more interesting name?
     author: 'Firstname Lastname'
     desc: 'Limits, differentiation and integrals'
     type: 'Базовый'
@@ -177,16 +177,21 @@ def test_parse_meta(parser):
 
 def test_combined_parsing(parser):
     content = """
+    # Ontology information
     version: '1.0'
     title: 'Basic linear algebra'
 
+    # Types we have
     types:
     number: 'Number', 'Some real number from R field'
     matrix: 'Matrix', 'Rectangular array or table of numbers'
 
+    # Functions we have
     functions:
+    # Describe more functions
     transpose: 'Transpose' (matrix) -> matrix: 'Transposed matrix'
 
+    # And relations we have
     hierarchy:
     matrix composition number
     """
