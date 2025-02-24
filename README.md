@@ -1,5 +1,6 @@
 # Ontol DSL Parser
 
+[![Build Status](https://github.com/vladimir-skvortsov/ontol/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/vladimir-skvortsov/ontol/actions?query=branch%3Amaster)
 [![PyPi downloads](https://img.shields.io/pypi/dm/ontol.svg?label=Pypi%20downloads)](https://pypi.org/project/ontol/)
 
 **Authors:**
