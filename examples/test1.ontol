@@ -22,4 +22,4 @@ sheffer: 'Штрих Шеффера' (set: '', set: '') -> set: '', { color: '#D
 
 # Иерархическое выражение
 hierarchy:
-element inheritance set
+element aggregation set { leftChar: '*' }
