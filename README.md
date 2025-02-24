@@ -1,6 +1,6 @@
 # Ontol DSL Parser
 
-[![Telegram](https://img.shields.io/pypi/dm/ontol.svg?label=Pypi%20downloads)](https://pypi.org/project/ontol/)
+[![PyPi downloads](https://img.shields.io/pypi/dm/ontol.svg?label=Pypi%20downloads)](https://pypi.org/project/ontol/)
 
 **Authors:**
 [Skvortsov Vladimir](https://github.com/vladimir-skvortsov),
