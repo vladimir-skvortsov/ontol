@@ -78,7 +78,7 @@ class Parser:
                     raise SyntaxError('Unexpected line')
 
             except Exception as e:
-                raise Exception(
+                raise SyntaxError(
                     f'File "{file_path}", line {line_number}\n    {line}\n\033[31m{type(e).__name__}: \033[0m{e}'
                 )
 
@@ -146,7 +146,9 @@ class Parser:
 
         name: str = match.group(1)
         label: str = match.group(2)
-        input_params: list[tuple[str, str]] = self._parse_parameters(match.group(3))
+        input_params: list[tuple[str, str]] = self._parse_parameters(
+            match.group(3), line, file_path, line_number
+        )
         output_type: str = match.group(4)
         output_label: str = match.group(5)
         attributes: dict[str, str] = (
@@ -162,17 +164,28 @@ class Parser:
             name, label, input_params, (output_type, output_label), attributes
         )
 
-    def _parse_parameters(self, param_string: str) -> list[tuple[str, str]]:
+    def _parse_parameters(
+        self, params_string: str, line: str, file_path: str, line_number: int
+    ) -> list[tuple[str, str]]:
         params: list[tuple[str, str]] = []
 
-        for param in param_string.split(','):
+        for param in params_string.split(','):
             param = param.strip()
             match = re.match(r"(\w+):\s*['\"](.*?)['\"]$", param)
 
             if match:
                 param_name: str = match.group(1)
-                param_description: str = match.group(2)
-                params.append((param_name, param_description))
+                param_label: str = match.group(2)
+
+                if not param_label:
+                    self._add_warning(
+                        file_path,
+                        line_number,
+                        line,
+                        f"{param_name}'s parameter label is empty",
+                    )
+
+                params.append((param_name, param_label))
 
         return params
 
