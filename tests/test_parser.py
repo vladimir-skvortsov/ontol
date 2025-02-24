@@ -184,6 +184,9 @@ def test_combined_parsing(parser):
     # Types we have
     types:
     number: 'Number', 'Some real number from R field'
+
+    # Other type
+    types:
     matrix: 'Matrix', 'Rectangular array or table of numbers'
 
     # Functions we have
