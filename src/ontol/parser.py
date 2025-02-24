@@ -78,7 +78,7 @@ class Parser:
                     raise SyntaxError('Unexpected line')
 
             except Exception as e:
-                raise Exception(
+                raise SyntaxError(
                     f'File "{file_path}", line {line_number}\n    {line}\n\033[31m{type(e).__name__}: \033[0m{e}'
                 )
 

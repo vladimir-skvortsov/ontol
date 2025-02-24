@@ -24,6 +24,56 @@ def test_parse_type(parser):
     assert term.attributes == {'color': '#ffffff'}
 
 
+def test_parse_type_without_arguments(parser):
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов'
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.types) == 1
+
+    term: Term = ontology.types[0]
+    assert term.name == 'set'
+    assert term.label == 'Множество'
+    assert term.description == 'Коллекция уникальных элементов'
+    assert term.attributes == {}
+    assert len(warnings) == 0
+
+
+def test_parse_type_with_empty_label_and_desc(parser):
+    content: str = """
+    types:
+    set: '', ''
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.types) == 1
+
+    term: Term = ontology.types[0]
+    assert term.name == 'set'
+    assert term.label == ''
+    assert term.description == ''
+    assert term.attributes == {}
+    assert len(warnings) == 2
+
+
+def test_parse_type_without_label_and_desc(parser):
+    content: str = """
+    types:
+    set: ''
+    """
+    with pytest.raises(SyntaxError):
+        ontology, warnings = parser.parse(content, 'test.ontol')
+
+    content: str = """
+    types:
+    set
+    """
+    with pytest.raises(SyntaxError):
+        ontology, warnings = parser.parse(content, 'test.ontol')
+
+
 def test_parse_function(parser):
     content = """
     functions:
@@ -38,6 +88,7 @@ def test_parse_function(parser):
     assert func.input_types == [('set', 'First set'), ('set', 'Second set')]
     assert func.output_type == ('set', 'Result set')
     assert func.label == 'Cartesian product'
+    assert len(warnings) == 0
 
 
 def test_parse_heierarchy(parser):
@@ -53,6 +104,7 @@ def test_parse_heierarchy(parser):
     assert rel.parent == 'element'
     assert rel.relationship == 'inheritance'
     assert rel.child == ['set']
+    assert len(warnings) == 0
 
 
 def test_parse_meta(parser):
@@ -71,6 +123,7 @@ def test_parse_meta(parser):
     assert ontology.meta.author == 'Firstname Lastname'
     assert ontology.meta.description == 'Limits, differentiation and integrals'
     assert ontology.meta.type == 'Базовый'
+    assert len(warnings) == 0
 
 
 def test_combined_parsing(parser):
@@ -95,3 +148,5 @@ def test_combined_parsing(parser):
     assert len(ontology.hierarchy) == 1
 
     assert ontology.meta is not None
+
+    assert len(warnings) == 0
