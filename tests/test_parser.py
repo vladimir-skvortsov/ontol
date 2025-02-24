@@ -123,6 +123,23 @@ def test_parse_without_arguments(parser):
     assert len(warnings) == 0
 
 
+def test_parse_with_empty_labels(parser):
+    content = """
+    functions:
+    descartes: '' (set: '', set: '') -> set: ''
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.functions) == 1
+
+    func: Function = ontology.functions[0]
+    assert func.name == 'descartes'
+    assert func.label == ''
+    assert func.input_types == [('set', ''), ('set', '')]
+    assert func.output_type == ('set', '')
+    assert len(warnings) == 4
+
+
 def test_parse_heierarchy(parser):
     content = """
     hierarchy:
