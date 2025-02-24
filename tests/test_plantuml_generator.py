@@ -70,16 +70,16 @@ def test_generate_full_uml(generator: PlantUML, mock_ontology):
             in uml_output)
     assert ('"test label Func2\\n(str: test2 in1, float: test2 in2 -> str: test_type2)" as MyFunction2 #white'
             in uml_output)
+    print(uml_output)
+    assert 'int  --[#E6B8B7]->  MyFunction1 ' in uml_output
+    assert 'str  --[#E6B8B7]->  MyFunction1 ' in uml_output
+    assert 'MyFunction1  --[#E6B8B7]->  bool ' in uml_output
 
-    assert 'int "" --[#E6B8B7]-> "" MyFunction1 : ""' in uml_output
-    assert 'str "" --[#E6B8B7]-> "" MyFunction1 : ""' in uml_output
-    assert 'MyFunction1 "" --[#E6B8B7]-> "" bool : ""' in uml_output
+    assert 'str  --[#black]->  MyFunction2 ' in uml_output
+    assert 'float  --[#black]->  MyFunction2 ' in uml_output
+    assert 'MyFunction2  --[#black]->  str ' in uml_output
 
-    assert 'str "" --[#black]-> "" MyFunction2 : ""' in uml_output
-    assert 'float "" --[#black]-> "" MyFunction2 : ""' in uml_output
-    assert 'MyFunction2 "" --[#black]-> "" str : ""' in uml_output
-
-    assert 'MyTypeParent "" --[#black]-* "" MyTypeChild : ""' in uml_output
+    assert 'MyTypeParent  --[#black]-*  MyTypeChild ' in uml_output
 
 
 def test_generate_type(generator: PlantUML):
