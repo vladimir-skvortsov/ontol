@@ -108,14 +108,14 @@ def test_parse_type_without_label_and_desc(parser):
     set: ''
     """
     with pytest.raises(SyntaxError):
-        ontology, warnings = parser.parse(content, 'test.ontol')
+        parser.parse(content, 'test.ontol')
 
     content: str = """
     types:
     set
     """
     with pytest.raises(SyntaxError):
-        ontology, warnings = parser.parse(content, 'test.ontol')
+        parser.parse(content, 'test.ontol')
 
 
 def test_parse_function(parser):
@@ -160,7 +160,7 @@ def test_parse_function_with_missing_output(parser):
     add: 'Addition' (number: 'First number', number: 'Second number') -> , {color: '#fff'}
     """
     with pytest.raises(SyntaxError):
-        ontology, warnings = parser.parse(content, 'test.ontol')
+        parser.parse(content, 'test.ontol')
 
 
 def test_parse_function_without_arguments(parser):
@@ -230,6 +230,17 @@ def test_parse_meta(parser):
     assert ontology.meta.description == 'Limits, differentiation and integrals'
     assert ontology.meta.type == 'Базовый'
     assert len(warnings) == 0
+
+
+def test_parse_meta_without_qoutes(parser):
+    content = """
+    version: 1.0
+    title: "Basic calculus"
+    author: 'Firstname Lastname'
+    desc: "Limits, differentiation and integrals"
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
 
 
 def test_combined_parsing(parser):
