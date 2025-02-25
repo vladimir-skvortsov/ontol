@@ -6,9 +6,10 @@ on:
       VERSION:
         description: 'Package version'
         required: true
+        type: string
 
 env:
-  ONTOL_VERSION: ${{ github.event.inputs.VERSION }}
+  ONTOL_VERSION: ${{ inputs.VERSION }}
 
 jobs:
   publish:
