@@ -10,7 +10,7 @@ from argparse import ArgumentParser, Namespace
 from ontol import Parser, JSONSerializer, PlantUML
 
 
-VERSION: str = os.getenv('ONTOL_VERSION', 'dev')
+__VERSION__: str = os.getenv('ONTOL_VERSION', 'dev')
 
 
 class CLI:
@@ -31,7 +31,7 @@ class CLI:
             '-v',
             '--version',
             action='version',
-            version=f'%(prog)s {VERSION}',
+            version=f'%(prog)s {__VERSION__}',
             help='Show the version of the program and exit.',
         )
 
