@@ -216,9 +216,9 @@ def test_parse_heierarchy(parser):
 def test_parse_meta(parser):
     content = """
     version: '1.0'
-    title: 'Basic calculus' # can we come up with a more interesting name?
+    title: "Basic calculus" # can we come up with a more interesting name?
     author: 'Firstname Lastname'
-    desc: 'Limits, differentiation and integrals'
+    desc: "Limits, differentiation and integrals"
     type: 'Базовый'
     """
     ontology, warnings = parser.parse(content, 'test.ontol')
