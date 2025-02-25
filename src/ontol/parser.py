@@ -190,7 +190,7 @@ class Parser:
         return params
 
     def _parse_relationship(self, line: str) -> Relationship:
-        pattern = r'^(\w+)\s+(\w+)\s+(?:\(([^)]+)\)|(\w+))?\s*(?:\{([^}]*)\})?$'
+        pattern = r'^(\w+)\s+(\w+)\s+(?:\(([^)]+)\)|(\w+))?\s*(,\s*\{(.*?)\})?$'
         match = re.match(pattern, line.strip())
         if not match:
             raise ValueError(f'Invalid line {line}')
@@ -199,22 +199,11 @@ class Parser:
         relation: str = match.group(2)
         child: str = match.group(3) or match.group(4)
         children: list[str] = child.split(', ') if child else []
+        attributes: dict[str, str] = (
+            self._parse_attributes(match.group(6)) if match.group(6) else {}
+        )
 
-        attributes = match.group(5)
-        attributes_dict = {
-            'color': '#black',
-            'title': '',
-            'leftChar': '',
-            'rightChar': '',
-            'direction': 'forward',
-        }
-
-        if attributes:
-            for item in attributes.split(', '):
-                key, value = item.split(': ', 1)
-                attributes_dict[key.strip()] = value.strip().strip('"\'')
-
-        return Relationship(parent, relation, children, attributes_dict)
+        return Relationship(parent, relation, children, attributes)
 
     def _add_warning(
         self, file_path: str, line_number: int, line: str, message: str

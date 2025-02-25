@@ -34,20 +34,20 @@ functions:
 hierarchy:
 general inheritance abstract
 specific inheritance general
-single  directAssociation specific { title: '<<instance of>>' }
+single  directAssociation specific, { title: '<<instance of>>' }
 
 optional aggregation whole
 essential composition whole
 
-subject directAssociation object { title: 'воздействует на' }
+subject directAssociation object, { title: 'воздействует на' }
 
-set composition boolean { leftChar: '*' }
+set composition boolean, { leftChar: '*' }
 set inheritance enumerable
-set directAssociation empty { title: 'включает' }
+set directAssociation empty, { title: 'включает' }
 set inheritance element
-element composition set { leftChar: '*' }
+element composition set, { leftChar: '*' }
 
-empty directAssociation finite  { title: '<<instance of>>' }
+empty directAssociation finite,  { title: '<<instance of>>' }
 infinite inheritance set
 finite inheritance set
-finite association infinite { title: 'XOR' }
+finite association infinite, { title: 'XOR' }
