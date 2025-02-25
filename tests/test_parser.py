@@ -85,6 +85,43 @@ def test_parse_type_without_arguments(parser):
     assert len(warnings) == 0
 
 
+def test_parse_type_with_incorrect_arguments(parser):
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', { foo }
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', { foo, bar, baz }
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', { foo bar }
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', { 123 }
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов' { color: '#red' }
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+
 def test_parse_type_with_empty_label_and_desc(parser):
     content: str = """
     types:
