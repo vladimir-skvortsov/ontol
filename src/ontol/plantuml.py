@@ -24,7 +24,7 @@ class PlantUML:
         uml_lines: list[str] = ['@startuml', 'skinparam classAttributeIconSize 0']
 
         if ontology.meta:
-            uml_lines.append(f'title {ontology.meta.name} by {ontology.meta.author}')
+            uml_lines.append(f'title {ontology.meta.title} by {ontology.meta.author}')
 
         for term in ontology.types:
             uml_lines.append(self._generate_type(term))
@@ -53,7 +53,7 @@ class PlantUML:
         if not ontology.meta:
             raise ValueError('No meta defined for ontology')
 
-        uml_lines.append(f'package "{ontology.meta.name}" {{')
+        uml_lines.append(f'package "{ontology.meta.title}" {{')
 
         for term in ontology.types:
             uml_lines.append(self._generate_rectangle(term))
@@ -121,14 +121,20 @@ class PlantUML:
             'usage': {'forward': '...>', 'backward': '<...', 'bidirectional': '<...>'},
         }
         leftchar = (
-            '"' + relationship.attributes['leftChar'] + '"'
-        ) if relationship.attributes.get('leftChar') else ''
+            ('"' + relationship.attributes['leftChar'] + '"')
+            if relationship.attributes.get('leftChar')
+            else ''
+        )
         rightchar = (
-             '"' + relationship.attributes['rightChar'] + '"'
-        ) if relationship.attributes.get('rightChar') else ''
+            ('"' + relationship.attributes['rightChar'] + '"')
+            if relationship.attributes.get('rightChar')
+            else ''
+        )
         title = (
-            ': "' + relationship.attributes['title'] + '"'
-        ) if relationship.attributes.get('title') else ''
+            (': "' + relationship.attributes['title'] + '"')
+            if relationship.attributes.get('title')
+            else ''
+        )
         color = '[' + relationship.attributes.get('color', '#black') + ']'
         relation = (
             relationships[relationship.relationship][

@@ -28,7 +28,7 @@ def sample_ontology():
     ontology.set_meta(
         Meta(
             version='1.0',
-            name='SampleOntology',
+            title='SampleOntology',
             author='Author',
             description='Sample description',
             type='Базовый',
@@ -74,7 +74,7 @@ def test_serialize_ontology(serializer, sample_ontology):
     ]
     assert data['meta'] == {
         'version': '1.0',
-        'name': 'SampleOntology',
+        'title': 'SampleOntology',
         'author': 'Author',
         'description': 'Sample description',
         'type': 'Базовый',
@@ -92,7 +92,7 @@ def test_serialize_empty_ontology(serializer):
         'hierarchy': [],
         'meta': {
             'version': None,
-            'name': None,
+            'title': None,
             'author': None,
             'description': None,
             'type': None,
@@ -133,7 +133,7 @@ def test_serialize_function(serializer):
 def test_serialize_meta(serializer):
     meta = Meta(
         version='1.0',
-        name='TestOntology',
+        title='TestOntology',
         author='Author',
         description='A test ontology',
         type='Базовый',
@@ -142,7 +142,7 @@ def test_serialize_meta(serializer):
     serialized_meta = serializer._serialize_meta(meta)
     assert serialized_meta == {
         'version': '1.0',
-        'name': 'TestOntology',
+        'title': 'TestOntology',
         'author': 'Author',
         'description': 'A test ontology',
         'type': 'Базовый',
@@ -179,7 +179,7 @@ def test_serialize_ontology_without_meta(serializer):
     assert 'hierarchy' in data
     assert data['meta'] == {
         'version': None,
-        'name': None,
+        'title': None,
         'author': None,
         'description': None,
         'type': None,

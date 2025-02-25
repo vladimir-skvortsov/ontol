@@ -12,7 +12,7 @@ def test_parse_empty_file(parser):
     content: str = ''
     ontology, warnings = parser.parse(content, 'test.ontol')
     assert ontology.meta.version is None
-    assert ontology.meta.name is None
+    assert ontology.meta.title is None
     assert ontology.meta.author is None
     assert ontology.meta.description is None
     assert ontology.meta.type is None
@@ -43,7 +43,7 @@ def test_parse_commented_file(parser):
     ontology, warnings = parser.parse(content, 'test.ontol')
 
     assert ontology.meta.version is None
-    assert ontology.meta.name is None
+    assert ontology.meta.title is None
     assert ontology.meta.author is None
     assert ontology.meta.description is None
     assert len(ontology.types) == 0
@@ -271,7 +271,7 @@ def test_parse_meta(parser):
 
     assert ontology.meta is not None
     assert ontology.meta.version == '1.0'
-    assert ontology.meta.name == 'Basic calculus'
+    assert ontology.meta.title == 'Basic calculus'
     assert ontology.meta.author == 'Firstname Lastname'
     assert ontology.meta.description == 'Limits, differentiation and integrals'
     assert ontology.meta.type == 'Базовый'

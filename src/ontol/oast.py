@@ -59,8 +59,7 @@ class Relationship(ASTNode):
 @dataclass
 class Meta(ASTNode):
     version: Optional[str] = None
-    # TODO: rename name to title
-    name: Optional[str] = None
+    title: Optional[str] = None
     author: Optional[str] = None
     description: Optional[str] = None
     type: Optional[str] = None
@@ -68,7 +67,7 @@ class Meta(ASTNode):
 
     def __repr__(self) -> str:
         return (
-            f'Meta(version={self.version}, name={self.name}, author={self.author}, '
+            f'Meta(version={self.version}, title={self.title}, author={self.author}, '
             f'description={self.description}, type={self.type}, '
             f'date_created={self.date_created})'
         )

@@ -18,7 +18,7 @@ class Parser:
         current_block: Optional[Literal['types', 'functions', 'hierarchy']] = None
         meta_data: dict[str, Optional[str]] = {
             'version': None,
-            'name': None,
+            'title': None,
             'author': None,
             'description': None,
             'type': None,
@@ -38,7 +38,7 @@ class Parser:
                         line, 'version', file_path, line_number
                     )
                 elif re.match(r'^title:\s+', line):
-                    meta_data['name'] = self._parse_meta_line(
+                    meta_data['title'] = self._parse_meta_line(
                         line, 'title', file_path, line_number
                     )
                 elif re.match(r'^author:\s+', line):
