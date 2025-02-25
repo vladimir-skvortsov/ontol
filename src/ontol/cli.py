@@ -10,7 +10,7 @@ from argparse import ArgumentParser, Namespace
 from ontol import Parser, JSONSerializer, PlantUML
 
 
-__VERSION__: str = os.getenv('ONTOL_VERSION', 'dev')
+__VERSION__ = os.getenv('ONTOL_VERSION', 'dev')
 
 
 class CLI:
