@@ -163,6 +163,15 @@ def test_parse_function_with_missing_output(parser):
         parser.parse(content, 'test.ontol')
 
 
+def test_parse_function_with_missing_label(parser):
+    content = """
+    functions:
+    add(number: 'First number', number: 'Second number') -> number: 'Result', {color: '#fff'}
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+
 def test_parse_function_without_arguments(parser):
     content = """
     functions:
