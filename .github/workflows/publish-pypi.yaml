@@ -37,9 +37,10 @@ jobs:
           pip install --upgrade pip build
           pip install setuptools wheel twine
 
-      - name: Update version in pyproject.toml
+      - name: Update version in pyproject.toml 
         run: |
           sed -i "s/^version = .*/version = \"${{ github.event.inputs.VERSION }}\"/" pyproject.toml
+          sed -i "s/^VERSION = .*/VERSION = \"${{ github.event.inputs.VERSION }}\"/" src/ontol/cli.py
 
       - name: Build package
         run: python -m build
