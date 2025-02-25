@@ -9,7 +9,7 @@ from ontol import Function, Ontology, Relationship, Term
 
 # TODO: make look like in technical task
 class PlantUML:
-    SERVER_URL = 'http://www.plantuml.com/plantuml/img/'
+    SERVER_URL: str = 'http://www.plantuml.com/plantuml/img/'
 
     def __init__(self, url=SERVER_URL):
         self.url = url
@@ -120,23 +120,23 @@ class PlantUML:
             },
             'usage': {'forward': '...>', 'backward': '<...', 'bidirectional': '<...>'},
         }
-        leftchar = (
+        leftchar: str = (
             ('"' + relationship.attributes['leftChar'] + '"')
             if relationship.attributes.get('leftChar')
             else ''
         )
-        rightchar = (
+        rightchar: str = (
             ('"' + relationship.attributes['rightChar'] + '"')
             if relationship.attributes.get('rightChar')
             else ''
         )
-        title = (
+        title: str = (
             (': "' + relationship.attributes['title'] + '"')
             if relationship.attributes.get('title')
             else ''
         )
-        color = '[' + relationship.attributes.get('color', '#black') + ']'
-        relation = (
+        color: str = '[' + relationship.attributes.get('color', '#black') + ']'
+        relation: str = (
             relationships[relationship.relationship][
                 relationship.attributes.get('direction', 'forward')
             ][:2]
@@ -145,7 +145,7 @@ class PlantUML:
                 relationship.attributes.get('direction', 'forward')
             ][2:]
         )
-        res = ''
+        res: str = ''
         res += (
             f'{relationship.parent} {leftchar} '
             f'{relation} '
@@ -155,15 +155,15 @@ class PlantUML:
         return res
 
     def __prepare_function_term(self, function: Function):
-        input = [
+        input: list[str] = [
             f'{el1}: {el2}' if el2 else f'{el1}' for el1, el2 in function.input_types
         ]
-        output = (
+        output: str = (
             (f'{function.output_type[0]}: {function.output_type[1]}')
             if function.output_type[1]
             else f'{function.output_type[0]}'
         )
-        desc = f'{", ".join(input)} -> {output}'
+        desc: str = f'{", ".join(input)} -> {output}'
         return Term(
             function.name,
             function.label,
@@ -174,7 +174,7 @@ class PlantUML:
     def __prepare_function_hierarchy(self, function: Function):
         relations = []
 
-        input = collections.defaultdict(int)
+        input: collections.defaultdict[str, int] = collections.defaultdict(int)
         for type, _ in function.input_types:
             input[type] += 1
 
