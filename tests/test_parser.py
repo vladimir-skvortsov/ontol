@@ -23,6 +23,35 @@ def test_parse_empty_file(parser):
     assert len(warnings) == 0
 
 
+def test_parse_commented_file(parser):
+    content: str = """
+    # version: '1.0'
+    # title: 'Basic linear algebra'
+    # author: 'Firstname Lastname'
+    # desc: 'Matrices'
+
+    # types:
+    # number: 'Number', ''
+    # matrix: 'Matrix', ''
+
+    # functions:
+    # transpose: 'Transpose' (matrix) -> matrix: 'Transposed matrix'
+
+    # hierarchy:
+    # matrix composition number
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert ontology.meta.version is None
+    assert ontology.meta.name is None
+    assert ontology.meta.author is None
+    assert ontology.meta.description is None
+    assert len(ontology.types) == 0
+    assert len(ontology.functions) == 0
+    assert len(ontology.hierarchy) == 0
+    assert len(warnings) == 0
+
+
 def test_parse_type(parser):
     content: str = """
     types:

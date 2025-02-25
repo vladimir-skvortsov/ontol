@@ -59,6 +59,7 @@ class Relationship(ASTNode):
 @dataclass
 class Meta(ASTNode):
     version: Optional[str] = None
+    # TODO: rename name to title
     name: Optional[str] = None
     author: Optional[str] = None
     description: Optional[str] = None
