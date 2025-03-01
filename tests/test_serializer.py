@@ -12,20 +12,20 @@ def sample_ontology():
     ontology.add_type(
         Term(name='MyType', description='A sample type', label='A some label')
     )
-    input_type: TypeDict = {'name': Term('int', '', ''), 'label': ''}
+    input_type: TypeDict = {'name': Term('int'), 'label': ''}
     ontology.add_function(
         Function(
             name='MyFunction',
             label='Function',
             input_types=[input_type],
-            output_type={'name': Term('bool', '', ''), 'label': ''},
+            output_type={'name': Term('bool'), 'label': ''},
         )
     )
     ontology.add_relationship(
         Relationship(
             relationship=RelationshipType.DEPENDS,
-            parent=Term('int', '', ''),
-            children=[Term('bool', '', '')],
+            parent=Term('int'),
+            children=[Term('bool')],
         )
     )
     ontology.set_meta(
@@ -143,8 +143,8 @@ def test_serialize_term(serializer):
 def test_serialize_function(serializer):
     func = Function(
         name='TestFunction',
-        input_types=[{'name': Term('int', '', ''), 'label': ''}],
-        output_type={'name': Term('bool', '', ''), 'label': ''},
+        input_types=[{'name': Term('int'), 'label': ''}],
+        output_type={'name': Term('bool'), 'label': ''},
         label='A test function',
     )
     serialized_function = serializer._serialize_function(func)
@@ -200,15 +200,15 @@ def test_serialize_ontology_without_meta(serializer):
         Function(
             name='MyFunction',
             label='Function',
-            input_types=[{'name': Term('int', '', ''), 'label': ''}],
-            output_type={'name': Term('bool', '', ''), 'label': ''},
+            input_types=[{'name': Term('int'), 'label': ''}],
+            output_type={'name': Term('bool'), 'label': ''},
         )
     )
     ontology.add_relationship(
         Relationship(
             relationship=RelationshipType.DEPENDS,
-            parent=Term('int', '', ''),
-            children=[Term('bool', '', '')],
+            parent=Term('int'),
+            children=[Term('bool')],
         )
     )
 

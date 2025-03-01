@@ -34,10 +34,10 @@ def mock_ontology():
             name='MyFunction1',
             label='test label Func1',
             input_types=[
-                {'name': Term('MyTypeChild', '', ''), 'label': 'test1 in1'},
-                {'name': Term('MyTypeChild', '', ''), 'label': 'test1 in2'},
+                {'name': Term('MyTypeChild'), 'label': 'test1 in1'},
+                {'name': Term('MyTypeChild'), 'label': 'test1 in2'},
             ],
-            output_type={'name': Term('MyTypeParent', '', ''), 'label': 'test_type1'},
+            output_type={'name': Term('MyTypeParent'), 'label': 'test_type1'},
             attributes={'colorArrow': '#E6B8B7'},
         )
     )
@@ -45,15 +45,15 @@ def mock_ontology():
         Function(
             name='MyFunction2',
             label='test label Func2',
-            input_types=[{'name': Term('MyTypeChild', '', ''), 'label': 'test2 in1'}],
-            output_type={'name': Term('MyTypeParent', '', ''), 'label': 'test_type2'},
+            input_types=[{'name': Term('MyTypeChild'), 'label': 'test2 in1'}],
+            output_type={'name': Term('MyTypeParent'), 'label': 'test_type2'},
         )
     )
     ontology.add_relationship(
         Relationship(
-            parent=Term('MyTypeParent', '', ''),
+            parent=Term('MyTypeParent'),
             relationship=RelationshipType.COMPOSITION,
-            children=[Term('MyTypeChild', '', '')],
+            children=[Term('MyTypeChild')],
         )
     )
     return ontology

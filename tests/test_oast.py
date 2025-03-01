@@ -82,7 +82,7 @@ def test_function_wth_empty_input_types_creation():
         name='sum',
         label='Sum',
         input_types=[],
-        output_type={'name': Term('int', '', ''), 'label': 'Result'},
+        output_type={'name': Term('int'), 'label': 'Result'},
     )
     assert func.input_types == []
     assert (
@@ -94,13 +94,13 @@ def test_function_wth_empty_input_types_creation():
 
 def test_relationship_creation() -> None:
     rel: Relationship = Relationship(
-        parent=Term('set', '', ''),
+        parent=Term('set'),
         relationship=RelationshipType.DEPENDS,
-        children=[Term('element', '', '')],
+        children=[Term('element')],
     )
     assert rel.parent.name == 'set'
     assert rel.relationship.value == 'depends'
-    assert rel.children == [Term('element', '', '')]
+    assert rel.children == [Term('element')]
     assert (
         repr(rel)
         == 'Relationship(parent=set, relationship=depends, children=[element], attributes={})'
