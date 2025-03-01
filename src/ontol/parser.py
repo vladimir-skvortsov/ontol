@@ -1,248 +1,430 @@
-import re
-
-from typing import Optional, Literal
-from ontol import Ontology, Term, Function, Relationship, Meta
+from sly import Lexer as BaseLexer, Parser as BaseParser
 from datetime import datetime
+from typing import Literal, Optional
 
-from ontol.oast import FunctionArgument, RelationshipType
+from ontol import (
+    Ontology,
+    Term,
+    Function,
+    Relationship,
+    FunctionArgument,
+    RelationshipType,
+)
 
 
-class Parser:
-    def __init__(self):
-        self.warnings: list[str] = []
+class Lexer(BaseLexer):
+    tokens = {
+        META_VERSION,
+        META_TITLE,
+        META_AUTHOR,
+        META_DESC,
+        META_DATE,
+        META_TYPE,
+        TYPES_BLOCK,
+        FUNCTIONS_BLOCK,
+        HIERARCHY_BLOCK,
+        STRING,
+        IDENTIFIER,
+        LBRACE,
+        RBRACE,
+        COLON,
+        COMMA,
+        ARROW,
+        LPAREN,
+        RPAREN,
+        NEWLINE,
+    }
 
-    def parse(self, file_content: str, file_path: str) -> tuple[Ontology, list]:
-        self.warnings.clear()
+    # String containing ignored characters (spaces and tabs)
+    ignore: str = ' \t'
 
-        ontology: Ontology = Ontology()
+    # Regular expression rules for tokens
+    TYPES_BLOCK: str = r'types:'
+    FUNCTIONS_BLOCK: str = r'functions:'
+    HIERARCHY_BLOCK: str = r'hierarchy:'
 
-        lines: list[str] = file_content.splitlines()
-        current_block: Optional[Literal['types', 'functions', 'hierarchy']] = None
-        meta_data: dict[str, Optional[str]] = {
-            'version': None,
-            'title': None,
-            'author': None,
-            'description': None,
-            'type': None,
-            'date_created': datetime.today().strftime('%Y-%m-%d'),
-        }
+    META_VERSION: str = r'version:'
+    META_TITLE: str = r'title:'
+    META_AUTHOR: str = r'author:'
+    META_DESC: str = r'desc:'
+    META_DATE: str = r'date:'
+    META_TYPE: str = r'type:'
 
-        for index, line in enumerate(lines):
-            line_number: int = index + 1
-            line = line.strip()
+    STRING: str = r'\'[^\']*\'|\"[^\"]*\"'
+    IDENTIFIER: str = r'[a-zA-Z_][a-zA-Z0-9_]*'
 
-            if line.startswith('#') or not line:
-                continue
+    LBRACE: str = r'\{'
+    RBRACE: str = r'\}'
+    COLON: str = r':'
+    COMMA: str = r','
+    ARROW: str = r'->'
 
-            try:
-                if re.match(r'^version:\s+', line):
-                    meta_data['version'] = self._parse_meta_line(
-                        line, 'version', file_path, line_number
-                    )
-                elif re.match(r'^title:\s+', line):
-                    meta_data['title'] = self._parse_meta_line(
-                        line, 'title', file_path, line_number
-                    )
-                elif re.match(r'^author:\s+', line):
-                    meta_data['author'] = self._parse_meta_line(
-                        line, 'author', file_path, line_number
-                    )
-                elif re.match(r'^desc:\s+', line):
-                    meta_data['description'] = self._parse_meta_line(
-                        line, 'desc', file_path, line_number
-                    )
-                elif re.match(r'^type:\s+', line):
-                    meta_data['type'] = self._parse_meta_line(
-                        line, 'type', file_path, line_number
-                    )
+    LPAREN: str = r'\('
+    RPAREN: str = r'\)'
 
-                elif line.startswith('types:'):
-                    current_block = 'types'
-                    continue
-                elif line.startswith('functions:'):
-                    current_block = 'functions'
-                    continue
-                elif line.startswith('hierarchy:'):
-                    current_block = 'hierarchy'
-                    continue
+    ignore_comment: str = r'\#.*'
 
-                elif current_block == 'types':
-                    type_def = self._parse_type(line, file_path, line_number)
-                    ontology.add_type(type_def)
-                elif current_block == 'functions':
-                    func_def = self._parse_function(
-                        line, file_path, line_number, ontology
-                    )
-                    ontology.add_function(func_def)
-                elif current_block == 'hierarchy':
-                    relationship = self._parse_relationship(line, ontology)
-                    ontology.add_relationship(relationship)
+    # Newline handling
+    @_(r'\n+')
+    def NEWLINE(self, t):
+        self.lineno += t.value.count('\n')
+        return t
 
-                else:
-                    raise SyntaxError('Unexpected line')
+    # Strings handling
+    def STRING(self, t):
+        t.value = t.value[1:-1]  # Remove quotes
+        return t
 
-            except Exception as e:
-                raise SyntaxError(
-                    f'File "{file_path}", line {line_number}\n    {line}\n\033[31m{type(e).__name__}: \033[0m{e}'
-                )
+    def error(self, t) -> None:
+        self.index += 1
+        raise SyntaxError(f"Illegal character '{t.value[0]}'")
 
-        ontology.set_meta(Meta(**meta_data))
 
-        return ontology, self.warnings
+class Parser(BaseParser):
+    tokens = Lexer.tokens
 
-    def _parse_meta_line(
-        self, line: str, key: str, file_path: str, line_number: int
+    def __init__(self) -> None:
+        self.ontology: Ontology = Ontology()
+        self.__warnings: list[str] = []
+
+    def parse(self, file_content: str, file_path: str) -> tuple[Ontology, list[str]]:
+        self.__warnings.clear()
+
+        self.__lines = file_content.splitlines()
+        self.__file_path = file_path
+
+        lexer: Lexer = Lexer()
+        tokens: list = lexer.tokenize(file_content)
+        # print(', '.join([token.type for token in tokens]))
+        ontology: Ontology = super().parse(tokens)
+
+        return ontology, self.__warnings
+
+    def _get_exception_message(
+        self, token, message: str, type: Literal['warning', 'error'] = 'warning'
     ) -> str:
-        match = re.match(rf"{key}:\s+['\"](.*?)['\"]", line)
-
-        if not match:
-            raise SyntaxError(f'Invalid {key} format')
-
-        value = match.group(1)
-
-        if not value:
-            self._add_warning(file_path, line_number, line, 'Meta value is empty')
-
-        return value
-
-    def _parse_type(self, line: str, file_path: str, line_number: int) -> Term:
-        match = re.match(
-            r"(\w+):\s*['\"](.*?)['\"],\s*['\"](.*?)['\"](,\s*\{(.*?)\})?$", line
+        line_number = token.lineno
+        line: str = self.__lines[line_number - 1]
+        line_padding: int = 4
+        message_prefix: str = (
+            '\033[33mWarning' if type == 'warning' else '\033[31mError'
         )
 
-        if not match:
-            raise SyntaxError('Invalid type format')
-
-        name: str = match.group(1)
-        label: str = match.group(2)
-        description: str = match.group(3)
-
-        if not label:
-            self._add_warning(file_path, line_number, line, 'Label is empty')
-        if not description:
-            self._add_warning(file_path, line_number, line, 'Description is empty')
-
-        attributes: dict[str, str] = (
-            self._parse_attributes(match.group(5)) if match.group(5) else {}
+        final_message: str = f'File "{self.__file_path}", line {line_number}'
+        final_message += f'\n{" " * line_padding}{line}'
+        if token is not None:
+            line_start_index = sum(
+                len(line) + 1 for line in self.__lines[: line_number - 1]
+            )
+            column_index = token.index - line_start_index - 1
+            final_message += f'\n {" " * line_padding}{" " * column_index}^'
+        final_message += (
+            f'\n{message_prefix}: \033[0m{message[0].lower() + message[1:]}'
         )
 
-        return Term(name, label, description, attributes)
+        return final_message
 
-    @staticmethod
-    def _parse_attributes(attr_string: str) -> dict[str, str]:
-        attributes: dict[str, str] = {}
+    def _add_warning(self, token, message: str) -> None:
+        final_message: str = self._get_exception_message(token, message, 'warning')
+        self.__warnings.append(final_message)
 
-        if attr_string:
-            attr_string = attr_string.strip('{}').strip()
-            for attr in attr_string.split(','):
-                key, value = attr.split(':', 1)
-                attributes[key.strip()] = value.strip().strip('\'"')
+    @_('statement_list')
+    def program(self, p) -> Ontology:
+        if not self.ontology.meta.date_created:
+            self.ontology.meta.date_created = datetime.today().strftime('%Y-%m-%d')
+        return self.ontology
 
-        return attributes
+    @_('statement_list statement', '')
+    def statement_list(self, p) -> None:
+        pass
 
-    def _parse_function(
-        self, line: str, file_path: str, line_number: int, ontology: Ontology
-    ) -> Function:
-        match = re.match(
-            r"(\w+):\s*['\"](.*?)['\"]\s*\((.*?)\)\s*->\s*(\w+):\s*['\"](.*?)['\"](,\s*\{(.*?)\})?$",
-            line,
+    @_('statement')
+    def statement_list(self, p) -> None:
+        pass
+
+    @_('META_VERSION STRING NEWLINE')
+    def statement(self, p) -> None:
+        if not p.STRING:
+            self._add_warning(p._slice[1], 'Version value is empty')
+
+        self.ontology.meta.version = p.STRING
+
+    @_('META_TITLE STRING NEWLINE')
+    def statement(self, p) -> None:
+        if not p.STRING:
+            self._add_warning(p._slice[1], 'Title value is empty')
+
+        self.ontology.meta.title = p.STRING
+
+    @_('META_AUTHOR STRING NEWLINE')
+    def statement(self, p) -> None:
+        if not p.STRING:
+            self._add_warning(p._slice[1], 'Author value is empty')
+
+        self.ontology.meta.author = p.STRING
+
+    @_('META_DESC STRING NEWLINE')
+    def statement(self, p) -> None:
+        if not p.STRING:
+            self._add_warning(p._slice[1], 'Description value is empty')
+
+        self.ontology.meta.description = p.STRING
+
+    @_('META_DATE STRING NEWLINE')
+    def statement(self, p) -> None:
+        if not p.STRING:
+            self._add_warning(p._slice[1], 'Date value is empty')
+
+        self.ontology.meta.date_created = p.STRING
+
+    @_('META_TYPE STRING NEWLINE')
+    def statement(self, p) -> None:
+        if not p.STRING:
+            self._add_warning(p._slice[1], 'Type value is empty')
+
+        self.ontology.meta.type = p.STRING
+
+    @_('TYPES_BLOCK NEWLINE type_list')
+    def statement(self, p) -> None:
+        pass
+
+    @_(
+        'type_list type NEWLINE',
+        'type NEWLINE',
+        'NEWLINE type_list',
+        '',
+    )
+    def type_list(self, p) -> None:
+        pass
+
+    @_('IDENTIFIER COLON STRING COMMA STRING attributes')
+    def type(self, p) -> None:
+        existing_term: Optional[Term] = self.ontology.find_term_by_name(p.IDENTIFIER)
+
+        if existing_term is not None:
+            raise ValueError(
+                self._get_exception_message(
+                    p._slice[0],
+                    f"Type '{p.IDENTIFIER}' has already been declared",
+                    'error',
+                )
+            )
+
+        term = Term(
+            name=p.IDENTIFIER,
+            label=p.STRING0,
+            description=p.STRING1,
+            attributes=p.attributes,
         )
 
-        if not match:
-            raise SyntaxError('Invalid function format')
+        if not p.STRING0:
+            self._add_warning(p._slice[2], 'Term label is empty')
 
-        name: str = match.group(1)
-        label: str = match.group(2)
-        input_params: list[FunctionArgument] = self._parse_parameters(
-            match.group(3), line, file_path, line_number, ontology
+        if not p.STRING1:
+            self._add_warning(p._slice[4], 'Term description is empty')
+
+        self.ontology.add_type(term)
+
+    @_('FUNCTIONS_BLOCK NEWLINE function_list')
+    def statement(self, p) -> None:
+        pass
+
+    @_(
+        'function_list function NEWLINE',
+        'function NEWLINE',
+        'NEWLINE function_list',
+        '',
+    )
+    def function_list(self, p) -> None:
+        pass
+
+    @_('IDENTIFIER COLON STRING params ARROW IDENTIFIER COLON STRING attributes')
+    def function(self, p) -> None:
+        existing_function: Optional[Function] = self.ontology.find_function_by_name(
+            p.IDENTIFIER0
         )
-        output_type: str = match.group(4)
-        output_label: str = match.group(5)
-        attributes: dict[str, str] = (
-            self._parse_attributes(match.group(7)) if match.group(7) else {}
+
+        if existing_function is not None:
+            raise ValueError(
+                self._get_exception_message(
+                    p._slice[0],
+                    f"Function '{p.IDENTIFIER0}' has already been declared",
+                    'error',
+                )
+            )
+
+        input_types = p.params
+
+        output_term: Optional[Term] = self.ontology.find_term_by_name(p.IDENTIFIER1)
+
+        if output_term is None:
+            raise ValueError(
+                self._get_exception_message(p._slice[5], 'Undefined term', 'error')
+            )
+
+        output_type: FunctionArgument = FunctionArgument(output_term, p.STRING1)
+
+        function: Function = Function(
+            name=p.IDENTIFIER0,
+            label=p.STRING0,
+            input_types=input_types,
+            output_type=output_type,
+            attributes=p.attributes,
         )
 
-        if not label:
-            self._add_warning(file_path, line_number, line, 'Label is empty')
-        if not output_label:
-            self._add_warning(file_path, line_number, line, 'Output label is empty')
+        if not p.STRING0:
+            self._add_warning(p._slice[2], 'Label is empty')
 
-        term = ontology.find_term_by_name(output_type)
-        if term is None:
-            raise ValueError(f'Unexpected type name {output_type}')
-        output: FunctionArgument = FunctionArgument(term, output_label)
+        if not p.STRING1:
+            self._add_warning(p._slice[7], 'Output term label is empty')
 
-        return Function(name, label, input_params, output, attributes)
+        self.ontology.add_function(function)
 
-    def _parse_parameters(
-        self,
-        params_string: str,
-        line: str,
-        file_path: str,
-        line_number: int,
-        ontology: Ontology,
-    ) -> list[FunctionArgument]:
+    @_(
+        'LPAREN param_list RPAREN',
+        'LPAREN NEWLINE param_list RPAREN',
+        'LPAREN param_list NEWLINE RPAREN',
+        'LPAREN NEWLINE param_list NEWLINE RPAREN',
+        'LPAREN NEWLINE param_list COMMA NEWLINE RPAREN',
+    )
+    def params(self, p) -> list[FunctionArgument]:
         params: list[FunctionArgument] = []
 
-        for param in params_string.split(','):
-            param = param.strip()
-            match = re.match(r"(\w+):\s*['\"](.*?)['\"]$", param)
+        for param in p.param_list:
+            term_token = param[0]
+            term_name: str = term_token.value
+            label_token = param[1]
+            param_label: str = label_token.value
 
-            if match:
-                param_name: str = match.group(1)
-                param_label: str = match.group(2)
+            term: Optional[Term] = self.ontology.find_term_by_name(term_name)
 
-                if not param_label:
-                    self._add_warning(
-                        file_path,
-                        line_number,
-                        line,
-                        f"{param_name}'s parameter label is empty",
-                    )
+            if term is None:
+                raise ValueError(
+                    self._get_exception_message(term_token, 'Undefined term', 'error')
+                )
 
-                term = ontology.find_term_by_name(param_name)
-                if term is None:
-                    raise ValueError(f'Unexpected type name {param_name}')
+            if not param_label:
+                self._add_warning(label_token, 'Parameter label is empty')
 
-                param_instance: FunctionArgument = FunctionArgument(term, param_label)
-                params.append(param_instance)
+            params.append(FunctionArgument(term, param_label))
 
         return params
 
-    def _parse_relationship(self, line: str, ontology: Ontology) -> Relationship:
-        pattern = r'^(\w+)\s+(\w+)\s+(?:\(([^)]+)\)|(\w+))?\s*(,\s*\{(.*?)\})?$'
-        match = re.match(pattern, line.strip())
-        if not match:
-            raise ValueError(f'Invalid line {line}')
+    @_('')
+    def param_list(self, p) -> list[tuple]:
+        return []
 
-        parent_str: str = match.group(1)
-        term = ontology.find_term_by_name(parent_str)
-        if term is None:
-            raise ValueError(f'Unexpected type name {parent_str}')
-        parent = term
+    @_('param')
+    def param_list(self, p) -> list[tuple]:
+        return [p.param]
 
-        relation_str: str = match.group(2)
-        relation: RelationshipType = RelationshipType.from_str(relation_str)
-        if relation is None:
-            raise ValueError(f'Unexpected relationship {relation_str}')
+    @_(
+        'param_list COMMA param',
+        'param_list COMMA NEWLINE param',
+    )
+    def param_list(self, p) -> list[tuple]:
+        return p.param_list + [p.param]
 
-        child: str = match.group(3) or match.group(4)
-        children_str: list[str] = child.split(', ') if child else []
-        children: list[Term] = []
-        for child in children_str:
-            term = ontology.find_term_by_name(child)
-            if term is None:
-                raise ValueError(f'Unexpected type name {parent_str}')
-            children.append(term)
+    @_('IDENTIFIER COLON STRING')
+    def param(self, p) -> tuple:
+        return (p._slice[0], p._slice[2])
 
-        attributes: dict[str, str] = (
-            self._parse_attributes(match.group(6)) if match.group(6) else {}
+    @_('HIERARCHY_BLOCK NEWLINE hierarchy_list')
+    def statement(self, p) -> None:
+        pass
+
+    @_('hierarchy_list hierarchy NEWLINE')
+    def hierarchy_list(self, p) -> None:
+        pass
+
+    @_('hierarchy NEWLINE')
+    def hierarchy_list(self, p) -> None:
+        pass
+
+    @_('IDENTIFIER IDENTIFIER IDENTIFIER attributes')
+    def hierarchy(self, p) -> None:
+        parent: Optional[Term] = self.ontology.find_term_by_name(p.IDENTIFIER0)
+
+        if parent is None:
+            raise ValueError(
+                self._get_exception_message(p._slice[0], 'Undefined term', 'error')
+            )
+
+        relationship = RelationshipType.from_str(p.IDENTIFIER1)
+
+        if relationship is None:
+            raise ValueError(
+                self._get_exception_message(
+                    p._slice[1], 'Unexpected relationship type', 'error'
+                )
+            )
+
+        child_term: Optional[Term] = self.ontology.find_term_by_name(p.IDENTIFIER2)
+
+        if child_term is None:
+            raise ValueError(
+                self._get_exception_message(p._slice[2], 'Undefined term', 'error')
+            )
+
+        children: list[Term] = [child_term]
+
+        relationship = Relationship(
+            parent=parent,
+            relationship=relationship,
+            children=children,
+            attributes=p.attributes,
         )
+        self.ontology.add_relationship(relationship)
 
-        return Relationship(parent, relation, children, attributes)
+    @_(
+        'COMMA LBRACE attribute_list RBRACE',
+        'COMMA LBRACE NEWLINE attribute_list RBRACE',
+        'COMMA LBRACE attribute_list NEWLINE RBRACE',
+        'COMMA LBRACE NEWLINE attribute_list NEWLINE RBRACE',
+        'COMMA LBRACE NEWLINE attribute_list COMMA NEWLINE RBRACE',
+    )
+    def attributes(self, p) -> dict[str, str]:
+        return p.attribute_list
 
-    def _add_warning(
-        self, file_path: str, line_number: int, line: str, message: str
-    ) -> None:
-        warning: str = f'File "{file_path}", line {line_number}\n    {line}\n\033[33mWarning: \033[0m{message}'
-        self.warnings.append(warning)
+    @_('')
+    def attributes(self, p) -> dict[str, str]:
+        return {}
+
+    @_(
+        'attribute_list COMMA attribute',
+        'attribute_list COMMA NEWLINE attribute',
+    )
+    def attribute_list(self, p) -> dict[str, str]:
+        p.attribute_list.update(p.attribute)
+        return p.attribute_list
+
+    @_('attribute')
+    def attribute_list(self, p) -> dict[str, str]:
+        return p.attribute
+
+    @_('')
+    def attribute_list(self, p) -> dict[str, str]:
+        return {}
+
+    @_('IDENTIFIER COLON STRING')
+    def attribute(self, p) -> dict[str, str]:
+        if not p.STRING:
+            self._add_warning(p._slice[2], 'Attribute value is empty')
+
+        return {p.IDENTIFIER: p.STRING}
+
+    @_('NEWLINE')
+    def statement(self, p) -> None:
+        pass
+
+    def error(self, p) -> None:
+        if p:
+            raise SyntaxError(
+                self._get_exception_message(
+                    p,
+                    f'Syntax error {p.type}',
+                    'error',
+                )
+            )
+
+        raise SyntaxError('Syntax error at EOF')

@@ -35,7 +35,7 @@ def test_parse_commented_file(parser):
     # matrix: 'Matrix', ''
 
     # functions:
-    # transpose: 'Transpose' (matrix) -> matrix: 'Transposed matrix'
+    # transpose: 'Transpose' (matrix: '') -> matrix: 'Transposed matrix'
 
     # hierarchy:
     # matrix composition number
@@ -160,7 +160,7 @@ def test_parse_function(parser):
     types:
     set: 'Множество', 'Коллекция уникальных элементов'
     functions:
-    descartes: 'Cartesian product' (set: 'First set', set: 'Second set') -> set: 'Result set', { color: '#fff }
+    descartes: 'Cartesian product' (set: 'First set', set: 'Second set') -> set: 'Result set', { color: '#fff' }
     """
     ontology, warnings = parser.parse(content, 'test.ontol')
 
@@ -217,6 +217,8 @@ def test_parse_function_with_empty_attributes(parser):
 
 def test_parse_function_with_missing_output(parser):
     content = """
+    types:
+    number: '', ''
     functions:
     add: 'Addition' (number: 'First number', number: 'Second number') -> , {color: '#fff'}
     """
@@ -236,20 +238,20 @@ def test_parse_function_with_missing_label(parser):
 def test_parse_function_without_arguments(parser):
     content = """
     types:
-    date: 'Current date', 'Current date'
+    time: 'Current time', 'Current time'
     functions:
-    today: 'Returns current date' () -> date: 'Current date'
+    now: 'Returns current time' () -> time: 'Current time'
     """
     ontology, warnings = parser.parse(content, 'test.ontol')
 
     assert len(ontology.functions) == 1
 
     func: Function = ontology.functions[0]
-    assert func.name == 'today'
-    assert func.label == 'Returns current date'
+    assert func.name == 'now'
+    assert func.label == 'Returns current time'
     assert func.input_types == []
-    assert func.output_type.term.name == 'date'
-    assert func.output_type.label == 'Current date'
+    assert func.output_type.term.name == 'time'
+    assert func.output_type.label == 'Current time'
     assert len(warnings) == 0
 
 
@@ -273,6 +275,7 @@ def test_parse_with_empty_labels(parser):
     assert func.input_types[1].label == ''
     assert func.output_type.term.name == 'set'
     assert func.output_type.label == ''
+    print('\n\n'.join(warnings))
     assert len(warnings) == 6
 
 
@@ -342,7 +345,7 @@ def test_combined_parsing(parser):
     # Functions we have
     functions:
     # Describe more functions
-    transpose: 'Transpose' (matrix) -> matrix: 'Transposed matrix'
+    transpose: 'Transpose' (matrix: 'Initial matrix') -> matrix: 'Transposed matrix'
 
     # And relations we have
     hierarchy:
