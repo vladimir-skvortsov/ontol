@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, TypedDict
+from typing import Optional
 from dataclasses import dataclass, field
 
 
@@ -18,17 +18,21 @@ class Term(ASTNode):
         return f'Term(name={self.name}, label={self.label}, description={self.description}, attributes={self.attributes})'
 
 
-class TypeDict(TypedDict):
-    name: Term
-    label: str
+@dataclass
+class FunctionArgument(ASTNode):
+    term: Term
+    label: str = ''
+
+    def __repr__(self) -> str:
+        return f"('{self.term.name}', '{self.label}')"
 
 
 @dataclass
 class Function(ASTNode):
     name: str
     label: str
-    input_types: list[TypeDict]
-    output_type: TypeDict
+    input_types: list[FunctionArgument]
+    output_type: FunctionArgument
     attributes: dict = field(default_factory=dict)
 
     def __repr__(self) -> str:
@@ -42,14 +46,15 @@ class Function(ASTNode):
         return (
             '['
             + ', '.join(
-                f'{{name: {t["name"].name}, label: {t["label"]}}}'
-                for t in self.input_types
+                f'{{name: {t.term.name}, label: {t.label}}}' for t in self.input_types
             )
             + ']'
         )
 
     def _format_output_type(self) -> str:
-        return f'{{name: {self.output_type["name"].name}, label: {self.output_type["label"]}}}'
+        return (
+            f'{{name: {self.output_type.term.name}, label: {self.output_type.label}}}'
+        )
 
 
 class RelationshipType(Enum):

@@ -1,5 +1,5 @@
 from ontol.oast import RelationshipType
-from src.ontol import Function, Meta, Ontology, Relationship, Term
+from src.ontol import Function, Meta, Ontology, Relationship, Term, FunctionArgument
 
 
 def test_term_creation() -> None:
@@ -50,13 +50,19 @@ def test_function_creation():
     func: Function = Function(
         name='sum',
         label='Sum',
-        input_types=[('int', 'First number'), ('int', 'Second number')],
-        output_type=('int', 'Result'),
+        input_types=[
+            FunctionArgument(Term('int'), 'First number'),
+            FunctionArgument(Term('int'), 'Second number'),
+        ],
+        output_type=FunctionArgument(Term('int'), 'Result'),
     )
     assert func.name == 'sum'
     assert func.label == 'Sum'
-    assert func.input_types == [('int', 'First number'), ('int', 'Second number')]
-    assert func.output_type == ('int', 'Result')
+    assert func.input_types == [
+        FunctionArgument(Term('int'), 'First number'),
+        FunctionArgument(Term('int'), 'Second number'),
+    ]
+    assert func.output_type == FunctionArgument(Term('int'), 'Result')
     assert (
         repr(func)
         == "Function(name=sum, label=Sum, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes={})"
@@ -67,8 +73,11 @@ def test_function_wth_empty_label_creation():
     func: Function = Function(
         name='sum',
         label='',
-        input_types=[('int', 'First number'), ('int', 'Second number')],
-        output_type=('int', 'Result'),
+        input_types=[
+            FunctionArgument(Term('int'), 'First number'),
+            FunctionArgument(Term('int'), 'Second number'),
+        ],
+        output_type=FunctionArgument(Term('int'), 'Result'),
     )
     assert func.label == ''
     assert (
@@ -82,13 +91,12 @@ def test_function_wth_empty_input_types_creation():
         name='sum',
         label='Sum',
         input_types=[],
-        output_type={'name': Term('int'), 'label': 'Result'},
+        output_type=FunctionArgument(Term('int'), 'Result'),
     )
     assert func.input_types == []
     assert (
         repr(func) == 'Function(name=sum, label=Sum, input_types=[],'
-        " output_type={'name': Term(name=int, label=, description=, attributes={}),"
-        " 'label': 'Result'}, attributes={})"
+        " output_type=('int', 'Result'), attributes={})"
     )
 
 

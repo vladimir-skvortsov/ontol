@@ -1,5 +1,13 @@
 from ontol.oast import RelationshipType
-from src.ontol import Function, Meta, Ontology, Relationship, Term, PlantUML
+from src.ontol import (
+    Function,
+    Meta,
+    Ontology,
+    Relationship,
+    Term,
+    FunctionArgument,
+    PlantUML,
+)
 
 import pytest
 
@@ -34,10 +42,10 @@ def mock_ontology():
             name='MyFunction1',
             label='test label Func1',
             input_types=[
-                {'name': Term('MyTypeChild'), 'label': 'test1 in1'},
-                {'name': Term('MyTypeChild'), 'label': 'test1 in2'},
+                FunctionArgument(Term('MyTypeChild'), 'test1 in1'),
+                FunctionArgument(Term('MyTypeChild'), 'test1 in2'),
             ],
-            output_type={'name': Term('MyTypeParent'), 'label': 'test_type1'},
+            output_type=FunctionArgument(Term('MyTypeParent'), 'test_type1'),
             attributes={'colorArrow': '#E6B8B7'},
         )
     )
@@ -45,8 +53,8 @@ def mock_ontology():
         Function(
             name='MyFunction2',
             label='test label Func2',
-            input_types=[{'name': Term('MyTypeChild'), 'label': 'test2 in1'}],
-            output_type={'name': Term('MyTypeParent'), 'label': 'test_type2'},
+            input_types=[FunctionArgument(Term('MyTypeChild'), 'test2 in1')],
+            output_type=FunctionArgument(Term('MyTypeParent'), 'test_type2'),
         )
     )
     ontology.add_relationship(
@@ -106,8 +114,8 @@ def test_generate_function(generator: PlantUML):
     func = Function(
         name='MyFunction',
         label='test label',
-        input_types=[{'name': Term('int'), 'label': 'test'}],
-        output_type={'name': Term('bool'), 'label': 'test'},
+        input_types=[FunctionArgument(Term('int'), 'test')],
+        output_type=FunctionArgument(Term('bool'), 'test'),
         attributes={'color': '#E6B8B7'},
     )
     result = generator._generate_function(func)

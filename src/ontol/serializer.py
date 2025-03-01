@@ -34,12 +34,11 @@ class JSONSerializer:
             'name': func_def.name,
             'label': func_def.label,
             'input_types': [
-                {'name': asdict(t['name']), 'label': t['label']}
-                for t in func_def.input_types
+                {'name': t.term.name, 'label': t.label} for t in func_def.input_types
             ],
             'output_type': {
-                'name': asdict(func_def.output_type['name']),
-                'label': func_def.output_type['label'],
+                'name': func_def.output_type.term.name,
+                'label': func_def.output_type.label,
             },
             'attributes': func_def.attributes,
         }
@@ -53,8 +52,8 @@ class JSONSerializer:
         rel_def: Relationship,
     ) -> dict[str, str | list[str] | dict[str, str]]:
         return {
-            'parent': asdict(rel_def.parent),
+            'parent': rel_def.parent.name,
             'relationship': rel_def.relationship.value,
-            'children': [asdict(child) for child in rel_def.children],
+            'children': [child.name for child in rel_def.children],
             'attributes': rel_def.attributes,
         }

@@ -164,13 +164,13 @@ class PlantUML:
     @staticmethod
     def __prepare_function_term(function: Function):
         input_str: list[str] = [
-            f'{el["name"].name}: {el["label"]}' if el['label'] else str(el['name'].name)
+            f'{el.term.name}: {el.label}' if el.label else str(el.term.name)
             for el in function.input_types
         ]
         output_str: str = (
-            f'{function.output_type["name"].name}: {function.output_type["label"]}'
-            if function.output_type['label']
-            else str(function.output_type['name'].name)
+            f'{function.output_type.term.name}: {function.output_type.label}'
+            if function.output_type.label
+            else str(function.output_type.term.name)
         )
         desc: str = f'{", ".join(input_str)} -> {output_str}'
         return Term(
@@ -185,7 +185,7 @@ class PlantUML:
         relations = []
         input_types: collections.defaultdict[str, int] = collections.defaultdict(int)
         for input_type in function.input_types:
-            input_types[input_type['name'].name] += 1
+            input_types[input_type.term.name] += 1
         for k, v in input_types.items():
             term: Term = ontology.find_term_by_name(k)
             attributes_dict = {
@@ -218,7 +218,7 @@ class PlantUML:
                 RelationshipType.from_str(
                     function.attributes.get('type', 'directAssociation')
                 ),
-                [ontology.find_term_by_name(function.output_type['name'].name)],
+                [ontology.find_term_by_name(function.output_type.term.name)],
                 attributes_dict,
             )
         )
@@ -229,8 +229,8 @@ class PlantUML:
 
     # TODO: add comments to input and output types and add color for block
     def _generate_function(self, function: Function) -> str:
-        inputs: str = ', '.join(map(lambda t: t['name'].name, function.input_types))
-        outputs: str = function.output_type['name'].name
+        inputs: str = ', '.join(map(lambda t: t.term.name, function.input_types))
+        outputs: str = function.output_type.term.name
         return (
             f'class {function.name} <<Function>> {{\n'
             f'  +{function.name}({inputs}) : ({outputs})\n'

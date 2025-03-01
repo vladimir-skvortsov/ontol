@@ -1,8 +1,3 @@
-import json
-import pprint
-from dataclasses import asdict
-
-from ontol.oast import TypeDict
 from src.ontol import Parser, Term, Function, Relationship
 
 import pytest
@@ -174,18 +169,18 @@ def test_parse_function(parser):
     func: Function = ontology.functions[0]
     assert func.name == 'descartes'
     assert func.label == 'Cartesian product'
-    assert func.input_types[0]['name'].name == 'set'
-    assert func.input_types[0]['name'].label == 'Множество'
-    assert func.input_types[0]['name'].description == 'Коллекция уникальных элементов'
-    assert func.input_types[0]['label'] == 'First set'
-    assert func.input_types[1]['name'].name == 'set'
-    assert func.input_types[1]['name'].label == 'Множество'
-    assert func.input_types[1]['name'].description == 'Коллекция уникальных элементов'
-    assert func.input_types[1]['label'] == 'Second set'
-    assert func.output_type['name'].name == 'set'
-    assert func.output_type['name'].label == 'Множество'
-    assert func.output_type['name'].description == 'Коллекция уникальных элементов'
-    assert func.output_type['label'] == 'Result set'
+    assert func.input_types[0].term.name == 'set'
+    assert func.input_types[0].term.label == 'Множество'
+    assert func.input_types[0].term.description == 'Коллекция уникальных элементов'
+    assert func.input_types[0].label == 'First set'
+    assert func.input_types[1].term.name == 'set'
+    assert func.input_types[1].term.label == 'Множество'
+    assert func.input_types[1].term.description == 'Коллекция уникальных элементов'
+    assert func.input_types[1].label == 'Second set'
+    assert func.output_type.term.name == 'set'
+    assert func.output_type.term.label == 'Множество'
+    assert func.output_type.term.description == 'Коллекция уникальных элементов'
+    assert func.output_type.label == 'Result set'
     assert func.attributes == {'color': '#fff'}
     assert len(warnings) == 0
 
@@ -204,18 +199,18 @@ def test_parse_function_with_empty_attributes(parser):
     func: Function = ontology.functions[0]
     assert func.name == 'divide'
     assert func.label == 'Divide two numbers'
-    assert func.input_types[0]['name'].name == 'number'
-    assert func.input_types[0]['name'].label == 'Число'
-    assert func.input_types[0]['name'].description == 'Число'
-    assert func.input_types[0]['label'] == 'Dividend'
-    assert func.input_types[1]['name'].name == 'number'
-    assert func.input_types[1]['name'].label == 'Число'
-    assert func.input_types[1]['name'].description == 'Число'
-    assert func.input_types[1]['label'] == 'Divisor'
-    assert func.output_type['name'].name == 'number'
-    assert func.output_type['name'].label == 'Число'
-    assert func.output_type['name'].description == 'Число'
-    assert func.output_type['label'] == 'Quotient'
+    assert func.input_types[0].term.name == 'number'
+    assert func.input_types[0].term.label == 'Число'
+    assert func.input_types[0].term.description == 'Число'
+    assert func.input_types[0].label == 'Dividend'
+    assert func.input_types[1].term.name == 'number'
+    assert func.input_types[1].term.label == 'Число'
+    assert func.input_types[1].term.description == 'Число'
+    assert func.input_types[1].label == 'Divisor'
+    assert func.output_type.term.name == 'number'
+    assert func.output_type.term.label == 'Число'
+    assert func.output_type.term.description == 'Число'
+    assert func.output_type.label == 'Quotient'
     assert func.attributes == {}
     assert len(warnings) == 0
 
@@ -253,8 +248,8 @@ def test_parse_function_without_arguments(parser):
     assert func.name == 'today'
     assert func.label == 'Returns current date'
     assert func.input_types == []
-    assert func.output_type['name'].name == 'date'
-    assert func.output_type['label'] == 'Current date'
+    assert func.output_type.term.name == 'date'
+    assert func.output_type.label == 'Current date'
     assert len(warnings) == 0
 
 
@@ -272,12 +267,12 @@ def test_parse_with_empty_labels(parser):
     func: Function = ontology.functions[0]
     assert func.name == 'descartes'
     assert func.label == ''
-    assert func.input_types[0]['name'].name == 'set'
-    assert func.input_types[0]['label'] == ''
-    assert func.input_types[1]['name'].name == 'set'
-    assert func.input_types[1]['label'] == ''
-    assert func.output_type['name'].name == 'set'
-    assert func.output_type['label'] == ''
+    assert func.input_types[0].term.name == 'set'
+    assert func.input_types[0].label == ''
+    assert func.input_types[1].term.name == 'set'
+    assert func.input_types[1].label == ''
+    assert func.output_type.term.name == 'set'
+    assert func.output_type.label == ''
     assert len(warnings) == 6
 
 

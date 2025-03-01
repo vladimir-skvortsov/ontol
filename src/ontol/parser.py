@@ -4,7 +4,7 @@ from typing import Optional, Literal
 from ontol import Ontology, Term, Function, Relationship, Meta
 from datetime import datetime
 
-from ontol.oast import TypeDict, RelationshipType
+from ontol.oast import FunctionArgument, RelationshipType
 
 
 class Parser:
@@ -153,7 +153,7 @@ class Parser:
 
         name: str = match.group(1)
         label: str = match.group(2)
-        input_params: list[TypeDict] = self._parse_parameters(
+        input_params: list[FunctionArgument] = self._parse_parameters(
             match.group(3), line, file_path, line_number, ontology
         )
         output_type: str = match.group(4)
@@ -170,7 +170,7 @@ class Parser:
         term = ontology.find_term_by_name(output_type)
         if term is None:
             raise ValueError(f'Unexpected type name {output_type}')
-        output: TypeDict = {'name': term, 'label': output_label}
+        output: FunctionArgument = FunctionArgument(term, output_label)
 
         return Function(name, label, input_params, output, attributes)
 
@@ -181,8 +181,8 @@ class Parser:
         file_path: str,
         line_number: int,
         ontology: Ontology,
-    ) -> list[TypeDict]:
-        params: list[TypeDict] = []
+    ) -> list[FunctionArgument]:
+        params: list[FunctionArgument] = []
 
         for param in params_string.split(','):
             param = param.strip()
@@ -204,7 +204,7 @@ class Parser:
                 if term is None:
                     raise ValueError(f'Unexpected type name {param_name}')
 
-                param_instance: TypeDict = {'name': term, 'label': param_label}
+                param_instance: FunctionArgument = FunctionArgument(term, param_label)
                 params.append(param_instance)
 
         return params
