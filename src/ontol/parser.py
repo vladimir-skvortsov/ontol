@@ -74,7 +74,7 @@ class Parser(BaseParser):
     expected_shift_reduce: int = 22
 
     def __init__(self) -> None:
-        self.ontology: Ontology = Ontology()
+        self.__ontology: Ontology = Ontology()
         self.__warnings: list[str] = []
 
     def parse(self, file_content: str, file_path: str) -> tuple[Ontology, list[str]]:
@@ -82,13 +82,14 @@ class Parser(BaseParser):
 
         self.__lines = file_content.splitlines()
         self.__file_path = file_path
+        self.__ontology = Ontology()
 
         lexer: Lexer = Lexer()
         tokens: list = lexer.tokenize(file_content)
-        # print(', '.join([token.type for token in tokens]))
-        ontology: Ontology = super().parse(tokens)
 
-        return ontology, self.__warnings
+        super().parse(tokens)
+
+        return self.__ontology, self.__warnings
 
     def _get_exception_message(
         self, token, message: str, type: Literal['warning', 'error'] = 'warning'
@@ -120,9 +121,9 @@ class Parser(BaseParser):
 
     @_('statement_list')
     def program(self, p) -> Ontology:
-        if not self.ontology.meta.date:
-            self.ontology.meta.date = datetime.today().strftime('%Y-%m-%d')
-        return self.ontology
+        if not self.__ontology.meta.date:
+            self.__ontology.meta.date = datetime.today().strftime('%Y-%m-%d')
+        return self.__ontology
 
     @_('statement_list statement', '')
     def statement_list(self, p) -> None:
@@ -148,7 +149,7 @@ class Parser(BaseParser):
         if not p.STRING:
             self._add_warning(p._slice[1], 'Version value is empty')
 
-        setattr(self.ontology.meta, p.IDENTIFIER, p.STRING)
+        setattr(self.__ontology.meta, p.IDENTIFIER, p.STRING)
 
     @_('TYPES_BLOCK NEWLINE type_list')
     def statement(self, p) -> None:
@@ -165,7 +166,7 @@ class Parser(BaseParser):
 
     @_('IDENTIFIER COLON STRING COMMA STRING attributes')
     def type(self, p) -> None:
-        existing_term: Optional[Term] = self.ontology.find_term_by_name(p.IDENTIFIER)
+        existing_term: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER)
 
         if existing_term is not None:
             raise ValueError(
@@ -189,7 +190,7 @@ class Parser(BaseParser):
         if not p.STRING1:
             self._add_warning(p._slice[4], 'Term description is empty')
 
-        self.ontology.add_type(term)
+        self.__ontology.add_type(term)
 
     @_('FUNCTIONS_BLOCK NEWLINE function_list')
     def statement(self, p) -> None:
@@ -206,7 +207,7 @@ class Parser(BaseParser):
 
     @_('IDENTIFIER COLON STRING params ARROW IDENTIFIER COLON STRING attributes')
     def function(self, p) -> None:
-        existing_function: Optional[Function] = self.ontology.find_function_by_name(
+        existing_function: Optional[Function] = self.__ontology.find_function_by_name(
             p.IDENTIFIER0
         )
 
@@ -221,7 +222,7 @@ class Parser(BaseParser):
 
         input_types = p.params
 
-        output_term: Optional[Term] = self.ontology.find_term_by_name(p.IDENTIFIER1)
+        output_term: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER1)
 
         if output_term is None:
             raise ValueError(
@@ -244,7 +245,7 @@ class Parser(BaseParser):
         if not p.STRING1:
             self._add_warning(p._slice[7], 'Output term label is empty')
 
-        self.ontology.add_function(function)
+        self.__ontology.add_function(function)
 
     @_(
         'LPAREN param_list RPAREN',
@@ -262,7 +263,7 @@ class Parser(BaseParser):
             label_token = param[1]
             param_label: str = label_token.value
 
-            term: Optional[Term] = self.ontology.find_term_by_name(term_name)
+            term: Optional[Term] = self.__ontology.find_term_by_name(term_name)
 
             if term is None:
                 raise ValueError(
@@ -309,7 +310,7 @@ class Parser(BaseParser):
 
     @_('IDENTIFIER IDENTIFIER IDENTIFIER attributes')
     def hierarchy(self, p) -> None:
-        parent: Optional[Term] = self.ontology.find_term_by_name(p.IDENTIFIER0)
+        parent: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER0)
 
         if parent is None:
             raise ValueError(
@@ -327,7 +328,7 @@ class Parser(BaseParser):
                 )
             )
 
-        child_term: Optional[Term] = self.ontology.find_term_by_name(p.IDENTIFIER2)
+        child_term: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER2)
 
         if child_term is None:
             raise ValueError(
@@ -342,7 +343,7 @@ class Parser(BaseParser):
             children=children,
             attributes=p.attributes,
         )
-        self.ontology.add_relationship(relationship)
+        self.__ontology.add_relationship(relationship)
 
     @_(
         'COMMA LBRACE attribute_list RBRACE',
