@@ -134,8 +134,6 @@ class Parser(BaseParser):
 
     @_('IDENTIFIER COLON STRING NEWLINE')
     def statement(self, p) -> None:
-        print('meta', p.IDENTIFIER, p.STRING)
-
         allowed_meta_tags = [field.name for field in fields(Meta)]
 
         if p.IDENTIFIER not in allowed_meta_tags:
