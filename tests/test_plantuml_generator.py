@@ -106,8 +106,8 @@ def test_generate_function(generator: PlantUML):
     func = Function(
         name='MyFunction',
         label='test label',
-        input_types=[('int', 'test')],
-        output_type=('bool', 'test'),
+        input_types=[{'name': Term('int'), 'label': 'test'}],
+        output_type={'name': Term('bool'), 'label': 'test'},
         attributes={'color': '#E6B8B7'},
     )
     result = generator._generate_function(func)
@@ -118,15 +118,14 @@ def test_generate_function(generator: PlantUML):
     assert '}' in result
 
 
-def test_generate_logical_expression(generator: PlantUML):
+def test_generate_relationship(generator: PlantUML):
     relation = Relationship(
-        parent='MyTypeParent',
-        relationship='containsAAAA',
-        children=['MyTypeChild'],
+        parent=Term('MyTypeParent'),
+        relationship=RelationshipType.from_str('aggregation'),
+        children=[Term('MyTypeChild')],
     )
     result = generator._generate_relationship(relation)
-    print(result)
     assert 'MyTypeParent' in result
-    assert 'containsAAAA' in result
+    assert 'aggregation' in result
     assert 'MyTypeChild' in result
     assert 'as' in result

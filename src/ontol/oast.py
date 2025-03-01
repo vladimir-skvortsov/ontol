@@ -10,8 +10,8 @@ class ASTNode:
 @dataclass
 class Term(ASTNode):
     name: str
-    label: str
-    description: str
+    label: str = ''
+    description: str = ''
     attributes: dict = field(default_factory=dict)
 
     def __repr__(self) -> str:

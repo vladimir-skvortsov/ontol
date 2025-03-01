@@ -201,7 +201,7 @@ class PlantUML:
                     RelationshipType.from_str(
                         function.attributes.get('type', 'directAssociation')
                     ),
-                    [Term(function.name, '', '')],
+                    [Term(function.name)],
                     attributes_dict,
                 )
             )
@@ -214,7 +214,7 @@ class PlantUML:
         }
         relations.append(
             Relationship(
-                Term(function.name, '', ''),
+                Term(function.name),
                 RelationshipType.from_str(
                     function.attributes.get('type', 'directAssociation')
                 ),
@@ -229,8 +229,8 @@ class PlantUML:
 
     # TODO: add comments to input and output types and add color for block
     def _generate_function(self, function: Function) -> str:
-        inputs: str = ', '.join(map(lambda t: t[0], function.input_types))
-        outputs: str = function.output_type[0]
+        inputs: str = ', '.join(map(lambda t: t['name'].name, function.input_types))
+        outputs: str = function.output_type['name'].name
         return (
             f'class {function.name} <<Function>> {{\n'
             f'  +{function.name}({inputs}) : ({outputs})\n'
@@ -240,8 +240,8 @@ class PlantUML:
     # TODO: check type of relationship
     def _generate_relationship(self, relationship: Relationship) -> str:
         return (
-            f'note "{relationship.parent} {relationship.relationship} {relationship.children}" '
-            f'as N{hash(relationship.parent) % 10000}'
+            f'note "{relationship.parent.name} {relationship.relationship.value} {list(map(lambda t: t.name, relationship.children))}" '
+            f'as N{hash(relationship.parent.name) % 10000}'
         )
 
     def processes_puml_to_png(self, puml_file):
