@@ -5,6 +5,7 @@ import zlib
 import requests
 
 from ontol import Function, Ontology, Relationship, Term
+from ontol.oast import RelationshipType
 
 
 # TODO: make look like in technical task
@@ -15,45 +16,36 @@ class PlantUML:
         self.url = url
 
     def generate(self, ontology: Ontology) -> str:
-        if ontology.meta.type == 'Базовый':
-            return self._generate_novikov(ontology)
-        else:
+        if ontology.meta.type == 'Базовый' or ontology.meta.type is None:
             return self._generate_base(ontology)
 
+    # def _generate_base(self, ontology: Ontology) -> str:
+    #     uml_lines: list[str] = ['@startuml', 'skinparam classAttributeIconSize 0']
+    #
+    #     if ontology.meta:
+    #         uml_lines.append(f'title {ontology.meta.title} by {ontology.meta.author}')
+    #
+    #     for term in ontology.types:
+    #         uml_lines.append(self._generate_type(term))
+    #
+    #     for function in ontology.functions:
+    #         uml_lines.append(self._generate_function(function))
+    #
+    #     for relationship in ontology.hierarchy:
+    #         uml_lines.append(self._generate_relationship(relationship))
+    #
+    #     uml_lines.append('@enduml')
+    #     return '\n'.join(uml_lines)
+
     def _generate_base(self, ontology: Ontology) -> str:
-        uml_lines: list[str] = ['@startuml', 'skinparam classAttributeIconSize 0']
-
-        if ontology.meta:
-            uml_lines.append(f'title {ontology.meta.title} by {ontology.meta.author}')
-
-        for term in ontology.types:
-            uml_lines.append(self._generate_type(term))
-
-        for function in ontology.functions:
-            uml_lines.append(self._generate_function(function))
-
-        for relationship in ontology.hierarchy:
-            uml_lines.append(self._generate_relationship(relationship))
-
-        uml_lines.append('@enduml')
-        return '\n'.join(uml_lines)
-
-    def _generate_novikov(self, ontology: Ontology) -> str:
         uml_lines: list[str] = [
-            '@startuml',
-            'skinparam backgroundColor #F0F8FF',
-            'skinparam defaultTextAlignment center',
-            'skinparam shadowing false',
-            'skinparam dpi 150',
-            'skinparam linetype ortho',
-            'skinparam ranksep 40',
-            'skinparam nodesep 30',
+            '@startuml', 'skinparam backgroundColor #F0F8FF',
+            'skinparam defaultTextAlignment center', 'skinparam shadowing false',
+            'skinparam dpi 150', 'skinparam linetype ortho', 'skinparam ranksep 40',
+            'skinparam nodesep 30', f'package "'
+                                    f'{ontology.meta.title if ontology.meta.title is not None else "Онтология"}'
+                                    f'" {{'
         ]
-
-        if not ontology.meta:
-            raise ValueError('No meta defined for ontology')
-
-        uml_lines.append(f'package "{ontology.meta.title}" {{')
 
         for term in ontology.types:
             uml_lines.append(self._generate_rectangle(term))
@@ -64,7 +56,7 @@ class PlantUML:
             )
 
         for function in ontology.functions:
-            for relations in self.__prepare_function_hierarchy(function):
+            for relations in self.__prepare_function_hierarchy(function, ontology):
                 uml_lines.append(self._generate_base_hierarchy(relations))
 
         for relationship in ontology.hierarchy:
@@ -74,14 +66,16 @@ class PlantUML:
         uml_lines.append('@enduml')
         return '\n'.join(uml_lines)
 
-    def _generate_rectangle(self, term: Term) -> str:
+    @staticmethod
+    def _generate_rectangle(term: Term) -> str:
         return (
-            f'rectangle "{term.label}'
-            + (f'\\n({term.description})' if term.description else '')
-            + f'" as {term.name} {term.attributes.get("color", "#white")}'
+                f'rectangle "{term.label}'
+                + (f'\\n({term.description})' if term.description else '')
+                + f'" as {term.name} {term.attributes.get("color", "#white")}'
         )
 
-    def _generate_base_hierarchy(self, relationship: Relationship) -> str:
+    @staticmethod
+    def _generate_base_hierarchy(relationship: Relationship) -> str:
         relationships = {
             'depends': {
                 'forward': '...>',
@@ -118,7 +112,6 @@ class PlantUML:
                 'backward': '*---',
                 'bidirectional': '*---*',
             },
-            'usage': {'forward': '...>', 'backward': '<...', 'bidirectional': '<...>'},
         }
         leftchar: str = (
             ('"' + relationship.attributes['leftChar'] + '"')
@@ -137,33 +130,37 @@ class PlantUML:
         )
         color: str = '[' + relationship.attributes.get('color', '#black') + ']'
         relation: str = (
-            relationships[relationship.relationship][
-                relationship.attributes.get('direction', 'forward')
-            ][:2]
-            + color
-            + relationships[relationship.relationship][
-                relationship.attributes.get('direction', 'forward')
-            ][2:]
+                relationships[relationship.relationship.value][
+                    relationship.attributes.get('direction', 'forward')
+                ][:2]
+                + color
+                + relationships[relationship.relationship.value][
+                      relationship.attributes.get('direction', 'forward')
+                  ][2:]
         )
         res: str = ''
         res += (
-            f'{relationship.parent} {leftchar} '
-            f'{relation} '
-            f'{rightchar} '
-            f'{relationship.child[0]} {title}'
-        ) + '\n'
+                   f'{relationship.parent.name} {leftchar} '
+                   f'{relation} '
+                   f'{rightchar} '
+                   f'{relationship.children[0].name} {title}'
+               ) + '\n'
         return res
 
-    def __prepare_function_term(self, function: Function):
-        input: list[str] = [
-            f'{el1}: {el2}' if el2 else f'{el1}' for el1, el2 in function.input_types
+    @staticmethod
+    def __prepare_function_term(function: Function):
+        input_str: list[str] = [
+            f'{el["name"].name}: {el["label"]}'
+            if el['label']
+            else str(el['name'].name)
+            for el in function.input_types
         ]
-        output: str = (
-            (f'{function.output_type[0]}: {function.output_type[1]}')
-            if function.output_type[1]
-            else f'{function.output_type[0]}'
+        output_str: str = (
+            f'{function.output_type["name"].name}: {function.output_type["label"]}'
+            if function.output_type['label']
+            else str(function.output_type['name'].name)
         )
-        desc: str = f'{", ".join(input)} -> {output}'
+        desc: str = f'{", ".join(input_str)} -> {output_str}'
         return Term(
             function.name,
             function.label,
@@ -171,14 +168,14 @@ class PlantUML:
             {'color': function.attributes.get('color', '#white')},
         )
 
-    def __prepare_function_hierarchy(self, function: Function):
+    @staticmethod
+    def __prepare_function_hierarchy(function: Function, ontology: Ontology):
         relations = []
-
-        input: collections.defaultdict[str, int] = collections.defaultdict(int)
-        for type, _ in function.input_types:
-            input[type] += 1
-
-        for k, v in input.items():
+        input_types: collections.defaultdict[str, int] = collections.defaultdict(int)
+        for input_type in function.input_types:
+            input_types[input_type['name'].name] += 1
+        for k, v in input_types.items():
+            term: Term = ontology.find_term_by_name(k)
             attributes_dict = {
                 'color': function.attributes.get('colorArrow', '#black'),
                 'title': function.attributes.get('inputTitle', ''),
@@ -188,9 +185,9 @@ class PlantUML:
             }
             relations.append(
                 Relationship(
-                    k,
-                    function.attributes.get('type', 'directAssociation'),
-                    [function.name],
+                    term,
+                    RelationshipType.from_str(function.attributes.get('type', 'directAssociation')),
+                    [Term(function.name, '', '')],
                     attributes_dict,
                 )
             )
@@ -203,9 +200,9 @@ class PlantUML:
         }
         relations.append(
             Relationship(
-                function.name,
-                function.attributes.get('type', 'directAssociation'),
-                [function.output_type[0]],
+                Term(function.name, '', ''),
+                RelationshipType.from_str(function.attributes.get('type', 'directAssociation')),
+                [ontology.find_term_by_name(function.output_type['name'].name)],
                 attributes_dict,
             )
         )
@@ -226,7 +223,8 @@ class PlantUML:
 
     # TODO: check type of relationship
     def _generate_relationship(self, relationship: Relationship) -> str:
-        return f'note "{relationship.parent} {relationship.relationship} {relationship.child}" as N{hash(relationship.parent) % 10000}'
+        return (f'note "{relationship.parent} {relationship.relationship} {relationship.children}" '
+                f'as N{hash(relationship.parent) % 10000}')
 
     def processes_puml_to_png(self, puml_file):
         outfile = os.path.splitext(puml_file)[0] + '.png'

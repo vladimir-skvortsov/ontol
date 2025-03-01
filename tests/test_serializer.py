@@ -1,4 +1,6 @@
 import json
+
+from ontol.oast import TypeDict, RelationshipType
 from src.ontol import Function, Meta, Ontology, Relationship, Term, JSONSerializer
 
 import pytest
@@ -10,19 +12,20 @@ def sample_ontology():
     ontology.add_type(
         Term(name='MyType', description='A sample type', label='A some label')
     )
+    input_type: TypeDict = {'name': Term('int', '', ''), 'label': ''}
     ontology.add_function(
         Function(
             name='MyFunction',
             label='Function',
-            input_types=['int'],
-            output_type=['bool'],
+            input_types=[input_type],
+            output_type={'name': Term('bool', '', ''), 'label': ''},
         )
     )
     ontology.add_relationship(
         Relationship(
-            relationship='',
-            parent='',
-            child='',
+            relationship=RelationshipType.DEPENDS,
+            parent=Term('int', '', ''),
+            children=[Term('bool', '', '')],
         )
     )
     ontology.set_meta(
@@ -63,14 +66,23 @@ def test_serialize_ontology(serializer, sample_ontology):
         {
             'name': 'MyFunction',
             'label': 'Function',
-            'input_types': ['int'],
-            'output_type': ['bool'],
+            'input_types': [
+                {'name': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
+                 'label': ''}
+            ],
+            'output_type': {
+                'name': {'name': 'bool', 'label': '', 'description': '', 'attributes': {}},
+                'label': ''},
             'attributes': {},
         }
     ]
 
     assert data['hierarchy'] == [
-        {'parent': '', 'relationship': '', 'child': '', 'attributes': {}}
+        {'parent': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
+         'relationship': 'depends',
+         'children': [
+             {'name': 'bool', 'label': '', 'description': '', 'attributes': {}}
+         ], 'attributes': {}}
     ]
     assert data['meta'] == {
         'version': '1.0',
@@ -115,8 +127,8 @@ def test_serialize_term(serializer):
 def test_serialize_function(serializer):
     func = Function(
         name='TestFunction',
-        input_types=['int'],
-        output_type=['str'],
+        input_types=[{'name': Term('int', '', ''), 'label': ''}],
+        output_type={'name': Term('bool', '', ''), 'label': ''},
         label='A test function',
     )
     serialized_function = serializer._serialize_function(func)
@@ -124,8 +136,10 @@ def test_serialize_function(serializer):
     assert serialized_function == {
         'name': 'TestFunction',
         'label': 'A test function',
-        'input_types': ['int'],
-        'output_type': ['str'],
+        'input_types': [{'name': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
+                         'label': ''}],
+        'output_type': {'name': {'name': 'bool', 'label': '', 'description': '', 'attributes': {}},
+                        'label': ''},
         'attributes': {},
     }
 
@@ -159,15 +173,15 @@ def test_serialize_ontology_without_meta(serializer):
         Function(
             name='MyFunction',
             label='Function',
-            input_types=['int'],
-            output_type=['bool'],
+            input_types=[{'name': Term('int', '', ''), 'label': ''}],
+            output_type={'name': Term('bool', '', ''), 'label': ''},
         )
     )
     ontology.add_relationship(
         Relationship(
-            relationship='',
-            parent='',
-            child='',
+            relationship=RelationshipType.DEPENDS,
+            parent=Term('int', '', ''),
+            children=[Term('bool', '', '')],
         )
     )
 
@@ -197,11 +211,21 @@ def test_serialize_ontology_without_meta(serializer):
         {
             'name': 'MyFunction',
             'label': 'Function',
-            'input_types': ['int'],
-            'output_type': ['bool'],
+            'input_types': [
+                {'name': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
+                 'label': ''}
+            ],
+            'output_type': {
+                'name': {'name': 'bool', 'label': '', 'description': '', 'attributes': {}},
+                'label': ''},
             'attributes': {},
         }
     ]
+
     assert data['hierarchy'] == [
-        {'parent': '', 'relationship': '', 'child': '', 'attributes': {}}
+        {'parent': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
+         'relationship': 'depends',
+         'children': [
+             {'name': 'bool', 'label': '', 'description': '', 'attributes': {}}
+         ], 'attributes': {}}
     ]

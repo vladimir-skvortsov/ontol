@@ -1,4 +1,5 @@
-from typing import Optional, Dict
+from enum import Enum
+from typing import Optional, Dict, TypedDict
 from dataclasses import dataclass, field
 
 
@@ -17,16 +18,17 @@ class Term(ASTNode):
         return f'Term(name={self.name}, label={self.label}, description={self.description}, attributes={self.attributes})'
 
 
+class TypeDict(TypedDict):
+    name: Term
+    label: str
+
+
 @dataclass
 class Function(ASTNode):
     name: str
     label: str
-    # TODO: replace tuple[str, str] with list[{ name: str, label: str }]
-    # TODO: replace str with Term
-    input_types: list[tuple[str, str]]
-    # TODO: replace tuple[str, str] with dict { name: str, label: str }
-    # TODO: replace str with Term
-    output_type: tuple[str, str]
+    input_types: list[TypeDict]
+    output_type: TypeDict
     attributes: dict = field(default_factory=dict)
 
     def __repr__(self) -> str:
@@ -36,23 +38,44 @@ class Function(ASTNode):
             f'attributes={self.attributes})'
         )
 
+    def _format_input_types(self) -> str:
+        return "[" + ", ".join(f"{{name: {t['name'].name}, label: {t['label']}}}" for t in self.input_types) + "]"
 
-# TODO: implement structure from technical task. Must contain parent, child, and relationship type
+    def _format_output_type(self) -> str:
+        return f"{{name: {self.output_type['name'].name}, label: {self.output_type['label']}}}"
+
+
+class RelationshipType(Enum):
+    # TODO: change name by Novikov opinion
+    DEPENDS = 'depends'
+    ASSOCIATION = 'association'
+    DIRECT_ASSOCIATION = 'directAssociation'
+    INHERITANCE = 'inheritance'
+    REALIZATION = 'realization'
+    AGGREGATION = 'aggregation'
+    COMPOSITION = 'composition'
+
+    @classmethod
+    def from_str(cls, value: str):
+        return cls._value2member_map_.get(value, None)
+
+    @classmethod
+    def has_value(cls, value: str) -> bool:
+        return value in cls._value2member_map_
+
+
 @dataclass
 class Relationship(ASTNode):
-    # TODO: replace str with Term
-    parent: str
-    # TODO: replace str with enum type
-    relationship: str
-    # TODO: replace str with Term
-    child: list[str]
+    parent: Term
+    relationship: RelationshipType
+    children: list[Term]
     attributes: Dict[str, str] = field(default_factory=dict)
 
     def __repr__(self) -> str:
         return (
-            f'Relationship(parent={self.parent}, '
-            f'relationship={self.relationship}, '
-            f'child={self.child}, attributes={self.attributes})'
+            f'Relationship(parent={self.parent.name}, '
+            f'relationship={self.relationship.value}, '
+            f'children=[{",".join(child.name for child in self.children)}], attributes={self.attributes})'
         )
 
 
@@ -91,6 +114,9 @@ class Ontology(ASTNode):
 
     def set_meta(self, meta: Meta) -> None:
         self.meta = meta
+
+    def find_term_by_name(self, name: str) -> Optional[Term]:
+        return next((term for term in self.types if term.name == name), None)
 
     def __repr__(self) -> str:
         return (

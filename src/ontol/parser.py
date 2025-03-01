@@ -4,6 +4,8 @@ from typing import Optional, Literal
 from ontol import Ontology, Term, Function, Relationship, Meta
 from datetime import datetime
 
+from ontol.oast import TypeDict, RelationshipType
+
 
 class Parser:
     def __init__(self):
@@ -68,10 +70,10 @@ class Parser:
                     type_def = self._parse_type(line, file_path, line_number)
                     ontology.add_type(type_def)
                 elif current_block == 'functions':
-                    func_def = self._parse_function(line, file_path, line_number)
+                    func_def = self._parse_function(line, file_path, line_number, ontology)
                     ontology.add_function(func_def)
                 elif current_block == 'hierarchy':
-                    relationship = self._parse_relationship(line)
+                    relationship = self._parse_relationship(line, ontology)
                     ontology.add_relationship(relationship)
 
                 else:
@@ -124,7 +126,8 @@ class Parser:
 
         return Term(name, label, description, attributes)
 
-    def _parse_attributes(self, attr_string: str) -> dict[str, str]:
+    @staticmethod
+    def _parse_attributes(attr_string: str) -> dict[str, str]:
         attributes: dict[str, str] = {}
 
         if attr_string:
@@ -135,7 +138,9 @@ class Parser:
 
         return attributes
 
-    def _parse_function(self, line: str, file_path: str, line_number: int) -> Function:
+    def _parse_function(
+            self, line: str, file_path: str, line_number: int, ontology: Ontology
+    ) -> Function:
         match = re.match(
             r"(\w+):\s*['\"](.*?)['\"]\s*\((.*?)\)\s*->\s*(\w+):\s*['\"](.*?)['\"](,\s*\{(.*?)\})?$",
             line,
@@ -146,8 +151,8 @@ class Parser:
 
         name: str = match.group(1)
         label: str = match.group(2)
-        input_params: list[tuple[str, str]] = self._parse_parameters(
-            match.group(3), line, file_path, line_number
+        input_params: list[TypeDict] = self._parse_parameters(
+            match.group(3), line, file_path, line_number, ontology
         )
         output_type: str = match.group(4)
         output_label: str = match.group(5)
@@ -160,14 +165,19 @@ class Parser:
         if not output_label:
             self._add_warning(file_path, line_number, line, 'Output label is empty')
 
+        term = ontology.find_term_by_name(output_type)
+        if term is None:
+            raise ValueError(f'Unexpected type name {output_type}')
+        output: TypeDict = {'name': term, 'label': output_label}
+
         return Function(
-            name, label, input_params, (output_type, output_label), attributes
+            name, label, input_params, output, attributes
         )
 
     def _parse_parameters(
-        self, params_string: str, line: str, file_path: str, line_number: int
-    ) -> list[tuple[str, str]]:
-        params: list[tuple[str, str]] = []
+        self, params_string: str, line: str, file_path: str, line_number: int, ontology: Ontology
+    ) -> list[TypeDict]:
+        params: list[TypeDict] = []
 
         for param in params_string.split(','):
             param = param.strip()
@@ -185,20 +195,41 @@ class Parser:
                         f"{param_name}'s parameter label is empty",
                     )
 
-                params.append((param_name, param_label))
+                term = ontology.find_term_by_name(param_name)
+                if term is None:
+                    raise ValueError(f'Unexpected type name {param_name}')
+
+                param_instance: TypeDict = {'name': term, 'label': param_label}
+                params.append(param_instance)
 
         return params
 
-    def _parse_relationship(self, line: str) -> Relationship:
+    def _parse_relationship(self, line: str, ontology: Ontology) -> Relationship:
         pattern = r'^(\w+)\s+(\w+)\s+(?:\(([^)]+)\)|(\w+))?\s*(,\s*\{(.*?)\})?$'
         match = re.match(pattern, line.strip())
         if not match:
             raise ValueError(f'Invalid line {line}')
 
-        parent: str = match.group(1)
-        relation: str = match.group(2)
+        parent_str: str = match.group(1)
+        term = ontology.find_term_by_name(parent_str)
+        if term is None:
+            raise ValueError(f'Unexpected type name {parent_str}')
+        parent = term
+
+        relation_str: str = match.group(2)
+        relation: RelationshipType = RelationshipType.from_str(relation_str)
+        if relation is None:
+            raise ValueError(f'Unexpected relationship {relation_str}')
+
         child: str = match.group(3) or match.group(4)
-        children: list[str] = child.split(', ') if child else []
+        children_str: list[str] = child.split(', ') if child else []
+        children: list[Term] = []
+        for child in children_str:
+            term = ontology.find_term_by_name(child)
+            if term is None:
+                raise ValueError(f'Unexpected type name {parent_str}')
+            children.append(term)
+
         attributes: dict[str, str] = (
             self._parse_attributes(match.group(6)) if match.group(6) else {}
         )

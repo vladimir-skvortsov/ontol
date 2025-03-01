@@ -1,3 +1,4 @@
+from ontol.oast import RelationshipType
 from src.ontol import Function, Meta, Ontology, Relationship, Term
 
 
@@ -81,25 +82,29 @@ def test_function_wth_empty_input_types_creation():
         name='sum',
         label='Sum',
         input_types=[],
-        output_type=('int', 'Result'),
+        output_type={'name': Term('int', '', ''), 'label': 'Result'},
     )
     assert func.input_types == []
     assert (
         repr(func)
-        == "Function(name=sum, label=Sum, input_types=[], output_type=('int', 'Result'), attributes={})"
+        == "Function(name=sum, label=Sum, input_types=[],"
+           " output_type={'name': Term(name=int, label=, description=, attributes={}),"
+           " 'label': 'Result'}, attributes={})"
     )
 
 
 def test_relationship_creation() -> None:
     rel: Relationship = Relationship(
-        parent='set', relationship='composite', child=['element']
+        parent=Term('set', '', ''),
+        relationship=RelationshipType.DEPENDS,
+        children=[Term('element', '', '')]
     )
-    assert rel.parent == 'set'
-    assert rel.relationship == 'composite'
-    assert rel.child == ['element']
+    assert rel.parent.name == 'set'
+    assert rel.relationship.value == 'depends'
+    assert rel.children == [Term('element', '', '')]
     assert (
         repr(rel)
-        == "Relationship(parent=set, relationship=composite, child=['element'], attributes={})"
+        == "Relationship(parent=set, relationship=depends, children=[element], attributes={})"
     )
 
 
@@ -120,7 +125,8 @@ def test_meta_creation():
     assert meta.date_created == '2024-01-01'
     assert (
         repr(meta)
-        == 'Meta(version=1.0, title=TestOntology, author=Author, description=A test ontology, type=Base, date_created=2024-01-01)'
+        == 'Meta(version=1.0, title=TestOntology, author=Author,'
+           ' description=A test ontology, type=Base, date_created=2024-01-01)'
     )
 
 
@@ -144,14 +150,16 @@ def test_ontology_operations():
     ontology: Ontology = Ontology()
     char: Term = Term(name='str', label='String', description='')
     string: Term = Term(name='string', label='String', description='')
-    concatanate: Function = Function(
-        name='concatanate',
-        label='Concatanate',
-        input_types=[('str', ''), ('str', '')],
-        output_type=('str', 'Result'),
+    concatenate: Function = Function(
+        name='concatenate',
+        label='Concatenate',
+        input_types=[{'name': Term(name='str', label='String', description=''), 'label': ''}],
+        output_type=({'name': Term(name='str', label='String', description=''), 'label': 'Result'}),
     )
     rel: Relationship = Relationship(
-        parent='string', relationship='composition', child='char'
+        parent=Term(name='string', label='String', description=''),
+        relationship=RelationshipType.COMPOSITION,
+        children=[Term(name='str', label='String', description='')]
     )
     meta: Meta = Meta(
         version='1.0',
@@ -163,16 +171,16 @@ def test_ontology_operations():
 
     ontology.add_type(char)
     ontology.add_type(string)
-    ontology.add_function(concatanate)
+    ontology.add_function(concatenate)
     ontology.add_relationship(rel)
     ontology.set_meta(meta)
 
     assert ontology.types == [char, string]
-    assert ontology.functions == [concatanate]
+    assert ontology.functions == [concatenate]
     assert ontology.hierarchy == [rel]
     assert ontology.meta == meta
 
     assert repr([char, string]) in repr(ontology)
-    assert repr([concatanate]) in repr(ontology)
+    assert repr([concatenate]) in repr(ontology)
     assert repr([rel]) in repr(ontology)
     assert repr(meta) in repr(ontology)
