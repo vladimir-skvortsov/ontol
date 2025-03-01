@@ -68,6 +68,24 @@ def test_parse_type(parser):
     assert term.attributes == {'color': '#ffffff'}
 
 
+def test_parse_type_Wth_multiline_attributes(parser):
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', {
+        color: '#ffffff',
+    }
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.types) == 1
+
+    term: Term = ontology.types[0]
+    assert term.name == 'set'
+    assert term.label == 'Множество'
+    assert term.description == 'Коллекция уникальных элементов'
+    assert term.attributes == {'color': '#ffffff'}
+
+
 def test_parse_type_without_arguments(parser):
     content: str = """
     types:
@@ -117,6 +135,20 @@ def test_parse_type_with_incorrect_arguments(parser):
     content: str = """
     types:
     set: 'Множество', 'Коллекция уникальных элементов' { color: '#red' }
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', { 'color': '#red' }
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', { color: red }
     """
     with pytest.raises(SyntaxError):
         parser.parse(content, 'test.ontol')
