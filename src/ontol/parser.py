@@ -356,7 +356,9 @@ class Parser(BaseParser):
         if relationship is None:
             raise ValueError(
                 self._get_exception_message(
-                    p._slice[1], 'Unexpected relationship type', 'error'
+                    p._slice[1],
+                    f'Unexpected relationship type. One of the following was expected: {", ".join(member.value for member in RelationshipType)}',
+                    'error',
                 )
             )
 
