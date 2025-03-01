@@ -52,6 +52,105 @@ def test_parse_commented_file(parser):
     assert len(warnings) == 0
 
 
+def test_parse_meta_tags(parser):
+    content: str = """
+    version: '2.5.5'
+    title: 'Biology'
+    author: 'Firstname Lastname'
+    description: 'Biology for high school'
+    date: '02.02.2025'
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.types) == 0
+    assert len(ontology.functions) == 0
+    assert len(ontology.hierarchy) == 0
+
+    assert ontology.meta is not None
+
+    assert ontology.meta.version == '2.5.5'
+    assert ontology.meta.title == 'Biology'
+    assert ontology.meta.author == 'Firstname Lastname'
+    assert ontology.meta.description == 'Biology for high school'
+    assert ontology.meta.date == '02.02.2025'
+
+
+def test_parse_empty_meta_tags(parser):
+    content: str = """
+    version: ''
+    title: ''
+    author: ''
+    description: ''
+    date: ''
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.types) == 0
+    assert len(ontology.functions) == 0
+    assert len(ontology.hierarchy) == 0
+
+    assert ontology.meta is not None
+
+    assert ontology.meta.version == ''
+    assert ontology.meta.title == ''
+    assert ontology.meta.author == ''
+    assert ontology.meta.description == ''
+    assert ontology.meta.date != ''
+
+
+def test_parse_file_without_meta_tags(parser):
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', {color: '#ffffff'}
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.types) == 1
+    assert len(ontology.functions) == 0
+    assert len(ontology.hierarchy) == 0
+
+    assert ontology.meta is not None
+
+    assert ontology.meta.version is None
+    assert ontology.meta.title is None
+    assert ontology.meta.author is None
+    assert ontology.meta.description is None
+    assert ontology.meta.date is not None
+
+
+def test_parse_file_with_incorrect_meta_tags(parser):
+    content: str = """
+    university: 'Peter the Great St.Petersburg Polytechnic University'
+    """
+    with pytest.raises(ValueError):
+        parser.parse(content, 'test.ontol')
+
+    content: str = """
+    version: 1.0.0
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+        parser.parse(content, 'test.ontol')
+
+    content: str = """
+    version '1.0.0'
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+    content: str = """
+    'version': '1.0.0'
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+    content: str = """
+    'version' '1.0.0'
+    """
+    with pytest.raises(SyntaxError):
+        parser.parse(content, 'test.ontol')
+
+
 def test_parse_type(parser):
     content: str = """
     types:
@@ -72,6 +171,24 @@ def test_parse_type_Wth_multiline_attributes(parser):
     content: str = """
     types:
     set: 'Множество', 'Коллекция уникальных элементов', {
+        color: '#ffffff'
+    }
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.types) == 1
+
+    term: Term = ontology.types[0]
+    assert term.name == 'set'
+    assert term.label == 'Множество'
+    assert term.description == 'Коллекция уникальных элементов'
+    assert term.attributes == {'color': '#ffffff'}
+
+
+def test_parse_type_Wth_multiline_attributes_with_trailing_comma(parser):
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', {
         color: '#ffffff',
     }
     """
@@ -86,7 +203,7 @@ def test_parse_type_Wth_multiline_attributes(parser):
     assert term.attributes == {'color': '#ffffff'}
 
 
-def test_parse_type_without_arguments(parser):
+def test_parse_type_without_attributes(parser):
     content: str = """
     types:
     set: 'Множество', 'Коллекция уникальных элементов'
@@ -103,7 +220,24 @@ def test_parse_type_without_arguments(parser):
     assert len(warnings) == 0
 
 
-def test_parse_type_with_incorrect_arguments(parser):
+def test_parse_type_with_empty_attributes(parser):
+    content: str = """
+    types:
+    set: 'Множество', 'Коллекция уникальных элементов', {}
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.types) == 1
+
+    term: Term = ontology.types[0]
+    assert term.name == 'set'
+    assert term.label == 'Множество'
+    assert term.description == 'Коллекция уникальных элементов'
+    assert term.attributes == {}
+    assert len(warnings) == 0
+
+
+def test_parse_type_with_incorrect_attributes(parser):
     content: str = """
     types:
     set: 'Множество', 'Коллекция уникальных элементов', { foo }
