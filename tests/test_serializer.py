@@ -35,7 +35,7 @@ def sample_ontology():
             author='Author',
             description='Sample description',
             type='Базовый',
-            date_created='2024-01-01',
+            date='2024-01-01',
         )
     )
     return ontology
@@ -94,7 +94,7 @@ def test_serialize_ontology(serializer, sample_ontology):
         'author': 'Author',
         'description': 'Sample description',
         'type': 'Базовый',
-        'date_created': '2024-01-01',
+        'date': '2024-01-01',
     }
 
 
@@ -112,7 +112,7 @@ def test_serialize_empty_ontology(serializer):
             'author': None,
             'description': None,
             'type': None,
-            'date_created': None,
+            'date': None,
         },
     }
 
@@ -161,7 +161,7 @@ def test_serialize_meta(serializer):
         author='Author',
         description='A test ontology',
         type='Базовый',
-        date_created='2024-01-01',
+        date='2024-01-01',
     )
     serialized_meta = serializer._serialize_meta(meta)
     assert serialized_meta == {
@@ -170,7 +170,7 @@ def test_serialize_meta(serializer):
         'author': 'Author',
         'description': 'A test ontology',
         'type': 'Базовый',
-        'date_created': '2024-01-01',
+        'date': '2024-01-01',
     }
 
 
@@ -207,7 +207,7 @@ def test_serialize_ontology_without_meta(serializer):
         'author': None,
         'description': None,
         'type': None,
-        'date_created': None,
+        'date': None,
     }
     assert data['terms'] == [
         {

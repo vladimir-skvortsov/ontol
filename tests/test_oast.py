@@ -122,17 +122,17 @@ def test_meta_creation():
         author='Author',
         description='A test ontology',
         type='Base',
-        date_created='2024-01-01',
+        date='2024-01-01',
     )
     assert meta.version == '1.0'
     assert meta.title == 'TestOntology'
     assert meta.author == 'Author'
     assert meta.description == 'A test ontology'
     assert meta.type == 'Base'
-    assert meta.date_created == '2024-01-01'
+    assert meta.date == '2024-01-01'
     assert (
         repr(meta) == 'Meta(version=1.0, title=TestOntology, author=Author,'
-        ' description=A test ontology, type=Base, date_created=2024-01-01)'
+        ' description=A test ontology, type=Base, date=2024-01-01)'
     )
 
 
@@ -143,12 +143,12 @@ def test_meta_with_empty_description_creation():
         author='Author',
         description=None,
         type='Base',
-        date_created='2024-01-01',
+        date='2024-01-01',
     )
     assert meta_no_optional.description is None
     assert (
         repr(meta_no_optional)
-        == 'Meta(version=1.0, title=TestOntology, author=Author, description=None, type=Base, date_created=2024-01-01)'
+        == 'Meta(version=1.0, title=TestOntology, author=Author, description=None, type=Base, date=2024-01-01)'
     )
 
 
@@ -179,7 +179,7 @@ def test_ontology_operations():
         title='StringOntology',
         author='Author',
         description='A string ontology',
-        date_created='2024-01-01',
+        date='2024-01-01',
     )
 
     ontology.add_type(char)

@@ -172,11 +172,11 @@ class PlantUML:
             if function.output_type.label
             else str(function.output_type.term.name)
         )
-        desc: str = f'{", ".join(input_str)} -> {output_str}'
+        description: str = f'{", ".join(input_str)} -> {output_str}'
         return Term(
             function.name,
             function.label,
-            desc,
+            description,
             {'color': function.attributes.get('color', '#white')},
         )
 

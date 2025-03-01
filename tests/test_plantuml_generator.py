@@ -22,7 +22,7 @@ def mock_ontology():
             author='Author',
             description='Test ontology',
             type='Базовый',
-            date_created='2024-01-01',
+            date='2024-01-01',
         )
     )
     # TODO: add term without color attribute

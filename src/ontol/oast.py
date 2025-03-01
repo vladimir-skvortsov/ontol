@@ -98,13 +98,13 @@ class Meta(ASTNode):
     author: Optional[str] = None
     description: Optional[str] = None
     type: Optional[str] = None
-    date_created: Optional[str] = None
+    date: Optional[str] = None
 
     def __repr__(self) -> str:
         return (
             f'Meta(version={self.version}, title={self.title}, author={self.author}, '
             f'description={self.description}, type={self.type}, '
-            f'date_created={self.date_created})'
+            f'date={self.date})'
         )
 
 

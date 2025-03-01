@@ -1,12 +1,14 @@
 from sly import Lexer as BaseLexer, Parser as BaseParser
 from datetime import datetime
 from typing import Literal, Optional
+from dataclasses import fields
 
 from ontol import (
     Ontology,
     Term,
     Function,
     Relationship,
+    Meta,
     FunctionArgument,
     RelationshipType,
 )
@@ -14,12 +16,6 @@ from ontol import (
 
 class Lexer(BaseLexer):
     tokens = {
-        META_VERSION,
-        META_TITLE,
-        META_AUTHOR,
-        META_DESC,
-        META_DATE,
-        META_TYPE,
         TYPES_BLOCK,
         FUNCTIONS_BLOCK,
         HIERARCHY_BLOCK,
@@ -42,13 +38,6 @@ class Lexer(BaseLexer):
     TYPES_BLOCK: str = r'types:'
     FUNCTIONS_BLOCK: str = r'functions:'
     HIERARCHY_BLOCK: str = r'hierarchy:'
-
-    META_VERSION: str = r'version:'
-    META_TITLE: str = r'title:'
-    META_AUTHOR: str = r'author:'
-    META_DESC: str = r'desc:'
-    META_DATE: str = r'date:'
-    META_TYPE: str = r'type:'
 
     STRING: str = r'\'[^\']*\'|\"[^\"]*\"'
     IDENTIFIER: str = r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -131,8 +120,8 @@ class Parser(BaseParser):
 
     @_('statement_list')
     def program(self, p) -> Ontology:
-        if not self.ontology.meta.date_created:
-            self.ontology.meta.date_created = datetime.today().strftime('%Y-%m-%d')
+        if not self.ontology.meta.date:
+            self.ontology.meta.date = datetime.today().strftime('%Y-%m-%d')
         return self.ontology
 
     @_('statement_list statement', '')
@@ -143,47 +132,25 @@ class Parser(BaseParser):
     def statement_list(self, p) -> None:
         pass
 
-    @_('META_VERSION STRING NEWLINE')
+    @_('IDENTIFIER COLON STRING NEWLINE')
     def statement(self, p) -> None:
+        print('meta', p.IDENTIFIER, p.STRING)
+
+        allowed_meta_tags = [field.name for field in fields(Meta)]
+
+        if p.IDENTIFIER not in allowed_meta_tags:
+            raise ValueError(
+                self._get_exception_message(
+                    p._slice[0],
+                    f'Unexpected meta tag. One of the following was expected: {", ".join(allowed_meta_tags)}',
+                    'error',
+                )
+            )
+
         if not p.STRING:
             self._add_warning(p._slice[1], 'Version value is empty')
 
-        self.ontology.meta.version = p.STRING
-
-    @_('META_TITLE STRING NEWLINE')
-    def statement(self, p) -> None:
-        if not p.STRING:
-            self._add_warning(p._slice[1], 'Title value is empty')
-
-        self.ontology.meta.title = p.STRING
-
-    @_('META_AUTHOR STRING NEWLINE')
-    def statement(self, p) -> None:
-        if not p.STRING:
-            self._add_warning(p._slice[1], 'Author value is empty')
-
-        self.ontology.meta.author = p.STRING
-
-    @_('META_DESC STRING NEWLINE')
-    def statement(self, p) -> None:
-        if not p.STRING:
-            self._add_warning(p._slice[1], 'Description value is empty')
-
-        self.ontology.meta.description = p.STRING
-
-    @_('META_DATE STRING NEWLINE')
-    def statement(self, p) -> None:
-        if not p.STRING:
-            self._add_warning(p._slice[1], 'Date value is empty')
-
-        self.ontology.meta.date_created = p.STRING
-
-    @_('META_TYPE STRING NEWLINE')
-    def statement(self, p) -> None:
-        if not p.STRING:
-            self._add_warning(p._slice[1], 'Type value is empty')
-
-        self.ontology.meta.type = p.STRING
+        setattr(self.ontology.meta, p.IDENTIFIER, p.STRING)
 
     @_('TYPES_BLOCK NEWLINE type_list')
     def statement(self, p) -> None:
@@ -425,7 +392,7 @@ class Parser(BaseParser):
             raise SyntaxError(
                 self._get_exception_message(
                     p,
-                    f'Syntax error {p.type}',
+                    f'Syntax error ({p.type})',
                     'error',
                 )
             )

@@ -16,7 +16,7 @@ def test_parse_empty_file(parser):
     assert ontology.meta.author is None
     assert ontology.meta.description is None
     assert ontology.meta.type is None
-    assert ontology.meta.date_created is not None
+    assert ontology.meta.date is not None
     assert len(ontology.types) == 0
     assert len(ontology.functions) == 0
     assert len(ontology.hierarchy) == 0
@@ -28,7 +28,7 @@ def test_parse_commented_file(parser):
     # version: '1.0'
     # title: 'Basic linear algebra'
     # author: 'Firstname Lastname'
-    # desc: 'Matrices'
+    # description: 'Matrices'
 
     # types:
     # number: 'Number', ''
@@ -335,7 +335,7 @@ def test_parse_meta(parser):
     version: '1.0'
     title: "Basic calculus" # can we come up with a more interesting name?
     author: 'Firstname Lastname'
-    desc: "Limits, differentiation and integrals"
+    description: "Limits, differentiation and integrals"
     type: 'Базовый'
     """
     ontology, warnings = parser.parse(content, 'test.ontol')
@@ -354,7 +354,7 @@ def test_parse_meta_without_qoutes(parser):
     version: 1.0
     title: "Basic calculus"
     author: 'Firstname Lastname'
-    desc: "Limits, differentiation and integrals"
+    description: "Limits, differentiation and integrals"
     """
     with pytest.raises(SyntaxError):
         parser.parse(content, 'test.ontol')
