@@ -39,12 +39,17 @@ class PlantUML:
 
     def _generate_base(self, ontology: Ontology) -> str:
         uml_lines: list[str] = [
-            '@startuml', 'skinparam backgroundColor #F0F8FF',
-            'skinparam defaultTextAlignment center', 'skinparam shadowing false',
-            'skinparam dpi 150', 'skinparam linetype ortho', 'skinparam ranksep 40',
-            'skinparam nodesep 30', f'package "'
-                                    f'{ontology.meta.title if ontology.meta.title is not None else "Онтология"}'
-                                    f'" {{'
+            '@startuml',
+            'skinparam backgroundColor #F0F8FF',
+            'skinparam defaultTextAlignment center',
+            'skinparam shadowing false',
+            'skinparam dpi 150',
+            'skinparam linetype ortho',
+            'skinparam ranksep 40',
+            'skinparam nodesep 30',
+            f'package "'
+            f'{ontology.meta.title if ontology.meta.title is not None else "Онтология"}'
+            f'" {{',
         ]
 
         for term in ontology.types:
@@ -70,9 +75,9 @@ class PlantUML:
     @staticmethod
     def _generate_rectangle(term: Term) -> str:
         return (
-                f'rectangle "{term.label}'
-                + (f'\\n({term.description})' if term.description else '')
-                + f'" as {term.name} {term.attributes.get("color", "#white")}'
+            f'rectangle "{term.label}'
+            + (f'\\n({term.description})' if term.description else '')
+            + f'" as {term.name} {term.attributes.get("color", "#white")}'
         )
 
     @staticmethod
@@ -80,11 +85,7 @@ class PlantUML:
         res = ''
         if 'note' in term.attributes:
             note_text = term.attributes['note'].replace('\\n', '\n')
-            res = (
-                    f'note right of {term.name}\n'
-                    f'{note_text}'
-                    f'\n    end note'
-            )
+            res = f'note right of {term.name}\n{note_text}\n    end note'
         return res
 
     @staticmethod
@@ -143,29 +144,27 @@ class PlantUML:
         )
         color: str = '[' + relationship.attributes.get('color', '#black') + ']'
         relation: str = (
-                relationships[relationship.relationship.value][
-                    relationship.attributes.get('direction', 'forward')
-                ][:2]
-                + color
-                + relationships[relationship.relationship.value][
-                      relationship.attributes.get('direction', 'forward')
-                  ][2:]
+            relationships[relationship.relationship.value][
+                relationship.attributes.get('direction', 'forward')
+            ][:2]
+            + color
+            + relationships[relationship.relationship.value][
+                relationship.attributes.get('direction', 'forward')
+            ][2:]
         )
         res: str = ''
         res += (
-                   f'{relationship.parent.name} {leftchar} '
-                   f'{relation} '
-                   f'{rightchar} '
-                   f'{relationship.children[0].name} {title}'
-               ) + '\n'
+            f'{relationship.parent.name} {leftchar} '
+            f'{relation} '
+            f'{rightchar} '
+            f'{relationship.children[0].name} {title}'
+        ) + '\n'
         return res
 
     @staticmethod
     def __prepare_function_term(function: Function):
         input_str: list[str] = [
-            f'{el["name"].name}: {el["label"]}'
-            if el['label']
-            else str(el['name'].name)
+            f'{el["name"].name}: {el["label"]}' if el['label'] else str(el['name'].name)
             for el in function.input_types
         ]
         output_str: str = (
@@ -199,7 +198,9 @@ class PlantUML:
             relations.append(
                 Relationship(
                     term,
-                    RelationshipType.from_str(function.attributes.get('type', 'directAssociation')),
+                    RelationshipType.from_str(
+                        function.attributes.get('type', 'directAssociation')
+                    ),
                     [Term(function.name, '', '')],
                     attributes_dict,
                 )
@@ -214,7 +215,9 @@ class PlantUML:
         relations.append(
             Relationship(
                 Term(function.name, '', ''),
-                RelationshipType.from_str(function.attributes.get('type', 'directAssociation')),
+                RelationshipType.from_str(
+                    function.attributes.get('type', 'directAssociation')
+                ),
                 [ontology.find_term_by_name(function.output_type['name'].name)],
                 attributes_dict,
             )
@@ -236,8 +239,10 @@ class PlantUML:
 
     # TODO: check type of relationship
     def _generate_relationship(self, relationship: Relationship) -> str:
-        return (f'note "{relationship.parent} {relationship.relationship} {relationship.children}" '
-                f'as N{hash(relationship.parent) % 10000}')
+        return (
+            f'note "{relationship.parent} {relationship.relationship} {relationship.children}" '
+            f'as N{hash(relationship.parent) % 10000}'
+        )
 
     def processes_puml_to_png(self, puml_file):
         outfile = os.path.splitext(puml_file)[0] + '.png'

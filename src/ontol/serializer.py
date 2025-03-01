@@ -27,15 +27,15 @@ class JSONSerializer:
         return asdict(type_def)
 
     @staticmethod
-    def _serialize_function(func_def: Function) -> dict[str, str | list[dict] | dict | None]:
+    def _serialize_function(
+        func_def: Function,
+    ) -> dict[str, str | list[dict] | dict | None]:
         return {
             'name': func_def.name,
             'label': func_def.label,
             'input_types': [
-                {
-                    'name': asdict(t['name']),
-                    'label': t['label']
-                } for t in func_def.input_types
+                {'name': asdict(t['name']), 'label': t['label']}
+                for t in func_def.input_types
             ],
             'output_type': {
                 'name': asdict(func_def.output_type['name']),
@@ -49,10 +49,12 @@ class JSONSerializer:
         return asdict(meta)
 
     @staticmethod
-    def _serialize_relationship(rel_def: Relationship) -> dict[str, str | list[str] | dict[str, str]]:
+    def _serialize_relationship(
+        rel_def: Relationship,
+    ) -> dict[str, str | list[str] | dict[str, str]]:
         return {
             'parent': asdict(rel_def.parent),
             'relationship': rel_def.relationship.value,
             'children': [asdict(child) for child in rel_def.children],
-            'attributes': rel_def.attributes
+            'attributes': rel_def.attributes,
         }

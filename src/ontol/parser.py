@@ -70,7 +70,9 @@ class Parser:
                     type_def = self._parse_type(line, file_path, line_number)
                     ontology.add_type(type_def)
                 elif current_block == 'functions':
-                    func_def = self._parse_function(line, file_path, line_number, ontology)
+                    func_def = self._parse_function(
+                        line, file_path, line_number, ontology
+                    )
                     ontology.add_function(func_def)
                 elif current_block == 'hierarchy':
                     relationship = self._parse_relationship(line, ontology)
@@ -139,7 +141,7 @@ class Parser:
         return attributes
 
     def _parse_function(
-            self, line: str, file_path: str, line_number: int, ontology: Ontology
+        self, line: str, file_path: str, line_number: int, ontology: Ontology
     ) -> Function:
         match = re.match(
             r"(\w+):\s*['\"](.*?)['\"]\s*\((.*?)\)\s*->\s*(\w+):\s*['\"](.*?)['\"](,\s*\{(.*?)\})?$",
@@ -170,12 +172,15 @@ class Parser:
             raise ValueError(f'Unexpected type name {output_type}')
         output: TypeDict = {'name': term, 'label': output_label}
 
-        return Function(
-            name, label, input_params, output, attributes
-        )
+        return Function(name, label, input_params, output, attributes)
 
     def _parse_parameters(
-        self, params_string: str, line: str, file_path: str, line_number: int, ontology: Ontology
+        self,
+        params_string: str,
+        line: str,
+        file_path: str,
+        line_number: int,
+        ontology: Ontology,
     ) -> list[TypeDict]:
         params: list[TypeDict] = []
 

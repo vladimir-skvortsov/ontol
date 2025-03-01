@@ -67,22 +67,38 @@ def test_serialize_ontology(serializer, sample_ontology):
             'name': 'MyFunction',
             'label': 'Function',
             'input_types': [
-                {'name': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
-                 'label': ''}
+                {
+                    'name': {
+                        'name': 'int',
+                        'label': '',
+                        'description': '',
+                        'attributes': {},
+                    },
+                    'label': '',
+                }
             ],
             'output_type': {
-                'name': {'name': 'bool', 'label': '', 'description': '', 'attributes': {}},
-                'label': ''},
+                'name': {
+                    'name': 'bool',
+                    'label': '',
+                    'description': '',
+                    'attributes': {},
+                },
+                'label': '',
+            },
             'attributes': {},
         }
     ]
 
     assert data['hierarchy'] == [
-        {'parent': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
-         'relationship': 'depends',
-         'children': [
-             {'name': 'bool', 'label': '', 'description': '', 'attributes': {}}
-         ], 'attributes': {}}
+        {
+            'parent': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
+            'relationship': 'depends',
+            'children': [
+                {'name': 'bool', 'label': '', 'description': '', 'attributes': {}}
+            ],
+            'attributes': {},
+        }
     ]
     assert data['meta'] == {
         'version': '1.0',
@@ -136,10 +152,21 @@ def test_serialize_function(serializer):
     assert serialized_function == {
         'name': 'TestFunction',
         'label': 'A test function',
-        'input_types': [{'name': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
-                         'label': ''}],
-        'output_type': {'name': {'name': 'bool', 'label': '', 'description': '', 'attributes': {}},
-                        'label': ''},
+        'input_types': [
+            {
+                'name': {
+                    'name': 'int',
+                    'label': '',
+                    'description': '',
+                    'attributes': {},
+                },
+                'label': '',
+            }
+        ],
+        'output_type': {
+            'name': {'name': 'bool', 'label': '', 'description': '', 'attributes': {}},
+            'label': '',
+        },
         'attributes': {},
     }
 
@@ -212,20 +239,36 @@ def test_serialize_ontology_without_meta(serializer):
             'name': 'MyFunction',
             'label': 'Function',
             'input_types': [
-                {'name': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
-                 'label': ''}
+                {
+                    'name': {
+                        'name': 'int',
+                        'label': '',
+                        'description': '',
+                        'attributes': {},
+                    },
+                    'label': '',
+                }
             ],
             'output_type': {
-                'name': {'name': 'bool', 'label': '', 'description': '', 'attributes': {}},
-                'label': ''},
+                'name': {
+                    'name': 'bool',
+                    'label': '',
+                    'description': '',
+                    'attributes': {},
+                },
+                'label': '',
+            },
             'attributes': {},
         }
     ]
 
     assert data['hierarchy'] == [
-        {'parent': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
-         'relationship': 'depends',
-         'children': [
-             {'name': 'bool', 'label': '', 'description': '', 'attributes': {}}
-         ], 'attributes': {}}
+        {
+            'parent': {'name': 'int', 'label': '', 'description': '', 'attributes': {}},
+            'relationship': 'depends',
+            'children': [
+                {'name': 'bool', 'label': '', 'description': '', 'attributes': {}}
+            ],
+            'attributes': {},
+        }
     ]

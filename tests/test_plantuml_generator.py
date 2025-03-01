@@ -33,8 +33,10 @@ def mock_ontology():
         Function(
             name='MyFunction1',
             label='test label Func1',
-            input_types=[{'name': Term('MyTypeChild', '', ''), 'label': 'test1 in1'},
-                         {'name': Term('MyTypeChild', '', ''), 'label': 'test1 in2'}],
+            input_types=[
+                {'name': Term('MyTypeChild', '', ''), 'label': 'test1 in1'},
+                {'name': Term('MyTypeChild', '', ''), 'label': 'test1 in2'},
+            ],
             output_type={'name': Term('MyTypeParent', '', ''), 'label': 'test_type1'},
             attributes={'colorArrow': '#E6B8B7'},
         )
@@ -79,8 +81,7 @@ def test_generate_full_uml(generator: PlantUML, mock_ontology):
 
     assert (
         '"test label Func1\\n(MyTypeChild: test1 in1, MyTypeChild: test1 in2 -> MyTypeParent: test_type1)"'
-        ' as MyFunction1 #white'
-        in uml_output
+        ' as MyFunction1 #white' in uml_output
     )
     assert (
         '"test label Func2\\n(MyTypeChild: test2 in1 -> MyTypeParent: test_type2)" as MyFunction2 #white'

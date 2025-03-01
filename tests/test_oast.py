@@ -86,10 +86,9 @@ def test_function_wth_empty_input_types_creation():
     )
     assert func.input_types == []
     assert (
-        repr(func)
-        == "Function(name=sum, label=Sum, input_types=[],"
-           " output_type={'name': Term(name=int, label=, description=, attributes={}),"
-           " 'label': 'Result'}, attributes={})"
+        repr(func) == 'Function(name=sum, label=Sum, input_types=[],'
+        " output_type={'name': Term(name=int, label=, description=, attributes={}),"
+        " 'label': 'Result'}, attributes={})"
     )
 
 
@@ -97,14 +96,14 @@ def test_relationship_creation() -> None:
     rel: Relationship = Relationship(
         parent=Term('set', '', ''),
         relationship=RelationshipType.DEPENDS,
-        children=[Term('element', '', '')]
+        children=[Term('element', '', '')],
     )
     assert rel.parent.name == 'set'
     assert rel.relationship.value == 'depends'
     assert rel.children == [Term('element', '', '')]
     assert (
         repr(rel)
-        == "Relationship(parent=set, relationship=depends, children=[element], attributes={})"
+        == 'Relationship(parent=set, relationship=depends, children=[element], attributes={})'
     )
 
 
@@ -124,9 +123,8 @@ def test_meta_creation():
     assert meta.type == 'Base'
     assert meta.date_created == '2024-01-01'
     assert (
-        repr(meta)
-        == 'Meta(version=1.0, title=TestOntology, author=Author,'
-           ' description=A test ontology, type=Base, date_created=2024-01-01)'
+        repr(meta) == 'Meta(version=1.0, title=TestOntology, author=Author,'
+        ' description=A test ontology, type=Base, date_created=2024-01-01)'
     )
 
 
@@ -153,13 +151,20 @@ def test_ontology_operations():
     concatenate: Function = Function(
         name='concatenate',
         label='Concatenate',
-        input_types=[{'name': Term(name='str', label='String', description=''), 'label': ''}],
-        output_type=({'name': Term(name='str', label='String', description=''), 'label': 'Result'}),
+        input_types=[
+            {'name': Term(name='str', label='String', description=''), 'label': ''}
+        ],
+        output_type=(
+            {
+                'name': Term(name='str', label='String', description=''),
+                'label': 'Result',
+            }
+        ),
     )
     rel: Relationship = Relationship(
         parent=Term(name='string', label='String', description=''),
         relationship=RelationshipType.COMPOSITION,
-        children=[Term(name='str', label='String', description='')]
+        children=[Term(name='str', label='String', description='')],
     )
     meta: Meta = Meta(
         version='1.0',

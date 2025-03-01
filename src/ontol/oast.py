@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional, Dict, TypedDict
+from typing import Optional, TypedDict
 from dataclasses import dataclass, field
 
 
@@ -39,10 +39,17 @@ class Function(ASTNode):
         )
 
     def _format_input_types(self) -> str:
-        return "[" + ", ".join(f"{{name: {t['name'].name}, label: {t['label']}}}" for t in self.input_types) + "]"
+        return (
+            '['
+            + ', '.join(
+                f'{{name: {t["name"].name}, label: {t["label"]}}}'
+                for t in self.input_types
+            )
+            + ']'
+        )
 
     def _format_output_type(self) -> str:
-        return f"{{name: {self.output_type['name'].name}, label: {self.output_type['label']}}}"
+        return f'{{name: {self.output_type["name"].name}, label: {self.output_type["label"]}}}'
 
 
 class RelationshipType(Enum):
@@ -69,7 +76,7 @@ class Relationship(ASTNode):
     parent: Term
     relationship: RelationshipType
     children: list[Term]
-    attributes: Dict[str, str] = field(default_factory=dict)
+    attributes: dict[str, str] = field(default_factory=dict)
 
     def __repr__(self) -> str:
         return (
