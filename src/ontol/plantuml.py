@@ -79,9 +79,10 @@ class PlantUML:
     def _generate_note(term: Term) -> str:
         res = ''
         if 'note' in term.attributes:
+            note_text = term.attributes['note'].replace('\\n', '\n')
             res = (
                     f'note right of {term.name}\n'
-                    f'{term.attributes["note"].replace("\\n", "\n")}'
+                    f'{note_text}'
                     f'\n    end note'
             )
         return res
