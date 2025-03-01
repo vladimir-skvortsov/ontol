@@ -31,7 +31,8 @@ dependencies = [
     "plantuml==0.3.0",
     "pytest==8.3.4",
     "six==1.17.0",
-    "pytest-cov==6.0.0"
+    "pytest-cov==6.0.0",
+    "sly==0.5",
 ]
 
 [project.urls]
