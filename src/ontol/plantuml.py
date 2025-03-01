@@ -49,6 +49,7 @@ class PlantUML:
 
         for term in ontology.types:
             uml_lines.append(self._generate_rectangle(term))
+            uml_lines.append(self._generate_note(term))
 
         for function in ontology.functions:
             uml_lines.append(
@@ -73,6 +74,17 @@ class PlantUML:
                 + (f'\\n({term.description})' if term.description else '')
                 + f'" as {term.name} {term.attributes.get("color", "#white")}'
         )
+
+    @staticmethod
+    def _generate_note(term: Term) -> str:
+        res = ''
+        if 'note' in term.attributes:
+            res = (
+                    f'note right of {term.name}\n'
+                    f'{term.attributes["note"].replace("\\n", "\n")}'
+                    f'\n    end note'
+            )
+        return res
 
     @staticmethod
     def _generate_base_hierarchy(relationship: Relationship) -> str:
