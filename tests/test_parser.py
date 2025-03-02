@@ -502,6 +502,7 @@ def test_combined_parsing(parser):
 
     # Types we have
     types:
+    # todo: Add laso complex numbers
     number: 'Number', 'Some real number from R field'
 
     # Other type
@@ -515,6 +516,7 @@ def test_combined_parsing(parser):
 
     # And relations we have
     hierarchy:
+    # All also vectors
     matrix composition number
     """
     ontology, warnings = parser.parse(content, 'test.ontol')

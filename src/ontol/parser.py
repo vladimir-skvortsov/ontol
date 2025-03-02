@@ -300,11 +300,12 @@ class Parser(BaseParser):
     def statement(self, p) -> None:
         pass
 
-    @_('hierarchy_list hierarchy NEWLINE')
-    def hierarchy_list(self, p) -> None:
-        pass
-
-    @_('hierarchy NEWLINE')
+    @_(
+        'hierarchy_list hierarchy NEWLINE',
+        'hierarchy NEWLINE',
+        'NEWLINE hierarchy_list',
+        '',
+    )
     def hierarchy_list(self, p) -> None:
         pass
 
