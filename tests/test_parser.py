@@ -539,6 +539,35 @@ def test_parse_heierarchy_unexpected_relationship(parser):
         parser.parse(content, 'test.ontol')
 
 
+def test_parse_heierarchy_with_undefined_types(parser):
+    content = """
+    types:
+    set: '', ''
+    hierarchy:
+    element composition set
+    """
+    with pytest.raises(ValueError):
+        parser.parse(content, 'test.ontol')
+
+    content = """
+    types:
+    set: '', ''
+    hierarchy:
+    set composition element
+    """
+    with pytest.raises(ValueError):
+        parser.parse(content, 'test.ontol')
+
+    content = """
+    types:
+    set: '', ''
+    hierarchy:
+    element composition element
+    """
+    with pytest.raises(ValueError):
+        parser.parse(content, 'test.ontol')
+
+
 def test_combined_parsing(parser):
     content = """
     # Ontology information
