@@ -8,10 +8,6 @@ on:
         required: true
         type: string
 
-
-env:
-  ONTOL_VERSION: ${{ inputs.VERSION }}
-
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -76,8 +72,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ github.event.inputs.VERSION }}
-          release_name: Release v${{ github.event.inputs.VERSION }}
+          tag_name: ${{ github.event.inputs.VERSION }}
+          release_name: ${{ github.event.inputs.VERSION }}
           draft: false
           prerelease: false
 
