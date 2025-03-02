@@ -527,6 +527,18 @@ def test_parse_heierarchy_with_empty_attributes(parser):
     assert len(warnings) == 4
 
 
+def test_parse_heierarchy_unexpected_relationship(parser):
+    content = """
+    types:
+    set: '', ''
+    element: '', ''
+    hierarchy:
+    element loves set, {  }
+    """
+    with pytest.raises(ValueError):
+        parser.parse(content, 'test.ontol')
+
+
 def test_combined_parsing(parser):
     content = """
     # Ontology information
