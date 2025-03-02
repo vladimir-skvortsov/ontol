@@ -461,37 +461,70 @@ def test_parse_heierarchy(parser):
     assert rel.parent.name == 'element'
     assert rel.relationship.value == 'inheritance'
     assert rel.children[0].name == 'set'
+    assert rel.attributes == {}
     assert len(warnings) == 4
 
 
-def test_parse_meta(parser):
+def test_parse_heierarchy_with_attributes(parser):
     content = """
-    version: '1.0'
-    title: "Basic calculus" # can we come up with a more interesting name?
-    author: 'Firstname Lastname'
-    description: "Limits, differentiation and integrals"
-    type: 'Базовый'
+    types:
+    set: '', ''
+    element: '', ''
+    hierarchy:
+    element inheritance set, { color: '#red' }
     """
     ontology, warnings = parser.parse(content, 'test.ontol')
 
-    assert ontology.meta is not None
-    assert ontology.meta.version == '1.0'
-    assert ontology.meta.title == 'Basic calculus'
-    assert ontology.meta.author == 'Firstname Lastname'
-    assert ontology.meta.description == 'Limits, differentiation and integrals'
-    assert ontology.meta.type == 'Базовый'
-    assert len(warnings) == 0
+    assert len(ontology.hierarchy) == 1
+
+    rel: Relationship = ontology.hierarchy[0]
+    assert rel.parent.name == 'element'
+    assert rel.relationship.value == 'inheritance'
+    assert rel.children[0].name == 'set'
+    assert rel.attributes == {'color': '#red'}
+    assert len(warnings) == 4
 
 
-def test_parse_meta_without_qoutes(parser):
+def test_parse_heierarchy_with_multiline_attributes(parser):
     content = """
-    version: 1.0
-    title: "Basic calculus"
-    author: 'Firstname Lastname'
-    description: "Limits, differentiation and integrals"
+    types:
+    set: '', ''
+    element: '', ''
+    hierarchy:
+    element inheritance set, {
+        color: '#red'
+    }
     """
-    with pytest.raises(SyntaxError):
-        parser.parse(content, 'test.ontol')
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.hierarchy) == 1
+
+    rel: Relationship = ontology.hierarchy[0]
+    assert rel.parent.name == 'element'
+    assert rel.relationship.value == 'inheritance'
+    assert rel.children[0].name == 'set'
+    assert rel.attributes == {'color': '#red'}
+    assert len(warnings) == 4
+
+
+def test_parse_heierarchy_with_empty_attributes(parser):
+    content = """
+    types:
+    set: '', ''
+    element: '', ''
+    hierarchy:
+    element inheritance set, {  }
+    """
+    ontology, warnings = parser.parse(content, 'test.ontol')
+
+    assert len(ontology.hierarchy) == 1
+
+    rel: Relationship = ontology.hierarchy[0]
+    assert rel.parent.name == 'element'
+    assert rel.relationship.value == 'inheritance'
+    assert rel.children[0].name == 'set'
+    assert rel.attributes == {}
+    assert len(warnings) == 4
 
 
 def test_combined_parsing(parser):
