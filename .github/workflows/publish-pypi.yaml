@@ -13,9 +13,9 @@ env:
   ONTOL_VERSION: ${{ inputs.VERSION }}
 
 jobs:
-  permissions: write-all
   publish:
     runs-on: ubuntu-latest
+    permissions: write-all
 
     steps:
       - name: Checkout repository
