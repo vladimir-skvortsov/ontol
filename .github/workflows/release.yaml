@@ -1,0 +1,98 @@
+name: Release new version
+
+on:
+  workflow_dispatch:
+    inputs:
+      VERSION:
+        description: 'Package version'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip build
+          pip install setuptools wheel twine pyinstaller
+
+      - name: Update version in pyproject.toml 
+        run: |
+          sed -i "s/^version = .*/version = \"${{ github.event.inputs.VERSION }}\"/" pyproject.toml
+          sed -i "s/^__VERSION__ = .*/__VERSION__ = \"${{ github.event.inputs.VERSION }}\"/" src/ontol/cli.py
+
+      - name: Build package
+        run: python -m build
+
+      - name: Publish package to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: twine upload dist/*
+      
+      - name: Build binaries
+        run: |
+          pip install pyinstaller
+          SCRIPT="src/ontol/cli.py"
+          OUTPUT_DIR="dist"
+
+          echo "Building for macOS..."
+          pyinstaller --onefile --name ontol_macos $SCRIPT
+
+          echo "Building for Linux..."
+          pyinstaller --onefile --name ontol_linux $SCRIPT
+
+          rm -rf build __pycache__ *.spec
+
+          echo "Binaries created in $OUTPUT_DIR:"
+          ls $OUTPUT_DIR
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.VERSION }}
+          release_name: ${{ github.event.inputs.VERSION }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Binaries to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/ontol_macos
+          asset_name: ontol_macos
+          asset_content_type: application/octet-stream
+
+      - name: Upload Binaries to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: dist/ontol_linux
+          asset_name: ontol_linux
+          asset_content_type: application/octet-stream
