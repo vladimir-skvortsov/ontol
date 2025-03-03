@@ -71,7 +71,7 @@ class Lexer(BaseLexer):
 
 class Parser(BaseParser):
     tokens = Lexer.tokens
-    expected_shift_reduce: int = 22
+    expected_shift_reduce: int = 25
 
     def __init__(self) -> None:
         self.__ontology: Ontology = Ontology()
