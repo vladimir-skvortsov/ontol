@@ -6,6 +6,10 @@ from .oast import (
     Meta,
     FunctionArgument,
     RelationshipType,
+    FunctionAttributes,
+    RelationshipAttrubutes,
+    RelationshipDirection,
+    TermAttributes
 )
 from .parser import Parser
 from .plantuml import PlantUML
@@ -18,6 +22,10 @@ __all__ = (
     'Term',
     'Function',
     'Relationship',
+    'FunctionAttributes',
+    'RelationshipAttrubutes',
+    'RelationshipDirection',
+    'TermAttributes',
     'Meta',
     'FunctionArgument',
     'RelationshipType',

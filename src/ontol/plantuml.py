@@ -4,8 +4,17 @@ import zlib
 
 import requests
 
-from ontol import Function, Ontology, Relationship, Term
-from ontol.oast import RelationshipType
+from ontol import (
+    Function,
+    Ontology,
+    Relationship,
+    Term,
+    RelationshipDirection,
+    RelationshipType,
+    RelationshipAttrubutes,
+    TermAttributes,
+    FunctionAttributes
+)
 
 
 # TODO: make look like in technical task
@@ -77,79 +86,71 @@ class PlantUML:
         return (
             f'rectangle "{term.label}'
             + (f'\\n({term.description})' if term.description else '')
-            + f'" as {term.name} {term.attributes.get("color", "#white")}'
+            + f'" as {term.name} {term.attributes.color}'
         )
 
     @staticmethod
     def _generate_note(term: Term) -> str:
         res = ''
-        if 'note' in term.attributes:
-            note_text = term.attributes['note'].replace('\\n', '\n')
+        if term.attributes.note:
+            note_text = term.attributes.note.replace('\\n', '\n')
             res = f'note right of {term.name}\n{note_text}\n    end note'
         return res
 
     @staticmethod
     def _generate_base_hierarchy(relationship: Relationship) -> str:
         relationships = {
-            'depends': {
-                'forward': '...>',
-                'backward': '<...',
-                'bidirectional': '<...>',
+            RelationshipType.DEPENDS: {
+                RelationshipDirection.FORWARD: '...>',
+                RelationshipDirection.BACKWARD: '<...',
+                RelationshipDirection.BIDIRECTIONAL: '<...>',
             },
-            'association': {
-                'forward': '---',
-                'backward': '---',
-                'bidirectional': '---',
+            RelationshipType.ASSOCIATION: {
+                RelationshipDirection.FORWARD: '---',
+                RelationshipDirection.BACKWARD: '---',
+                RelationshipDirection.BIDIRECTIONAL: '---',
             },
-            'directAssociation': {
-                'forward': '--->',
-                'backward': '<---',
-                'bidirectional': '<--->',
+            RelationshipType.DIRECT_ASSOCIATION: {
+                RelationshipDirection.FORWARD: '--->',
+                RelationshipDirection.BACKWARD: '<---',
+                RelationshipDirection.BIDIRECTIONAL: '<--->',
             },
-            'inheritance': {
-                'forward': '---|>',
-                'backward': '<|---',
-                'bidirectional': '<|---|>',
+            RelationshipType.INHERITANCE: {
+                RelationshipDirection.FORWARD: '---|>',
+                RelationshipDirection.BACKWARD: '<|---',
+                RelationshipDirection.BIDIRECTIONAL: '<|---|>',
             },
-            'realization': {
-                'forward': '...|>',
-                'backward': '<|...',
-                'bidirectional': '<|...|>',
+            RelationshipType.REALIZATION: {
+                RelationshipDirection.FORWARD: '...|>',
+                RelationshipDirection.BACKWARD: '<|...',
+                RelationshipDirection.BIDIRECTIONAL: '<|...|>',
             },
-            'aggregation': {
-                'forward': '---o',
-                'backward': 'o---',
-                'bidirectional': 'o---o',
+            RelationshipType.AGGREGATION: {
+                RelationshipDirection.FORWARD: '---o',
+                RelationshipDirection.BACKWARD: 'o---',
+                RelationshipDirection.BIDIRECTIONAL: 'o---o',
             },
-            'composition': {
-                'forward': '---*',
-                'backward': '*---',
-                'bidirectional': '*---*',
+            RelationshipType.COMPOSITION: {
+                RelationshipDirection.FORWARD: '---*',
+                RelationshipDirection.BACKWARD: '*---',
+                RelationshipDirection.BIDIRECTIONAL: '*---*',
             },
         }
-        leftchar: str = (
-            ('"' + relationship.attributes['leftChar'] + '"')
-            if relationship.attributes.get('leftChar')
-            else ''
-        )
-        rightchar: str = (
-            ('"' + relationship.attributes['rightChar'] + '"')
-            if relationship.attributes.get('rightChar')
-            else ''
-        )
-        title: str = (
-            (': "' + relationship.attributes['title'] + '"')
-            if relationship.attributes.get('title')
-            else ''
-        )
-        color: str = '[' + relationship.attributes.get('color', '#black') + ']'
+        leftchar: str = '"' + relationship.attributes.left_char + '"'
+
+        rightchar: str = '"' + relationship.attributes.right_char + '"'
+
+        title: str = ': "' + relationship.attributes.title + '"'
+
+        color: str = '[' + relationship.attributes.color + ']'
+
         relation: str = (
             relationships[relationship.relationship.value][
-                relationship.attributes.get('direction', 'forward')
+                relationship.attributes.direction
             ][:2]
             + color
             + relationships[relationship.relationship.value][
-                relationship.attributes.get('direction', 'forward')
+                relationship.attributes.direction
             ][2:]
         )
         res: str = ''
@@ -177,7 +178,7 @@ class PlantUML:
             function.name,
             function.label,
             description,
-            {'color': function.attributes.get('color', '#white')},
+            TermAttributes(color=function.attributes.color),
         )
 
     @staticmethod
@@ -188,38 +189,29 @@ class PlantUML:
             input_types[input_type.term.name] += 1
         for k, v in input_types.items():
             term: Term = ontology.find_term_by_name(k)
-            attributes_dict = {
-                'color': function.attributes.get('colorArrow', '#black'),
-                'title': function.attributes.get('inputTitle', ''),
-                'leftChar': f'{v if v != 1 else ""}',
-                'rightChar': '',
-                'direction': 'forward',
-            }
             relations.append(
                 Relationship(
                     term,
-                    RelationshipType.from_str(
-                        function.attributes.get('type', 'directAssociation')
-                    ),
+                    RelationshipType.from_str(function.attributes.type),
                     [Term(function.name)],
-                    attributes_dict,
+                    RelationshipAttrubutes(
+                        color=function.attributes.color_arrow,
+                        title=function.attributes.input_title,
+                        left_char=f'{v if v != 1 else ""}',
+                        direction=RelationshipDirection.FORWARD,
+                    ),
                 )
             )
-        attributes_dict = {
-            'color': function.attributes.get('colorArrow', '#black'),
-            'title': function.attributes.get('outputTitle', ''),
-            'leftChar': '',
-            'rightChar': '',
-            'direction': 'forward',
-        }
         relations.append(
             Relationship(
                 Term(function.name),
-                RelationshipType.from_str(
-                    function.attributes.get('type', 'directAssociation')
-                ),
+                RelationshipType.from_str(function.attributes.type),
                 [ontology.find_term_by_name(function.output_type.term.name)],
-                attributes_dict,
+                RelationshipAttrubutes(
+                    color=function.attributes.color_arrow,
+                    title=function.attributes.output_title,
+                    direction=RelationshipDirection.FORWARD,
+                ),
             )
         )
         return relations

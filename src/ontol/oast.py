@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, StrEnum
 from typing import Optional
 from dataclasses import dataclass, field
 
@@ -12,7 +12,7 @@ class Term(ASTNode):
     name: str
     label: str = ''
     description: str = ''
-    attributes: dict = field(default_factory=dict)
+    attributes: 'TermAttributes'
 
     def __repr__(self) -> str:
         return f'Term(name={self.name}, label={self.label}, description={self.description}, attributes={self.attributes})'
@@ -33,7 +33,7 @@ class Function(ASTNode):
     label: str
     input_types: list[FunctionArgument]
     output_type: FunctionArgument
-    attributes: dict = field(default_factory=dict)
+    attributes: 'FunctionAttributes'
 
     def __repr__(self) -> str:
         return (
@@ -74,6 +74,12 @@ class RelationshipType(Enum):
     @classmethod
     def has_value(cls, value: str) -> bool:
         return value in cls._value2member_map_
+    
+class RelationshipDirection(StrEnum):
+    FORWARD = 'forward'
+    BACKWARD = 'backward'
+    BIDIRECTIONAL = 'bidirectional'
+
 
 
 @dataclass
@@ -81,7 +87,7 @@ class Relationship(ASTNode):
     parent: Term
     relationship: RelationshipType
     children: list[Term]
-    attributes: dict[str, str] = field(default_factory=dict)
+    attributes: 'RelationshipAttrubutes'
 
     def __repr__(self) -> str:
         return (
@@ -89,6 +95,54 @@ class Relationship(ASTNode):
             f'relationship={self.relationship.value}, '
             f'children=[{",".join(child.name for child in self.children)}], attributes={self.attributes})'
         )
+
+@dataclass
+class TermAttributes(ASTNode):
+    color: str = '#white'
+    note: Optional[str] = None
+
+    def __repr__(self) -> str:
+        return(
+            f'TermAttributes(color={self.color}, '
+            f'note={self.note})'
+        )
+            
+
+@dataclass
+class FunctionAttributes(ASTNode):
+    color: str = '#white'
+    color_arrow: str = '#black'
+    type: RelationshipType = RelationshipType.DIRECT_ASSOCIATION
+    input_title: str = ''
+    output_title: str = ''
+
+
+    def __repr__(self) -> str:
+        return (
+            f'FunctionAttributes(color={self.color}, ' 
+            f'color_arrow={self.color_arrow}, '
+            f'type={self.type}, '
+            f'input_title={self.input_title}, '
+            f'output_title={self.output_title})'
+        )
+
+@dataclass
+class RelationshipAttrubutes(ASTNode):
+    color: str = '#black'
+    direction: RelationshipDirection = RelationshipDirection.BACKWARD
+    title: str = ''
+    right_char: str = ''
+    left_char: str = ''
+
+    def __repr__(self) -> str:
+        return (
+            f'RelationshipAttrubutes(color={self.color}, '
+            f'direction={self.direction}, '
+            f'title={self.title}, '
+            f'right_char={self.right_char}, '
+            f'left_char={self.left_char})'
+        )
+
 
 
 @dataclass
