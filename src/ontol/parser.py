@@ -98,7 +98,7 @@ class Parser(BaseParser):
         line: str = self.__lines[line_number - 1]
         line_padding: int = 4
         message_prefix: str = (
-            '\033[33mWarning' if type == 'warning' else '\033[31mError'
+            '🔔 \033[33mWarning' if type == 'warning' else '🚨 \033[31mError'
         )
 
         final_message: str = f'File "{self.__file_path}", line {line_number}'
