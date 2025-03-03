@@ -1,7 +1,15 @@
 import json
 
-from ontol.oast import FunctionArgument, RelationshipType
-from src.ontol import Function, Meta, Ontology, Relationship, Term, JSONSerializer
+from src.ontol import (
+    Function,
+    Meta,
+    Ontology,
+    Relationship,
+    Term,
+    JSONSerializer,
+    FunctionArgument,
+    RelationshipType,
+)
 
 import pytest
 
@@ -54,12 +62,13 @@ def test_serialize_ontology(serializer, sample_ontology):
     assert 'functions' in data
     assert 'hierarchy' in data
     assert 'meta' in data
+    print(data)
     assert data['terms'] == [
         {
             'name': 'MyType',
             'label': 'A some label',
             'description': 'A sample type',
-            'attributes': {},
+            'attributes': {'color': '#white', 'note': None},
         }
     ]
     assert data['functions'] == [
@@ -76,7 +85,13 @@ def test_serialize_ontology(serializer, sample_ontology):
                 'name': 'bool',
                 'label': '',
             },
-            'attributes': {},
+            'attributes': {
+                'color': '#white',
+                'color_arrow': '#black',
+                'type': 'directAssociation',
+                'input_title': '',
+                'ouput_title': '',
+            },
         }
     ]
 
@@ -85,7 +100,13 @@ def test_serialize_ontology(serializer, sample_ontology):
             'parent': 'int',
             'relationship': 'depends',
             'children': ['bool'],
-            'attributes': {},
+            'attributes': {
+                'color': '#black',
+                'direction': 'forward',
+                'title': '',
+                'right_char': '',
+                'left_char': '',
+            },
         }
     ]
     assert data['meta'] == {
@@ -124,7 +145,7 @@ def test_serialize_term(serializer):
         'name': 'TestTerm',
         'label': 'A test label',
         'description': 'A test term',
-        'attributes': {},
+        'attributes': {'color': '#white', 'note': None},
     }
 
 
@@ -136,7 +157,6 @@ def test_serialize_function(serializer):
         label='A test function',
     )
     serialized_function = serializer._serialize_function(func)
-    print(serialized_function)
     assert serialized_function == {
         'name': 'TestFunction',
         'label': 'A test function',
@@ -150,7 +170,13 @@ def test_serialize_function(serializer):
             'name': 'bool',
             'label': '',
         },
-        'attributes': {},
+        'attributes': {
+            'color': '#white',
+            'color_arrow': '#black',
+            'type': 'directAssociation',
+            'input_title': '',
+            'ouput_title': '',
+        },
     }
 
 
@@ -209,12 +235,13 @@ def test_serialize_ontology_without_meta(serializer):
         'type': None,
         'date': None,
     }
+    print(data)
     assert data['terms'] == [
         {
             'name': 'MyType',
             'label': 'A some label',
             'description': 'A sample type',
-            'attributes': {},
+            'attributes': {'color': '#white', 'note': None},
         }
     ]
     assert data['functions'] == [
@@ -231,7 +258,13 @@ def test_serialize_ontology_without_meta(serializer):
                 'name': 'bool',
                 'label': '',
             },
-            'attributes': {},
+            'attributes': {
+                'color': '#white',
+                'color_arrow': '#black',
+                'type': 'directAssociation',
+                'input_title': '',
+                'ouput_title': '',
+            },
         }
     ]
 
@@ -240,6 +273,12 @@ def test_serialize_ontology_without_meta(serializer):
             'parent': 'int',
             'relationship': 'depends',
             'children': ['bool'],
-            'attributes': {},
+            'attributes': {
+                'color': '#black',
+                'direction': 'forward',
+                'title': '',
+                'right_char': '',
+                'left_char': '',
+            },
         }
     ]

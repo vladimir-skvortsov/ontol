@@ -6,57 +6,6 @@ from dataclasses import dataclass, field
 class ASTNode:
     pass
 
-
-@dataclass
-class Term(ASTNode):
-    name: str
-    label: str = ''
-    description: str = ''
-    attributes: 'TermAttributes'
-
-    def __repr__(self) -> str:
-        return f'Term(name={self.name}, label={self.label}, description={self.description}, attributes={self.attributes})'
-
-
-@dataclass
-class FunctionArgument(ASTNode):
-    term: Term
-    label: str = ''
-
-    def __repr__(self) -> str:
-        return f"('{self.term.name}', '{self.label}')"
-
-
-@dataclass
-class Function(ASTNode):
-    name: str
-    label: str
-    input_types: list[FunctionArgument]
-    output_type: FunctionArgument
-    attributes: 'FunctionAttributes'
-
-    def __repr__(self) -> str:
-        return (
-            f'Function(name={self.name}, label={self.label}, input_types={self.input_types},'
-            f' output_type={self.output_type}, '
-            f'attributes={self.attributes})'
-        )
-
-    def _format_input_types(self) -> str:
-        return (
-            '['
-            + ', '.join(
-                f'{{name: {t.term.name}, label: {t.label}}}' for t in self.input_types
-            )
-            + ']'
-        )
-
-    def _format_output_type(self) -> str:
-        return (
-            f'{{name: {self.output_type.term.name}, label: {self.output_type.label}}}'
-        )
-
-
 class RelationshipType(Enum):
     # TODO: change name by Novikov opinion
     DEPENDS = 'depends'
@@ -81,20 +30,6 @@ class RelationshipDirection(StrEnum):
     BIDIRECTIONAL = 'bidirectional'
 
 
-
-@dataclass
-class Relationship(ASTNode):
-    parent: Term
-    relationship: RelationshipType
-    children: list[Term]
-    attributes: 'RelationshipAttrubutes'
-
-    def __repr__(self) -> str:
-        return (
-            f'Relationship(parent={self.parent.name}, '
-            f'relationship={self.relationship.value}, '
-            f'children=[{",".join(child.name for child in self.children)}], attributes={self.attributes})'
-        )
 
 @dataclass
 class TermAttributes(ASTNode):
@@ -129,7 +64,7 @@ class FunctionAttributes(ASTNode):
 @dataclass
 class RelationshipAttrubutes(ASTNode):
     color: str = '#black'
-    direction: RelationshipDirection = RelationshipDirection.BACKWARD
+    direction: RelationshipDirection = RelationshipDirection.FORWARD
     title: str = ''
     right_char: str = ''
     left_char: str = ''
@@ -142,6 +77,78 @@ class RelationshipAttrubutes(ASTNode):
             f'right_char={self.right_char}, '
             f'left_char={self.left_char})'
         )
+
+
+
+@dataclass
+class Term(ASTNode):
+    name: str
+    label: str = ''
+    description: str = ''
+    attributes: TermAttributes = field(default_factory=TermAttributes)
+   
+
+    def __repr__(self) -> str:
+        return f'Term(name={self.name}, label={self.label}, description={self.description}, attributes={self.attributes})'
+
+
+@dataclass
+class FunctionArgument(ASTNode):
+    term: Term
+    label: str = ''
+
+    def __repr__(self) -> str:
+        return f"('{self.term.name}', '{self.label}')"
+
+
+@dataclass
+class Function(ASTNode):
+    name: str
+    label: str
+    input_types: list[FunctionArgument]
+    output_type: FunctionArgument
+    attributes: FunctionAttributes = field(default_factory=FunctionAttributes)
+
+    def __repr__(self) -> str:
+        return (
+            f'Function(name={self.name}, label={self.label}, input_types={self.input_types},'
+            f' output_type={self.output_type}, '
+            f'attributes={self.attributes})'
+        )
+
+    def _format_input_types(self) -> str:
+        return (
+            '['
+            + ', '.join(
+                f'{{name: {t.term.name}, label: {t.label}}}' for t in self.input_types
+            )
+            + ']'
+        )
+
+    def _format_output_type(self) -> str:
+        return (
+            f'{{name: {self.output_type.term.name}, label: {self.output_type.label}}}'
+        )
+
+
+
+
+
+@dataclass
+class Relationship(ASTNode):
+    parent: Term
+    relationship: RelationshipType
+    children: list[Term]
+    attributes: RelationshipAttrubutes = field(default_factory=RelationshipAttrubutes)
+
+
+    def __repr__(self) -> str:
+        return (
+            f'Relationship(parent={self.parent.name}, '
+            f'relationship={self.relationship.value}, '
+            f'children=[{",".join(child.name for child in self.children)}], attributes={self.attributes})'
+        )
+
 
 
 

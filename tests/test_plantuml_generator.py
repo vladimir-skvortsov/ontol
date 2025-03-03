@@ -1,4 +1,3 @@
-from ontol.oast import RelationshipType
 from src.ontol import (
     Function,
     Meta,
@@ -7,6 +6,10 @@ from src.ontol import (
     Term,
     FunctionArgument,
     PlantUML,
+    RelationshipType,
+    TermAttributes,
+    FunctionAttributes,
+    RelationshipAttrubutes
 )
 
 import pytest
@@ -31,7 +34,9 @@ def mock_ontology():
             name='MyTypeParent',
             label='test label Term1',
             description='A test type1',
-            attributes={'color': '#E6B8B7'},
+            attributes=TermAttributes(
+                color='#E6B8B7'
+            ),
         )
     )
     ontology.add_type(
@@ -46,7 +51,9 @@ def mock_ontology():
                 FunctionArgument(Term('MyTypeChild'), 'test1 in2'),
             ],
             output_type=FunctionArgument(Term('MyTypeParent'), 'test_type1'),
-            attributes={'colorArrow': '#E6B8B7'},
+            attributes=FunctionAttributes(
+                color_arrow='#E6B8B7'
+            ),
         )
     )
     ontology.add_function(
@@ -85,7 +92,7 @@ def test_generate_full_uml(generator: PlantUML, mock_ontology):
     assert 'test label Term2' in uml_output
     assert '(A test type2)' in uml_output
     assert '#white' in uml_output
-    print(uml_output)
+    
 
     assert (
         '"test label Func1\\n(MyTypeChild: test1 in1, MyTypeChild: test1 in2 -> MyTypeParent: test_type1)"'
@@ -95,7 +102,7 @@ def test_generate_full_uml(generator: PlantUML, mock_ontology):
         '"test label Func2\\n(MyTypeChild: test2 in1 -> MyTypeParent: test_type2)" as MyFunction2 #white'
         in uml_output
     )
-
+    print(uml_output)
     assert 'MyTypeChild "2" --[#E6B8B7]->  MyFunction1 ' in uml_output
     assert 'MyTypeChild  --[#black]->  MyFunction2 ' in uml_output
     assert 'MyFunction1  --[#E6B8B7]->  MyTypeParent ' in uml_output

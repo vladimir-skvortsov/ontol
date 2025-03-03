@@ -100,50 +100,59 @@ class PlantUML:
     @staticmethod
     def _generate_base_hierarchy(relationship: Relationship) -> str:
         relationships = {
-            RelationshipType.DEPENDS: {
+            RelationshipType.DEPENDS.value: {
                 RelationshipDirection.FORWARD: '...>',
                 RelationshipDirection.BACKWARD: '<...',
                 RelationshipDirection.BIDIRECTIONAL: '<...>',
             },
-            RelationshipType.ASSOCIATION: {
+            RelationshipType.ASSOCIATION.value: {
                 RelationshipDirection.FORWARD: '---',
                 RelationshipDirection.BACKWARD: '---',
                 RelationshipDirection.BIDIRECTIONAL: '---',
             },
-            RelationshipType.DIRECT_ASSOCIATION: {
+            RelationshipType.DIRECT_ASSOCIATION.value: {
                 RelationshipDirection.FORWARD: '--->',
                 RelationshipDirection.BACKWARD: '<---',
                 RelationshipDirection.BIDIRECTIONAL: '<--->',
             },
-            RelationshipType.INHERITANCE: {
+            RelationshipType.INHERITANCE.value: {
                 RelationshipDirection.FORWARD: '---|>',
                 RelationshipDirection.BACKWARD: '<|---',
                 RelationshipDirection.BIDIRECTIONAL: '<|---|>',
             },
-            RelationshipType.REALIZATION: {
+            RelationshipType.REALIZATION.value: {
                 RelationshipDirection.FORWARD: '...|>',
                 RelationshipDirection.BACKWARD: '<|...',
                 RelationshipDirection.BIDIRECTIONAL: '<|...|>',
             },
-            RelationshipType.AGGREGATION: {
+            RelationshipType.AGGREGATION.value: {
                 RelationshipDirection.FORWARD: '---o',
                 RelationshipDirection.BACKWARD: 'o---',
                 RelationshipDirection.BIDIRECTIONAL: 'o---o',
             },
-            RelationshipType.COMPOSITION: {
+            RelationshipType.COMPOSITION.value: {
                 RelationshipDirection.FORWARD: '---*',
                 RelationshipDirection.BACKWARD: '*---',
                 RelationshipDirection.BIDIRECTIONAL: '*---*',
             },
         }
-        leftchar: str = '"' + relationship.attributes.left_char + '"'
-
-        rightchar: str = '"' + relationship.attributes.right_char + '"'
-
-        title: str = ': "' + relationship.attributes.title + '"'
-
+        leftchar: str = (
+            ('"' + relationship.attributes.left_char + '"')
+            if relationship.attributes.left_char
+            else ''
+        )
+        rightchar: str = (
+            ('"' + relationship.attributes.right_char + '"')
+            if relationship.attributes.right_char
+            else ''
+        )
+        title: str = (
+            (': "' + relationship.attributes.title + '"')
+            if relationship.attributes.title
+            else ''
+        )
         color: str = '[' + relationship.attributes.color + ']'
-
+         
         relation: str = (
             relationships[relationship.relationship.value][
                 relationship.attributes.direction
@@ -192,7 +201,7 @@ class PlantUML:
             relations.append(
                 Relationship(
                     term,
-                    RelationshipType.from_str(function.attributes.type),
+                    RelationshipType.from_str(function.attributes.type.value),
                     [Term(function.name)],
                     RelationshipAttrubutes(
                         color=function.attributes.color_arrow,
@@ -205,7 +214,7 @@ class PlantUML:
         relations.append(
             Relationship(
                 Term(function.name),
-                RelationshipType.from_str(function.attributes.type),
+                RelationshipType.from_str(function.attributes.type.value),
                 [ontology.find_term_by_name(function.output_type.term.name)],
                 RelationshipAttrubutes(
                     color=function.attributes.color_arrow,

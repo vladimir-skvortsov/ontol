@@ -9,7 +9,7 @@ from .oast import (
     FunctionAttributes,
     RelationshipAttrubutes,
     RelationshipDirection,
-    TermAttributes
+    TermAttributes,
 )
 from .parser import Parser
 from .plantuml import PlantUML
