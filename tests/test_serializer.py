@@ -68,7 +68,7 @@ def test_serialize_ontology(serializer, sample_ontology):
             'name': 'MyType',
             'label': 'A some label',
             'description': 'A sample type',
-            'attributes': {'color': '#white', 'note': None},
+            'attributes': {'color': '#white', 'note': ''},
         }
     ]
     assert data['functions'] == [
@@ -145,7 +145,7 @@ def test_serialize_term(serializer):
         'name': 'TestTerm',
         'label': 'A test label',
         'description': 'A test term',
-        'attributes': {'color': '#white', 'note': None},
+        'attributes': {'color': '#white', 'note': ''},
     }
 
 
@@ -241,7 +241,7 @@ def test_serialize_ontology_without_meta(serializer):
             'name': 'MyType',
             'label': 'A some label',
             'description': 'A sample type',
-            'attributes': {'color': '#white', 'note': None},
+            'attributes': {'color': '#white', 'note': ''},
         }
     ]
     assert data['functions'] == [

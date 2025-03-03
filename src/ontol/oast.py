@@ -34,7 +34,7 @@ class RelationshipDirection(StrEnum):
 @dataclass
 class TermAttributes(ASTNode):
     color: str = '#white'
-    note: Optional[str] = None
+    note: str = ''
 
     def __repr__(self) -> str:
         return(

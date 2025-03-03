@@ -16,7 +16,7 @@ def test_term_creation() -> None:
     assert term.description == 'A test term'
     assert (
         repr(term)
-        == 'Term(name=test_term, label=TestTerm, description=A test term, attributes=TermAttributes(color=#white, note=None))'
+        == 'Term(name=test_term, label=TestTerm, description=A test term, attributes=TermAttributes(color=#white, note=''))'
     )
 
 
@@ -40,7 +40,7 @@ def test_term_with_empty_label_creation() -> None:
     assert term.label == ''
     assert (
         repr(term)
-        == 'Term(name=test_term, label=, description=A test term, attributes=TermAttributes(color=#white, note=None))'
+        == 'Term(name=test_term, label=, description=A test term, attributes=TermAttributes(color=#white, note=''))'
     )
 
 
@@ -49,7 +49,7 @@ def test_term_with_empty_description_creation() -> None:
     assert term.description == ''
     assert (
         repr(term)
-        == 'Term(name=test_term, label=TestTerm, description=, attributes=TermAttributes(color=#white, note=None))'
+        == 'Term(name=test_term, label=TestTerm, description=, attributes=TermAttributes(color=#white, note=''))'
     )
 
 
