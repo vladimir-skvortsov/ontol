@@ -4,6 +4,7 @@ from typing import Literal, Optional
 from dataclasses import fields
 
 from ontol import (
+    ASTNode,
     Ontology,
     Term,
     Function,
@@ -74,7 +75,7 @@ class Lexer(BaseLexer):
 
 class Parser(BaseParser):
     tokens = Lexer.tokens
-    expected_shift_reduce: int = 22
+    expected_shift_reduce: int = 25
 
     def __init__(self) -> None:
         self.__ontology: Ontology = Ontology()
@@ -121,6 +122,27 @@ class Parser(BaseParser):
     def _add_warning(self, token, message: str) -> None:
         final_message: str = self._get_exception_message(token, message, 'warning')
         self.__warnings.append(final_message)
+
+    def _tokenized_attributes_to_dict(
+        self, tokenized_attributes: list[tuple], attributesClass: ASTNode
+    ) -> dict[str, str]:
+        allowed_attributes: list[str] = [
+            field.name for field in fields(attributesClass)
+        ]
+        attributes: dict[str, str] = {}
+
+        for attribute_pair in tokenized_attributes:
+            if attribute_pair[0].value not in allowed_attributes:
+                raise ValueError(
+                    self._get_exception_message(
+                        attribute_pair[0],
+                        f'Unexpected attribute {attribute_pair[0].value}. One of the following was expected: {", ".join(allowed_attributes)}',
+                        'error',
+                    )
+                )
+            attributes[attribute_pair[0].value] = attribute_pair[1].value
+
+        return attributes
 
     @_('statement_list')
     def program(self, p) -> Ontology:
@@ -180,11 +202,13 @@ class Parser(BaseParser):
                 )
             )
 
+        attributes = self._tokenized_attributes_to_dict(p.attributes, TermAttributes)
+
         term = Term(
             name=p.IDENTIFIER,
             label=p.STRING0,
             description=p.STRING1,
-            attributes=TermAttributes(**p.attributes),
+            attributes=TermAttributes(**attributes),
         )
 
         if not p.STRING0:
@@ -234,12 +258,16 @@ class Parser(BaseParser):
 
         output_type: FunctionArgument = FunctionArgument(output_term, p.STRING1)
 
+        attributes = self._tokenized_attributes_to_dict(
+            p.attributes, FunctionAttributes
+        )
+
         function: Function = Function(
             name=p.IDENTIFIER0,
             label=p.STRING0,
             input_types=input_types,
             output_type=output_type,
-            attributes=FunctionAttributes(**p.attributes),
+            attributes=FunctionAttributes(**attributes),
         )
 
         if not p.STRING0:
@@ -341,11 +369,15 @@ class Parser(BaseParser):
 
         children: list[Term] = [child_term]
 
+        attributes = self._tokenized_attributes_to_dict(
+            p.attributes, RelationshipAttributes
+        )
+
         relationship = Relationship(
             parent=parent,
             relationship=relationship,
             children=children,
-            attributes=RelationshipAttributes(**p.attributes),
+            attributes=RelationshipAttributes(**attributes),
         )
         self.__ontology.add_relationship(relationship)
 
@@ -356,35 +388,34 @@ class Parser(BaseParser):
         'COMMA LBRACE NEWLINE attribute_list NEWLINE RBRACE',
         'COMMA LBRACE NEWLINE attribute_list COMMA NEWLINE RBRACE',
     )
-    def attributes(self, p) -> dict[str, str]:
+    def attributes(self, p) -> list[tuple]:
         return p.attribute_list
 
     @_('')
-    def attributes(self, p) -> dict[str, str]:
-        return {}
+    def attributes(self, p) -> list[tuple]:
+        return []
 
     @_(
         'attribute_list COMMA attribute',
         'attribute_list COMMA NEWLINE attribute',
     )
-    def attribute_list(self, p) -> dict[str, str]:
-        p.attribute_list.update(p.attribute)
-        return p.attribute_list
+    def attribute_list(self, p) -> list[tuple]:
+        return p.attribute_list + [p.attribute]
 
     @_('attribute')
-    def attribute_list(self, p) -> dict[str, str]:
-        return p.attribute
+    def attribute_list(self, p) -> list[tuple]:
+        return [p.attribute]
 
     @_('')
-    def attribute_list(self, p) -> dict[str, str]:
-        return {}
+    def attribute_list(self, p) -> list[tuple]:
+        return []
 
     @_('IDENTIFIER COLON STRING')
-    def attribute(self, p) -> dict[str, str]:
+    def attribute(self, p) -> tuple:
         if not p.STRING:
             self._add_warning(p._slice[2], 'Attribute value is empty')
 
-        return {p.IDENTIFIER: p.STRING}
+        return (p._slice[0], p._slice[2])
 
     @_('NEWLINE')
     def statement(self, p) -> None:
