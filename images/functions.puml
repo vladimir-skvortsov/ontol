@@ -1,0 +1,59 @@
+@startuml
+skinparam defaultTextAlignment center
+
+rectangle "**FUNCTIONS_BLOCK**\nfunctions:" as FUNCTIONS_BLOCK #F2E6D9
+rectangle "**STRING**\n'[^']*'|"[^"]*"" as STRING #F2E6D9
+rectangle "**IDENTIFIER**\n[a-zA-Z_][a-zA-Z0-9_]*" as IDENTIFIER #F2E6D9
+rectangle "**COLON**\n:" as COLON #F2E6D9
+rectangle "**COMMA**\n," as COMMA #F2E6D9
+rectangle "**ARROW**\n->" as ARROW #F2E6D9
+rectangle "**LPAREN**\n(" as LPAREN #F2E6D9
+rectangle "**RPAREN**\n)" as RPAREN #F2E6D9
+rectangle "**NEWLINE**\n\\n+" as NEWLINE #F2E6D9
+rectangle "**EMPTY**\n" as EMPTY #F2E6D9
+
+rectangle "**statement**\nIDENTIFIER COLON STRING NEWLINE\nTYPES_BLOCK NEWLINE type_list\nFUNCTIONS_BLOCK NEWLINE function_list\nHIERARCHY_BLOCK NEWLINE hierarchy_list\nNEWLINE" as statement #E6B8B7
+rectangle "**attributes**\nCOMMA LBRACE attribute_list RBRACE\nCOMMA LBRACE NEWLINE attribute_list RBRACE\nCOMMA LBRACE attribute_list NEWLINE RBRACE\nCOMMA LBRACE NEWLINE attribute_list NEWLINE RBRACE\nCOMMA LBRACE NEWLINE attribute_list COMMA NEWLINE RBRACE\nEMPTYLIST" as attributes #E6B8B7
+rectangle "**function_list**\nfunction_list function NEWLINE\nfunction NEWLINE\nNEWLINE function_list\nEMPTY" as function_list #E6B8B7
+rectangle "**function**\nIDENTIFIER COLON STRING params ARROW IDENTIFIER COLON STRING attributes" as function #E6B8B7
+rectangle "**params**\nLPAREN param_list RPAREN\nLPAREN NEWLINE param_list RPAREN\nLPAREN param_list NEWLINE RPAREN\nLPAREN NEWLINE param_list NEWLINE RPAREN\nLPAREN NEWLINE param_list COMMA NEWLINE RPAREN" as params #E6B8B7
+rectangle "**param_list**\nparam_list COMMA NEWLINE param\nparam_list COMMA param\nparam\nEMPTY" as param_list #E6B8B7
+rectangle "**param**\nIDENTIFIER COLON STRING" as param #E6B8B7
+
+
+statement --> IDENTIFIER
+statement --> COLON
+statement --> STRING
+statement --> NEWLINE
+
+statement --> FUNCTIONS_BLOCK
+statement --> function_list
+
+function_list --> function_list
+function_list --> function
+function_list --> NEWLINE
+function_list --> EMPTY
+
+function --> IDENTIFIER
+function --> COLON
+function --> STRING
+function --> params
+function --> ARROW
+function --> attributes
+
+params --> LPAREN
+params --> param_list
+params --> RPAREN
+params --> NEWLINE
+params --> COMMA
+
+param_list --> param_list
+param_list --> COMMA
+param_list --> NEWLINE
+param_list --> param
+param_list --> EMPTY
+
+param --> IDENTIFIER
+param --> COLON
+param --> STRING
+@enduml

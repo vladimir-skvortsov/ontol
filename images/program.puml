@@ -1,0 +1,38 @@
+@startuml
+skinparam defaultTextAlignment center
+
+rectangle "**TYPES_BLOCK**\ntypes:" as TYPES_BLOCK #F2E6D9
+rectangle "**FUNCTIONS_BLOCK**\nfunctions:" as FUNCTIONS_BLOCK #F2E6D9
+rectangle "**HIERARCHY_BLOCK**\nhierarchy:" as HIERARCHY_BLOCK #F2E6D9
+rectangle "**STRING**\n'[^']*'|"[^"]*"" as STRING #F2E6D9
+rectangle "**IDENTIFIER**\n[a-zA-Z_][a-zA-Z0-9_]*" as IDENTIFIER #F2E6D9
+rectangle "**COLON**\n:" as COLON #F2E6D9
+rectangle "**NEWLINE**\n\\n+" as NEWLINE #F2E6D9
+rectangle "**EMPTY**\n" as EMPTY #F2E6D9
+
+rectangle "**program**\nstatement_list" as program #E6B8B7
+rectangle "**statement_list**\nstatement_list statement\nEMPTY" as statement_list #E6B8B7
+rectangle "**statement**\nIDENTIFIER COLON STRING NEWLINE\nTYPES_BLOCK NEWLINE type_list\nFUNCTIONS_BLOCK NEWLINE function_list\nHIERARCHY_BLOCK NEWLINE hierarchy_list\nNEWLINE" as statement #E6B8B7
+rectangle "**type_list**\ntype_list type NEWLINE\ntype NEWLINE\nNEWLINE type_list\nEMPTY" as type_list #E6B8B7
+rectangle "**function_list**\nfunction_list function NEWLINE\nfunction NEWLINE\nNEWLINE function_list\nEMPTY" as function_list #E6B8B7
+rectangle "**hierarchy_list**\nhierarchy_list hierarchy NEWLINE\nhierarchy NEWLINE\nNEWLINE hierarchy_list\nEMPTY" as hierarchy_list #E6B8B7
+
+
+program --> statement_list
+
+statement_list --> statement_list
+statement_list --> statement
+statement_list --> EMPTY
+
+statement --> IDENTIFIER
+statement --> COLON
+statement --> STRING
+statement --> NEWLINE
+
+statement --> TYPES_BLOCK
+statement --> type_list
+statement --> FUNCTIONS_BLOCK
+statement --> function_list
+statement --> HIERARCHY_BLOCK
+statement --> hierarchy_list
+@enduml

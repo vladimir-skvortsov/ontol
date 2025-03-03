@@ -1,0 +1,39 @@
+@startuml
+skinparam defaultTextAlignment center
+
+rectangle "**TYPES_BLOCK**\ntypes:" as TYPES_BLOCK #F2E6D9
+rectangle "**FUNCTIONS_BLOCK**\nfunctions:" as FUNCTIONS_BLOCK #F2E6D9
+rectangle "**HIERARCHY_BLOCK**\nhierarchy:" as HIERARCHY_BLOCK #F2E6D9
+rectangle "**STRING**\n'[^']*'|"[^"]*"" as STRING #F2E6D9
+rectangle "**IDENTIFIER**\n[a-zA-Z_][a-zA-Z0-9_]*" as IDENTIFIER #F2E6D9
+rectangle "**LBRACE**\n{" as LBRACE #F2E6D9
+rectangle "**RBRACE**\n}" as RBRACE #F2E6D9
+rectangle "**COLON**\n:" as COLON #F2E6D9
+rectangle "**COMMA**\n," as COMMA #F2E6D9
+rectangle "**ARROW**\n->" as ARROW #F2E6D9
+rectangle "**LPAREN**\n(" as LPAREN #F2E6D9
+rectangle "**RPAREN**\n)" as RPAREN #F2E6D9
+rectangle "**NEWLINE**\n\\n+" as NEWLINE #F2E6D9
+rectangle "**EMPTY**\n" as EMPTY #F2E6D9
+
+rectangle "**attributes**\nCOMMA LBRACE attribute_list RBRACE\nCOMMA LBRACE NEWLINE attribute_list RBRACE\nCOMMA LBRACE attribute_list NEWLINE RBRACE\nCOMMA LBRACE NEWLINE attribute_list NEWLINE RBRACE\nCOMMA LBRACE NEWLINE attribute_list COMMA NEWLINE RBRACE\nEMPTYLIST" as attributes #E6B8B7
+rectangle "**attribute_list**\nattribute_list COMMA attribute\nattribute_list COMMA NEWLINE attribute\nattribute\nEMPTY" as attribute_list #E6B8B7
+rectangle "**attribute**\nIDENTIFIER COLON STRING" as attribute #E6B8B7
+
+
+attributes --> COMMA
+attributes --> LBRACE
+attributes --> attribute_list
+attributes --> RBRACE
+attributes --> NEWLINE
+
+attribute_list --> attribute_list
+attribute_list --> COMMA
+attribute_list --> attribute
+attribute_list --> NEWLINE
+attribute_list --> EMPTY
+
+attribute --> IDENTIFIER
+attribute --> COLON
+attribute --> STRING
+@enduml

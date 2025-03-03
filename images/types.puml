@@ -1,0 +1,36 @@
+@startuml
+skinparam defaultTextAlignment center
+
+rectangle "**TYPES_BLOCK**\ntypes:" as TYPES_BLOCK #F2E6D9
+rectangle "**STRING**\n'[^']*'|"[^"]*"" as STRING #F2E6D9
+rectangle "**IDENTIFIER**\n[a-zA-Z_][a-zA-Z0-9_]*" as IDENTIFIER #F2E6D9
+rectangle "**COLON**\n:" as COLON #F2E6D9
+rectangle "**COMMA**\n," as COMMA #F2E6D9
+rectangle "**NEWLINE**\n\\n+" as NEWLINE #F2E6D9
+rectangle "**EMPTY**\n" as EMPTY #F2E6D9
+
+rectangle "**statement**\nIDENTIFIER COLON STRING NEWLINE\nTYPES_BLOCK NEWLINE type_list\nFUNCTIONS_BLOCK NEWLINE function_list\nHIERARCHY_BLOCK NEWLINE hierarchy_list\nNEWLINE" as statement #E6B8B7
+rectangle "**type_list**\ntype_list type NEWLINE\ntype NEWLINE\nNEWLINE type_list\nEMPTY" as type_list #E6B8B7
+rectangle "**type**\nIDENTIFIER COLON STRING COMMA STRING attributes" as type #E6B8B7
+rectangle "**attributes**\nCOMMA LBRACE attribute_list RBRACE\nCOMMA LBRACE NEWLINE attribute_list RBRACE\nCOMMA LBRACE attribute_list NEWLINE RBRACE\nCOMMA LBRACE NEWLINE attribute_list NEWLINE RBRACE\nCOMMA LBRACE NEWLINE attribute_list COMMA NEWLINE RBRACE\nEMPTYLIST" as attributes #E6B8B7
+
+
+statement --> IDENTIFIER
+statement --> COLON
+statement --> STRING
+statement --> NEWLINE
+
+statement --> TYPES_BLOCK
+statement --> type_list
+
+type_list --> type_list
+type_list --> type
+type_list --> NEWLINE
+type_list --> EMPTY
+
+type --> IDENTIFIER
+type --> COLON
+type --> STRING
+type --> COMMA
+type --> attributes
+@enduml

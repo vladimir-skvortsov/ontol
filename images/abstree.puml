@@ -1,0 +1,116 @@
+@startuml
+skinparam defaultTextAlignment center
+
+rectangle "**TYPES_BLOCK**\ntypes:" as TYPES_BLOCK #F2E6D9
+rectangle "**FUNCTIONS_BLOCK**\nfunctions:" as FUNCTIONS_BLOCK #F2E6D9
+rectangle "**HIERARCHY_BLOCK**\nhierarchy:" as HIERARCHY_BLOCK #F2E6D9
+rectangle "**STRING**\n'[^']*'|"[^"]*"" as STRING #F2E6D9
+rectangle "**IDENTIFIER**\n[a-zA-Z_][a-zA-Z0-9_]*" as IDENTIFIER #F2E6D9
+rectangle "**LBRACE**\n{" as LBRACE #F2E6D9
+rectangle "**RBRACE**\n}" as RBRACE #F2E6D9
+rectangle "**COLON**\n:" as COLON #F2E6D9
+rectangle "**COMMA**\n," as COMMA #F2E6D9
+rectangle "**ARROW**\n->" as ARROW #F2E6D9
+rectangle "**LPAREN**\n(" as LPAREN #F2E6D9
+rectangle "**RPAREN**\n)" as RPAREN #F2E6D9
+rectangle "**NEWLINE**\n\\n+" as NEWLINE #F2E6D9
+rectangle "**EMPTY**\n" as EMPTY #F2E6D9
+
+rectangle "**program**\nstatement_list" as program #E6B8B7
+rectangle "**statement_list**\nstatement_list statement\nEMPTY" as statement_list #E6B8B7
+rectangle "**statement**\nIDENTIFIER COLON STRING NEWLINE\nTYPES_BLOCK NEWLINE type_list\nFUNCTIONS_BLOCK NEWLINE function_list\nHIERARCHY_BLOCK NEWLINE hierarchy_list\nNEWLINE" as statement #E6B8B7
+rectangle "**type_list**\ntype_list type NEWLINE\ntype NEWLINE\nNEWLINE type_list\nEMPTY" as type_list #E6B8B7
+rectangle "**type**\nIDENTIFIER COLON STRING COMMA STRING attributes" as type #E6B8B7
+rectangle "**attributes**\nCOMMA LBRACE attribute_list RBRACE\nCOMMA LBRACE NEWLINE attribute_list RBRACE\nCOMMA LBRACE attribute_list NEWLINE RBRACE\nCOMMA LBRACE NEWLINE attribute_list NEWLINE RBRACE\nCOMMA LBRACE NEWLINE attribute_list COMMA NEWLINE RBRACE\nEMPTYLIST" as attributes #E6B8B7
+rectangle "**attribute_list**\nattribute_list COMMA attribute\nattribute_list COMMA NEWLINE attribute\nattribute\nEMPTY" as attribute_list #E6B8B7
+rectangle "**attribute**\nIDENTIFIER COLON STRING" as attribute #E6B8B7
+rectangle "**function_list**\nfunction_list function NEWLINE\nfunction NEWLINE\nNEWLINE function_list\nEMPTY" as function_list #E6B8B7
+rectangle "**function**\nIDENTIFIER COLON STRING params ARROW IDENTIFIER COLON STRING attributes" as function #E6B8B7
+rectangle "**params**\nLPAREN param_list RPAREN\nLPAREN NEWLINE param_list RPAREN\nLPAREN param_list NEWLINE RPAREN\nLPAREN NEWLINE param_list NEWLINE RPAREN\nLPAREN NEWLINE param_list COMMA NEWLINE RPAREN" as params #E6B8B7
+rectangle "**param_list**\nparam_list COMMA NEWLINE param\nparam_list COMMA param\nparam\nEMPTY" as param_list #E6B8B7
+rectangle "**param**\nIDENTIFIER COLON STRING" as param #E6B8B7
+rectangle "**hierarchy_list**\nhierarchy_list hierarchy NEWLINE\nhierarchy NEWLINE\nNEWLINE hierarchy_list\nEMPTY" as hierarchy_list #E6B8B7
+rectangle "**hierarchy**\nIDENTIFIER IDENTIFIER IDENTIFIER COMMA attributes" as hierarchy #E6B8B7
+
+
+program --> statement_list
+
+statement_list --> statement_list
+statement_list --> statement
+statement_list --> EMPTY
+
+statement --> IDENTIFIER
+statement --> COLON
+statement --> STRING
+statement --> NEWLINE
+
+statement --> TYPES_BLOCK
+statement --> type_list
+statement --> FUNCTIONS_BLOCK
+statement --> function_list
+statement --> HIERARCHY_BLOCK
+statement --> hierarchy_list
+
+type_list --> type_list
+type_list --> type
+type_list --> NEWLINE
+type_list --> EMPTY
+
+type --> IDENTIFIER
+type --> COLON
+type --> STRING
+type --> COMMA
+type --> attributes
+
+attributes --> COMMA
+attributes --> LBRACE
+attributes --> attribute_list
+attributes --> RBRACE
+attributes --> NEWLINE
+
+attribute_list --> attribute_list
+attribute_list --> COMMA
+attribute_list --> attribute
+attribute_list --> NEWLINE
+attribute_list --> EMPTY
+
+attribute --> IDENTIFIER
+attribute --> COLON
+attribute --> STRING
+
+function_list --> function_list
+function_list --> function
+function_list --> NEWLINE
+function_list --> EMPTY
+
+function --> IDENTIFIER
+function --> COLON
+function --> STRING
+function --> params
+function --> ARROW
+function --> attributes
+
+params --> LPAREN
+params --> param_list
+params --> RPAREN
+params --> NEWLINE
+params --> COMMA
+
+param_list --> param_list
+param_list --> COMMA
+param_list --> NEWLINE
+param_list --> param
+param_list --> EMPTY
+
+param --> IDENTIFIER
+param --> COLON
+param --> STRING
+
+hierarchy_list --> hierarchy_list
+hierarchy_list --> hierarchy
+hierarchy_list --> NEWLINE
+hierarchy_list --> EMPTY
+
+hierarchy --> IDENTIFIER
+hierarchy --> attributes
+@enduml
