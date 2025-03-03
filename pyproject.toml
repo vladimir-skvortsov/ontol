@@ -21,8 +21,8 @@ authors = [
     { name = "Skvortsov Vladimir" },
     { name = "Aptukov Mikhail" },
     { name = "Markov Mikhail" },
-    { name = "Afanasyev Andrew" },
     { name = "Khamidullin Ilsaf" },
+    { name = "Afanasyev Andrew" },
 ]
 license = { file = "LICENSE" }
 dependencies = [

@@ -7,8 +7,8 @@
 [Skvortsov Vladimir](https://github.com/vladimir-skvortsov),
 [Aptukov Mikhail](https://github.com/LuckyAm20),
 [Markov Mikhail](https://github.com/eagerbeaver04),
-[Afanasyev Andrew](https://github.com/afafos),
-[Khamidullin Ilsaf](https://github.com/Ilsaffff).
+[Khamidullin Ilsaf](https://github.com/Ilsaffff),
+[Afanasyev Andrew](https://github.com/afafos).
 
 Ontol DSL Parser is a command-line tool for parsing and visualizing ontology files written in the Ontol DSL. It generates JSON representations and PlantUML diagrams from `.ontol` files.
 
