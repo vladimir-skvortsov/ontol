@@ -1,4 +1,12 @@
-from src.ontol import Parser, Term, Function, Relationship
+from ontol import (
+    Parser,
+    Term,
+    Function,
+    Relationship,
+    TermAttributes,
+    FunctionAttributes,
+    RelationshipAttributes,
+)
 
 import pytest
 
@@ -164,7 +172,7 @@ def test_parse_type(parser):
     assert term.name == 'set'
     assert term.label == 'Множество'
     assert term.description == 'Коллекция уникальных элементов'
-    assert term.attributes == {'color': '#ffffff'}
+    assert term.attributes == TermAttributes(color='#ffffff')
 
 
 def test_parse_type_Wth_multiline_attributes(parser):
@@ -182,7 +190,7 @@ def test_parse_type_Wth_multiline_attributes(parser):
     assert term.name == 'set'
     assert term.label == 'Множество'
     assert term.description == 'Коллекция уникальных элементов'
-    assert term.attributes == {'color': '#ffffff'}
+    assert term.attributes == TermAttributes(color='#ffffff')
 
 
 def test_parse_type_Wth_multiline_attributes_with_trailing_comma(parser):
@@ -200,7 +208,7 @@ def test_parse_type_Wth_multiline_attributes_with_trailing_comma(parser):
     assert term.name == 'set'
     assert term.label == 'Множество'
     assert term.description == 'Коллекция уникальных элементов'
-    assert term.attributes == {'color': '#ffffff'}
+    assert term.attributes == TermAttributes(color='#ffffff')
 
 
 def test_parse_type_without_attributes(parser):
@@ -216,7 +224,7 @@ def test_parse_type_without_attributes(parser):
     assert term.name == 'set'
     assert term.label == 'Множество'
     assert term.description == 'Коллекция уникальных элементов'
-    assert term.attributes == {}
+    assert term.attributes == TermAttributes()
     assert len(warnings) == 0
 
 
@@ -233,7 +241,7 @@ def test_parse_type_with_empty_attributes(parser):
     assert term.name == 'set'
     assert term.label == 'Множество'
     assert term.description == 'Коллекция уникальных элементов'
-    assert term.attributes == {}
+    assert term.attributes == TermAttributes()
     assert len(warnings) == 0
 
 
@@ -301,7 +309,7 @@ def test_parse_type_with_empty_label_and_desc(parser):
     assert term.name == 'set'
     assert term.label == ''
     assert term.description == ''
-    assert term.attributes == {}
+    assert term.attributes == TermAttributes()
     assert len(warnings) == 2
 
 
@@ -347,7 +355,7 @@ def test_parse_function(parser):
     assert func.output_type.term.label == 'Множество'
     assert func.output_type.term.description == 'Коллекция уникальных элементов'
     assert func.output_type.label == 'Result set'
-    assert func.attributes == {'color': '#fff'}
+    assert func.attributes == FunctionAttributes(color='#fff')
     assert len(warnings) == 0
 
 
@@ -377,7 +385,7 @@ def test_parse_function_with_empty_attributes(parser):
     assert func.output_type.term.label == 'Число'
     assert func.output_type.term.description == 'Число'
     assert func.output_type.label == 'Quotient'
-    assert func.attributes == {}
+    assert func.attributes == FunctionAttributes()
     assert len(warnings) == 0
 
 
@@ -461,7 +469,7 @@ def test_parse_heierarchy(parser):
     assert rel.parent.name == 'element'
     assert rel.relationship.value == 'inheritance'
     assert rel.children[0].name == 'set'
-    assert rel.attributes == {}
+    assert rel.attributes == RelationshipAttributes()
     assert len(warnings) == 4
 
 
@@ -481,7 +489,7 @@ def test_parse_heierarchy_with_attributes(parser):
     assert rel.parent.name == 'element'
     assert rel.relationship.value == 'inheritance'
     assert rel.children[0].name == 'set'
-    assert rel.attributes == {'color': '#red'}
+    assert rel.attributes == RelationshipAttributes(color='#red')
     assert len(warnings) == 4
 
 
@@ -503,7 +511,7 @@ def test_parse_heierarchy_with_multiline_attributes(parser):
     assert rel.parent.name == 'element'
     assert rel.relationship.value == 'inheritance'
     assert rel.children[0].name == 'set'
-    assert rel.attributes == {'color': '#red'}
+    assert rel.attributes == RelationshipAttributes(color='#red')
     assert len(warnings) == 4
 
 
@@ -522,8 +530,9 @@ def test_parse_heierarchy_with_empty_attributes(parser):
     rel: Relationship = ontology.hierarchy[0]
     assert rel.parent.name == 'element'
     assert rel.relationship.value == 'inheritance'
+    assert len(rel.children) == 1
     assert rel.children[0].name == 'set'
-    assert rel.attributes == {}
+    assert rel.attributes == RelationshipAttributes()
     assert len(warnings) == 4
 
 

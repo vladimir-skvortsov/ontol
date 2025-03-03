@@ -8,14 +8,91 @@ class ASTNode:
 
 
 @dataclass
+class Meta(ASTNode):
+    version: Optional[str] = None
+    title: Optional[str] = None
+    author: Optional[str] = None
+    description: Optional[str] = None
+    type: Optional[str] = None
+    date: Optional[str] = None
+
+    def __repr__(self) -> str:
+        return (
+            f'Meta(version={self.version}, title={self.title}, author={self.author}, '
+            f'description={self.description}, type={self.type}, '
+            f'date={self.date})'
+        )
+
+
+@dataclass
+class TermAttributes(ASTNode):
+    color: Optional[str] = None
+    note: Optional[str] = None
+
+    def __repr__(self) -> str:
+        return f'TermAttributes(color={self.color}, note={self.note})'
+
+
+@dataclass
 class Term(ASTNode):
     name: str
     label: str = ''
     description: str = ''
-    attributes: dict = field(default_factory=dict)
+    attributes: TermAttributes = field(default_factory=TermAttributes)
 
     def __repr__(self) -> str:
         return f'Term(name={self.name}, label={self.label}, description={self.description}, attributes={self.attributes})'
+
+
+class RelationshipDirection(Enum):
+    FORWARD = 'forward'
+    BACKWARD = 'backward'
+    BIDIRECTIONAL = 'bidirectional'
+
+    @classmethod
+    def from_str(cls, value: str):
+        return cls._value2member_map_.get(value, None)
+
+    @classmethod
+    def has_value(cls, value: str) -> bool:
+        return value in cls._value2member_map_
+
+
+class RelationshipType(Enum):
+    # TODO: change name by Novikov opinion
+    DEPENDS = 'depends'
+    ASSOCIATION = 'association'
+    DIRECT_ASSOCIATION = 'directAssociation'
+    INHERITANCE = 'inheritance'
+    REALIZATION = 'realization'
+    AGGREGATION = 'aggregation'
+    COMPOSITION = 'composition'
+
+    @classmethod
+    def from_str(cls, value: str):
+        return cls._value2member_map_.get(value, None)
+
+    @classmethod
+    def has_value(cls, value: str) -> bool:
+        return value in cls._value2member_map_
+
+
+@dataclass
+class FunctionAttributes(ASTNode):
+    color: Optional[str] = None
+    colorArrow: Optional[str] = None
+    type: Optional[RelationshipType] = None
+    inputTitle: Optional[str] = None
+    outputTitle: Optional[str] = None
+
+    def __repr__(self) -> str:
+        return (
+            f'FunctionAttributes(color={self.color}, '
+            f'colorArrow={self.colorArrow}, '
+            f'type={self.type.value if self.type else self.type}, '
+            f'inputTitle={self.inputTitle}, '
+            f'outputTitle={self.outputTitle})'
+        )
 
 
 @dataclass
@@ -33,7 +110,7 @@ class Function(ASTNode):
     label: str
     input_types: list[FunctionArgument]
     output_type: FunctionArgument
-    attributes: dict = field(default_factory=dict)
+    attributes: FunctionAttributes = field(default_factory=FunctionAttributes)
 
     def __repr__(self) -> str:
         return (
@@ -57,23 +134,22 @@ class Function(ASTNode):
         )
 
 
-class RelationshipType(Enum):
-    # TODO: change name by Novikov opinion
-    DEPENDS = 'depends'
-    ASSOCIATION = 'association'
-    DIRECT_ASSOCIATION = 'directAssociation'
-    INHERITANCE = 'inheritance'
-    REALIZATION = 'realization'
-    AGGREGATION = 'aggregation'
-    COMPOSITION = 'composition'
+@dataclass
+class RelationshipAttributes(ASTNode):
+    color: Optional[str] = None
+    direction: Optional[RelationshipDirection] = None
+    title: Optional[str] = None
+    rightChar: Optional[str] = None
+    leftChar: Optional[str] = None
 
-    @classmethod
-    def from_str(cls, value: str):
-        return cls._value2member_map_.get(value, None)
-
-    @classmethod
-    def has_value(cls, value: str) -> bool:
-        return value in cls._value2member_map_
+    def __repr__(self) -> str:
+        return (
+            f'RelationshipAttributes(color={self.color}, '
+            f'direction={self.direction.value if self.direction else self.direction}, '
+            f'title={self.title}, '
+            f'rightChar={self.rightChar}, '
+            f'leftChar={self.leftChar})'
+        )
 
 
 @dataclass
@@ -81,30 +157,13 @@ class Relationship(ASTNode):
     parent: Term
     relationship: RelationshipType
     children: list[Term]
-    attributes: dict[str, str] = field(default_factory=dict)
+    attributes: RelationshipAttributes = field(default_factory=RelationshipAttributes)
 
     def __repr__(self) -> str:
         return (
             f'Relationship(parent={self.parent.name}, '
             f'relationship={self.relationship.value}, '
             f'children=[{",".join(child.name for child in self.children)}], attributes={self.attributes})'
-        )
-
-
-@dataclass
-class Meta(ASTNode):
-    version: Optional[str] = None
-    title: Optional[str] = None
-    author: Optional[str] = None
-    description: Optional[str] = None
-    type: Optional[str] = None
-    date: Optional[str] = None
-
-    def __repr__(self) -> str:
-        return (
-            f'Meta(version={self.version}, title={self.title}, author={self.author}, '
-            f'description={self.description}, type={self.type}, '
-            f'date={self.date})'
         )
 
 

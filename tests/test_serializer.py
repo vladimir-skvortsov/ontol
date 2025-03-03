@@ -1,7 +1,15 @@
 import json
 
-from ontol.oast import FunctionArgument, RelationshipType
-from src.ontol import Function, Meta, Ontology, Relationship, Term, JSONSerializer
+from ontol import (
+    Function,
+    Meta,
+    Ontology,
+    Relationship,
+    Term,
+    JSONSerializer,
+    FunctionArgument,
+    RelationshipType,
+)
 
 import pytest
 
@@ -136,7 +144,6 @@ def test_serialize_function(serializer):
         label='A test function',
     )
     serialized_function = serializer._serialize_function(func)
-    print(serialized_function)
     assert serialized_function == {
         'name': 'TestFunction',
         'label': 'A test function',
@@ -209,6 +216,7 @@ def test_serialize_ontology_without_meta(serializer):
         'type': None,
         'date': None,
     }
+    print(data)
     assert data['terms'] == [
         {
             'name': 'MyType',

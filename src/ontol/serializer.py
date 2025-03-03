@@ -23,8 +23,17 @@ class JSONSerializer:
         return json.dumps(data, ensure_ascii=False, indent=4)
 
     @staticmethod
-    def _serialize_term(type_def: Term) -> dict[str, str | None]:
-        return asdict(type_def)
+    def _serialize_term(type_def: Term) -> dict[str, str | list[dict] | dict | None]:
+        return {
+            'name': type_def.name,
+            'label': type_def.label,
+            'description': type_def.description,
+            'attributes': {
+                key: value
+                for key, value in asdict(type_def.attributes).items()
+                if value is not None
+            },
+        }
 
     @staticmethod
     def _serialize_function(
@@ -40,7 +49,11 @@ class JSONSerializer:
                 'name': func_def.output_type.term.name,
                 'label': func_def.output_type.label,
             },
-            'attributes': func_def.attributes,
+            'attributes': {
+                key: value
+                for key, value in asdict(func_def.attributes).items()
+                if value is not None
+            },
         }
 
     @staticmethod
@@ -55,5 +68,9 @@ class JSONSerializer:
             'parent': rel_def.parent.name,
             'relationship': rel_def.relationship.value,
             'children': [child.name for child in rel_def.children],
-            'attributes': rel_def.attributes,
+            'attributes': {
+                key: value
+                for key, value in asdict(rel_def.attributes).items()
+                if value is not None
+            },
         }

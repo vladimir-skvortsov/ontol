@@ -1,5 +1,12 @@
-from ontol.oast import RelationshipType
-from src.ontol import Function, Meta, Ontology, Relationship, Term, FunctionArgument
+from ontol import (
+    Function,
+    Meta,
+    Ontology,
+    Relationship,
+    Term,
+    FunctionArgument,
+    RelationshipType,
+)
 
 
 def test_term_creation() -> None:
@@ -9,7 +16,7 @@ def test_term_creation() -> None:
     assert term.description == 'A test term'
     assert (
         repr(term)
-        == 'Term(name=test_term, label=TestTerm, description=A test term, attributes={})'
+        == 'Term(name=test_term, label=TestTerm, description=A test term, attributes=TermAttributes(color=None, note=None))'
     )
 
 
@@ -33,7 +40,8 @@ def test_term_with_empty_label_creation() -> None:
     assert term.label == ''
     assert (
         repr(term)
-        == 'Term(name=test_term, label=, description=A test term, attributes={})'
+        == 'Term(name=test_term, label=, description=A test term, attributes=TermAttributes(color=None, note=None'
+        '))'
     )
 
 
@@ -42,7 +50,8 @@ def test_term_with_empty_description_creation() -> None:
     assert term.description == ''
     assert (
         repr(term)
-        == 'Term(name=test_term, label=TestTerm, description=, attributes={})'
+        == 'Term(name=test_term, label=TestTerm, description=, attributes=TermAttributes(color=None, note=None'
+        '))'
     )
 
 
@@ -65,7 +74,7 @@ def test_function_creation():
     assert func.output_type == FunctionArgument(Term('int'), 'Result')
     assert (
         repr(func)
-        == "Function(name=sum, label=Sum, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes={})"
+        == "Function(name=sum, label=Sum, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes=FunctionAttributes(color=None, colorArrow=None, type=None, inputTitle=None, outputTitle=None))"
     )
 
 
@@ -82,7 +91,7 @@ def test_function_wth_empty_label_creation():
     assert func.label == ''
     assert (
         repr(func)
-        == "Function(name=sum, label=, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes={})"
+        == "Function(name=sum, label=, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes=FunctionAttributes(color=None, colorArrow=None, type=None, inputTitle=None, outputTitle=None))"
     )
 
 
@@ -96,7 +105,7 @@ def test_function_wth_empty_input_types_creation():
     assert func.input_types == []
     assert (
         repr(func) == 'Function(name=sum, label=Sum, input_types=[],'
-        " output_type=('int', 'Result'), attributes={})"
+        " output_type=('int', 'Result'), attributes=FunctionAttributes(color=None, colorArrow=None, type=None, inputTitle=None, outputTitle=None))"
     )
 
 
@@ -111,7 +120,7 @@ def test_relationship_creation() -> None:
     assert rel.children == [Term('element')]
     assert (
         repr(rel)
-        == 'Relationship(parent=set, relationship=depends, children=[element], attributes={})'
+        == 'Relationship(parent=set, relationship=depends, children=[element], attributes=RelationshipAttributes(color=None, direction=None, title=None, rightChar=None, leftChar=None))'
     )
 
 
