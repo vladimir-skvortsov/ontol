@@ -66,7 +66,7 @@ class Lexer(BaseLexer):
 
     def error(self, t) -> None:
         self.index += 1
-        raise SyntaxError(f"Illegal character '{t.value[0]}'")
+        raise SyntaxError(f"🚨 \033[31mError: \033[0mIllegal character '{t.value[0]}'")
 
 
 class Parser(BaseParser):
@@ -392,9 +392,9 @@ class Parser(BaseParser):
             raise SyntaxError(
                 self._get_exception_message(
                     p,
-                    f'Syntax error ({p.type})',
+                    f'🚨 \033[31mError: \033[0mSyntax error ({p.type})',
                     'error',
                 )
             )
 
-        raise SyntaxError('Syntax error at EOF')
+        raise SyntaxError('🚨 \033[31mError: \033[0mSyntax error at EOF')
