@@ -22,14 +22,14 @@ functions:
 
 # Иерархическое выражение
 hierarchy:
-sequence depends multiset
-sequence depends order
-multiset depends set
-multiset depends natural
-finiteSet depends set
-alphabet depends finiteSet
-alphabet depends letter
-language depends set
-language depends word
-word depends letter
-word depends sequence
+sequence dependence multiset
+sequence dependence order
+multiset dependence set
+multiset dependence natural
+finiteSet dependence set
+alphabet dependence finiteSet
+alphabet dependence letter
+language dependence set
+language dependence word
+word dependence letter
+word dependence sequence

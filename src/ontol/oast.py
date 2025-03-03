@@ -59,11 +59,11 @@ class Function(ASTNode):
 
 class RelationshipType(Enum):
     # TODO: change name by Novikov opinion
-    DEPENDS = 'depends'
+    DEPENDENCE = 'dependence'
     ASSOCIATION = 'association'
     DIRECT_ASSOCIATION = 'directAssociation'
     INHERITANCE = 'inheritance'
-    REALIZATION = 'realization'
+    IMPLEMENTATION = 'implementation'
     AGGREGATION = 'aggregation'
     COMPOSITION = 'composition'
 
