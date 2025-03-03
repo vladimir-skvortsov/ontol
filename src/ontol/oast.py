@@ -24,7 +24,7 @@ class RelationshipType(Enum):
     def has_value(cls, value: str) -> bool:
         return value in cls._value2member_map_
     
-class RelationshipDirection(StrEnum):
+class RelationshipDirection(Enum):
     FORWARD = 'forward'
     BACKWARD = 'backward'
     BIDIRECTIONAL = 'bidirectional'
@@ -72,7 +72,7 @@ class RelationshipAttrubutes(ASTNode):
     def __repr__(self) -> str:
         return (
             f'RelationshipAttrubutes(color={self.color}, '
-            f'direction={self.direction}, '
+            f'direction={self.direction.value}, '
             f'title={self.title}, '
             f'right_char={self.right_char}, '
             f'left_char={self.left_char})'

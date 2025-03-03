@@ -45,7 +45,7 @@ class JSONSerializer:
                 'color_arrow': func_def.attributes.color_arrow,
                 'type': func_def.attributes.type.value,
                 'input_title': func_def.attributes.input_title,
-                'ouput_title': func_def.attributes.output_title
+                'ouput_title': func_def.attributes.output_title,
             },
         }
 
@@ -61,5 +61,11 @@ class JSONSerializer:
             'parent': rel_def.parent.name,
             'relationship': rel_def.relationship.value,
             'children': [child.name for child in rel_def.children],
-            'attributes': rel_def.attributes.__dict__,
+            'attributes': {
+                'color': rel_def.attributes.color,
+                'direction': rel_def.attributes.direction.value,
+                'title': rel_def.attributes.title,
+                'right_char': rel_def.attributes.right_char,
+                'left_char': rel_def.attributes.left_char,
+            },
         }
