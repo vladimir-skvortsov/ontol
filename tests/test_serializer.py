@@ -1,6 +1,6 @@
 import json
 
-from src.ontol import (
+from ontol import (
     Function,
     Meta,
     Ontology,
@@ -62,13 +62,12 @@ def test_serialize_ontology(serializer, sample_ontology):
     assert 'functions' in data
     assert 'hierarchy' in data
     assert 'meta' in data
-    print(data)
     assert data['terms'] == [
         {
             'name': 'MyType',
             'label': 'A some label',
             'description': 'A sample type',
-            'attributes': {'color': '#white', 'note': ''},
+            'attributes': {},
         }
     ]
     assert data['functions'] == [
@@ -85,13 +84,7 @@ def test_serialize_ontology(serializer, sample_ontology):
                 'name': 'bool',
                 'label': '',
             },
-            'attributes': {
-                'color': '#white',
-                'color_arrow': '#black',
-                'type': 'directAssociation',
-                'input_title': '',
-                'ouput_title': '',
-            },
+            'attributes': {},
         }
     ]
 
@@ -100,13 +93,7 @@ def test_serialize_ontology(serializer, sample_ontology):
             'parent': 'int',
             'relationship': 'depends',
             'children': ['bool'],
-            'attributes': {
-                'color': '#black',
-                'direction': 'forward',
-                'title': '',
-                'right_char': '',
-                'left_char': '',
-            },
+            'attributes': {},
         }
     ]
     assert data['meta'] == {
@@ -145,7 +132,7 @@ def test_serialize_term(serializer):
         'name': 'TestTerm',
         'label': 'A test label',
         'description': 'A test term',
-        'attributes': {'color': '#white', 'note': ''},
+        'attributes': {},
     }
 
 
@@ -170,13 +157,7 @@ def test_serialize_function(serializer):
             'name': 'bool',
             'label': '',
         },
-        'attributes': {
-            'color': '#white',
-            'color_arrow': '#black',
-            'type': 'directAssociation',
-            'input_title': '',
-            'ouput_title': '',
-        },
+        'attributes': {},
     }
 
 
@@ -241,7 +222,7 @@ def test_serialize_ontology_without_meta(serializer):
             'name': 'MyType',
             'label': 'A some label',
             'description': 'A sample type',
-            'attributes': {'color': '#white', 'note': ''},
+            'attributes': {},
         }
     ]
     assert data['functions'] == [
@@ -258,13 +239,7 @@ def test_serialize_ontology_without_meta(serializer):
                 'name': 'bool',
                 'label': '',
             },
-            'attributes': {
-                'color': '#white',
-                'color_arrow': '#black',
-                'type': 'directAssociation',
-                'input_title': '',
-                'ouput_title': '',
-            },
+            'attributes': {},
         }
     ]
 
@@ -273,12 +248,6 @@ def test_serialize_ontology_without_meta(serializer):
             'parent': 'int',
             'relationship': 'depends',
             'children': ['bool'],
-            'attributes': {
-                'color': '#black',
-                'direction': 'forward',
-                'title': '',
-                'right_char': '',
-                'left_char': '',
-            },
+            'attributes': {},
         }
     ]

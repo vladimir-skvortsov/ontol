@@ -1,4 +1,4 @@
-from src.ontol import (
+from ontol import (
     Function,
     Meta,
     Ontology,
@@ -16,7 +16,7 @@ def test_term_creation() -> None:
     assert term.description == 'A test term'
     assert (
         repr(term)
-        == 'Term(name=test_term, label=TestTerm, description=A test term, attributes=TermAttributes(color=#white, note=''))'
+        == 'Term(name=test_term, label=TestTerm, description=A test term, attributes=TermAttributes(color=None, note=None))'
     )
 
 
@@ -40,7 +40,8 @@ def test_term_with_empty_label_creation() -> None:
     assert term.label == ''
     assert (
         repr(term)
-        == 'Term(name=test_term, label=, description=A test term, attributes=TermAttributes(color=#white, note=''))'
+        == 'Term(name=test_term, label=, description=A test term, attributes=TermAttributes(color=None, note=None'
+        '))'
     )
 
 
@@ -49,7 +50,8 @@ def test_term_with_empty_description_creation() -> None:
     assert term.description == ''
     assert (
         repr(term)
-        == 'Term(name=test_term, label=TestTerm, description=, attributes=TermAttributes(color=#white, note=''))'
+        == 'Term(name=test_term, label=TestTerm, description=, attributes=TermAttributes(color=None, note=None'
+        '))'
     )
 
 
@@ -72,7 +74,7 @@ def test_function_creation():
     assert func.output_type == FunctionArgument(Term('int'), 'Result')
     assert (
         repr(func)
-        == "Function(name=sum, label=Sum, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes=FunctionAttributes(color=#white, color_arrow=#black, type=RelationshipType.DIRECT_ASSOCIATION, input_title=, output_title=))"
+        == "Function(name=sum, label=Sum, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes=FunctionAttributes(color=None, colorArrow=None, type=None, inputTitle=None, outputTitle=None))"
     )
 
 
@@ -89,7 +91,7 @@ def test_function_wth_empty_label_creation():
     assert func.label == ''
     assert (
         repr(func)
-        == "Function(name=sum, label=, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes=FunctionAttributes(color=#white, color_arrow=#black, type=RelationshipType.DIRECT_ASSOCIATION, input_title=, output_title=))"
+        == "Function(name=sum, label=, input_types=[('int', 'First number'), ('int', 'Second number')], output_type=('int', 'Result'), attributes=FunctionAttributes(color=None, colorArrow=None, type=None, inputTitle=None, outputTitle=None))"
     )
 
 
@@ -103,7 +105,7 @@ def test_function_wth_empty_input_types_creation():
     assert func.input_types == []
     assert (
         repr(func) == 'Function(name=sum, label=Sum, input_types=[],'
-        " output_type=('int', 'Result'), attributes=FunctionAttributes(color=#white, color_arrow=#black, type=RelationshipType.DIRECT_ASSOCIATION, input_title=, output_title=))"
+        " output_type=('int', 'Result'), attributes=FunctionAttributes(color=None, colorArrow=None, type=None, inputTitle=None, outputTitle=None))"
     )
 
 
@@ -118,7 +120,7 @@ def test_relationship_creation() -> None:
     assert rel.children == [Term('element')]
     assert (
         repr(rel)
-        == 'Relationship(parent=set, relationship=depends, children=[element], attributes=RelationshipAttrubutes(color=#black, direction=forward, title=, right_char=, left_char=))'
+        == 'Relationship(parent=set, relationship=depends, children=[element], attributes=RelationshipAttributes(color=None, direction=None, title=None, rightChar=None, leftChar=None))'
     )
 
 

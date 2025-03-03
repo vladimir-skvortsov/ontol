@@ -11,6 +11,9 @@ from ontol import (
     Meta,
     FunctionArgument,
     RelationshipType,
+    RelationshipAttributes,
+    TermAttributes,
+    FunctionAttributes,
 )
 
 
@@ -181,7 +184,7 @@ class Parser(BaseParser):
             name=p.IDENTIFIER,
             label=p.STRING0,
             description=p.STRING1,
-            attributes=p.attributes,
+            attributes=TermAttributes(**p.attributes),
         )
 
         if not p.STRING0:
@@ -236,7 +239,7 @@ class Parser(BaseParser):
             label=p.STRING0,
             input_types=input_types,
             output_type=output_type,
-            attributes=p.attributes,
+            attributes=FunctionAttributes(**p.attributes),
         )
 
         if not p.STRING0:
@@ -342,7 +345,7 @@ class Parser(BaseParser):
             parent=parent,
             relationship=relationship,
             children=children,
-            attributes=p.attributes,
+            attributes=RelationshipAttributes(**p.attributes),
         )
         self.__ontology.add_relationship(relationship)
 

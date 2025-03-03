@@ -1,7 +1,7 @@
 import os
 import tempfile
 
-from src.ontol import CLI, Ontology
+from ontol import CLI, Ontology
 from unittest.mock import MagicMock, patch
 
 import pytest

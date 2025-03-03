@@ -7,7 +7,7 @@ from .oast import (
     FunctionArgument,
     RelationshipType,
     FunctionAttributes,
-    RelationshipAttrubutes,
+    RelationshipAttributes,
     RelationshipDirection,
     TermAttributes,
 )
@@ -23,7 +23,7 @@ __all__ = (
     'Function',
     'Relationship',
     'FunctionAttributes',
-    'RelationshipAttrubutes',
+    'RelationshipAttributes',
     'RelationshipDirection',
     'TermAttributes',
     'Meta',

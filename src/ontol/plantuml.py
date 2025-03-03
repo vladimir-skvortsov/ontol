@@ -1,8 +1,8 @@
 import collections
 import os
 import zlib
-
 import requests
+from typing import Optional
 
 from ontol import (
     Function,
@@ -11,9 +11,8 @@ from ontol import (
     Term,
     RelationshipDirection,
     RelationshipType,
-    RelationshipAttrubutes,
+    RelationshipAttributes,
     TermAttributes,
-    FunctionAttributes
 )
 
 
@@ -25,26 +24,7 @@ class PlantUML:
         self.url = url
 
     def generate(self, ontology: Ontology) -> str:
-        if ontology.meta.type == 'Базовый' or ontology.meta.type is None:
-            return self._generate_base(ontology)
-
-    # def _generate_base(self, ontology: Ontology) -> str:
-    #     uml_lines: list[str] = ['@startuml', 'skinparam classAttributeIconSize 0']
-    #
-    #     if ontology.meta:
-    #         uml_lines.append(f'title {ontology.meta.title} by {ontology.meta.author}')
-    #
-    #     for term in ontology.types:
-    #         uml_lines.append(self._generate_type(term))
-    #
-    #     for function in ontology.functions:
-    #         uml_lines.append(self._generate_function(function))
-    #
-    #     for relationship in ontology.hierarchy:
-    #         uml_lines.append(self._generate_relationship(relationship))
-    #
-    #     uml_lines.append('@enduml')
-    #     return '\n'.join(uml_lines)
+        return self._generate_base(ontology)
 
     def _generate_base(self, ontology: Ontology) -> str:
         uml_lines: list[str] = [
@@ -86,7 +66,7 @@ class PlantUML:
         return (
             f'rectangle "{term.label}'
             + (f'\\n({term.description})' if term.description else '')
-            + f'" as {term.name} {term.attributes.color}'
+            + f'" as {term.name} {term.attributes.color or "#white"}'
         )
 
     @staticmethod
@@ -137,13 +117,13 @@ class PlantUML:
             },
         }
         leftchar: str = (
-            ('"' + relationship.attributes.left_char + '"')
-            if relationship.attributes.left_char
+            ('"' + relationship.attributes.leftChar + '"')
+            if relationship.attributes.leftChar
             else ''
         )
         rightchar: str = (
-            ('"' + relationship.attributes.right_char + '"')
-            if relationship.attributes.right_char
+            ('"' + relationship.attributes.rightChar + '"')
+            if relationship.attributes.rightChar
             else ''
         )
         title: str = (
@@ -151,15 +131,19 @@ class PlantUML:
             if relationship.attributes.title
             else ''
         )
-        color: str = '[' + relationship.attributes.color + ']'
-         
+        color: str = '[' + (relationship.attributes.color or '#black') + ']'
+
         relation: str = (
             relationships[relationship.relationship.value][
                 relationship.attributes.direction.value
+                if relationship.attributes.direction
+                else RelationshipDirection.FORWARD.value
             ][:2]
             + color
             + relationships[relationship.relationship.value][
                 relationship.attributes.direction.value
+                if relationship.attributes.direction
+                else RelationshipDirection.FORWARD.value
             ][2:]
         )
         res: str = ''
@@ -187,7 +171,7 @@ class PlantUML:
             function.name,
             function.label,
             description,
-            TermAttributes(color=function.attributes.color),
+            TermAttributes(color=function.attributes.color or '#white'),
         )
 
     @staticmethod
@@ -197,16 +181,20 @@ class PlantUML:
         for input_type in function.input_types:
             input_types[input_type.term.name] += 1
         for k, v in input_types.items():
-            term: Term = ontology.find_term_by_name(k)
+            term: Optional[Term] = ontology.find_term_by_name(k)
+            if term is None:
+                continue
             relations.append(
                 Relationship(
                     term,
-                    RelationshipType.from_str(function.attributes.type.value),
+                    RelationshipType.from_str(function.attributes.type.value)
+                    if function.attributes.type
+                    else RelationshipType.DIRECT_ASSOCIATION,
                     [Term(function.name)],
-                    RelationshipAttrubutes(
-                        color=function.attributes.color_arrow,
-                        title=function.attributes.input_title,
-                        left_char=f'{v if v != 1 else ""}',
+                    RelationshipAttributes(
+                        color=function.attributes.colorArrow or '#black',
+                        title=function.attributes.inputTitle or '',
+                        leftChar=f'{v if v != 1 else ""}',
                         direction=RelationshipDirection.FORWARD,
                     ),
                 )
@@ -214,11 +202,13 @@ class PlantUML:
         relations.append(
             Relationship(
                 Term(function.name),
-                RelationshipType.from_str(function.attributes.type.value),
+                RelationshipType.from_str(function.attributes.type.value)
+                if function.attributes.type
+                else RelationshipType.DIRECT_ASSOCIATION,
                 [ontology.find_term_by_name(function.output_type.term.name)],
-                RelationshipAttrubutes(
-                    color=function.attributes.color_arrow,
-                    title=function.attributes.output_title,
+                RelationshipAttributes(
+                    color=function.attributes.colorArrow,
+                    title=function.attributes.outputTitle or '',
                     direction=RelationshipDirection.FORWARD,
                 ),
             )
