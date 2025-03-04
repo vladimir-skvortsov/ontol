@@ -10,7 +10,7 @@ rectangle "**COLON**\n:" as COLON #F2E6D9
 rectangle "**NEWLINE**\n\\n+" as NEWLINE #F2E6D9
 rectangle "**EMPTY**\n" as EMPTY #F2E6D9
 
-rectangle "**program**\nstatement_list" as program #E6B8B7
+rectangle "**ontology**\nstatement_list" as ontology #E6B8B7
 rectangle "**statement_list**\nstatement_list statement\nEMPTY" as statement_list #E6B8B7
 rectangle "**statement**\nIDENTIFIER COLON STRING NEWLINE\nTYPES_BLOCK NEWLINE type_list\nFUNCTIONS_BLOCK NEWLINE function_list\nHIERARCHY_BLOCK NEWLINE hierarchy_list\nNEWLINE" as statement #E6B8B7
 rectangle "**type_list**\ntype_list type NEWLINE\ntype NEWLINE\nNEWLINE type_list\nEMPTY" as type_list #E6B8B7
@@ -18,7 +18,7 @@ rectangle "**function_list**\nfunction_list function NEWLINE\nfunction NEWLINE\n
 rectangle "**hierarchy_list**\nhierarchy_list hierarchy NEWLINE\nhierarchy NEWLINE\nNEWLINE hierarchy_list\nEMPTY" as hierarchy_list #E6B8B7
 
 
-program --> statement_list
+ontology --> statement_list
 
 statement_list --> statement_list
 statement_list --> statement
