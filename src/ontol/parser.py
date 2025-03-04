@@ -436,7 +436,7 @@ class Parser(BaseParser):
             raise SyntaxError(
                 self._get_exception_message(
                     p,
-                    f'🚨 \033[31mError: \033[0mSyntax error ({p.type})',
+                    f'Syntax error ({p.type})',
                     'error',
                 )
             )
