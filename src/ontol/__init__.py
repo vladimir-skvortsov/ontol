@@ -15,6 +15,7 @@ from .oast import (
 from .parser import Parser
 from .plantuml import PlantUML
 from .serializer import JSONSerializer
+from .retranslator import Retranslator
 from .cli import CLI
 
 
@@ -34,5 +35,6 @@ __all__ = (
     'Parser',
     'PlantUML',
     'JSONSerializer',
+    'Retranslator',
     'CLI',
 )
