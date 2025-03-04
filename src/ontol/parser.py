@@ -1,6 +1,6 @@
 from sly import Lexer as BaseLexer, Parser as BaseParser
 from datetime import datetime
-from typing import Literal, Optional
+from typing import Literal, Optional, Any
 from dataclasses import fields
 
 from ontol import (
@@ -84,9 +84,9 @@ class Parser(BaseParser):
     def parse(self, file_content: str, file_path: str) -> tuple[Ontology, list[str]]:
         self.__warnings.clear()
 
-        self.__lines = file_content.splitlines()
-        self.__file_path = file_path
-        self.__ontology = Ontology()
+        self.__lines: list[str] = file_content.splitlines()
+        self.__file_path: str = file_path
+        self.__ontology: Ontology = Ontology()
 
         lexer: Lexer = Lexer()
         tokens: list = lexer.tokenize(file_content)
@@ -108,10 +108,10 @@ class Parser(BaseParser):
         final_message: str = f'File "{self.__file_path}", line {line_number}'
         final_message += f'\n{" " * line_padding}{line}'
         if token is not None:
-            line_start_index = sum(
+            line_start_index: int = sum(
                 len(line) + 1 for line in self.__lines[: line_number - 1]
             )
-            column_index = token.index - line_start_index - 1
+            column_index: int = token.index - line_start_index - 1
             final_message += f'\n {" " * line_padding}{" " * column_index}^'
         final_message += (
             f'\n{message_prefix}: \033[0m{message[0].lower() + message[1:]}'
@@ -125,7 +125,7 @@ class Parser(BaseParser):
 
     def _tokenized_attributes_to_dict(
         self, tokenized_attributes: list[tuple], attributesClass: ASTNode
-    ) -> dict[str, str]:
+    ) -> dict[str, Any]:
         allowed_attributes: list[str] = [
             field.name for field in fields(attributesClass)
         ]
@@ -202,7 +202,9 @@ class Parser(BaseParser):
                 )
             )
 
-        attributes = self._tokenized_attributes_to_dict(p.attributes, TermAttributes)
+        attributes: dict[str, Any] = self._tokenized_attributes_to_dict(
+            p.attributes, TermAttributes
+        )
 
         term = Term(
             name=p.IDENTIFIER,
@@ -253,12 +255,14 @@ class Parser(BaseParser):
 
         if output_term is None:
             raise ValueError(
-                self._get_exception_message(p._slice[5], 'Undefined term', 'error')
+                self._get_exception_message(
+                    p._slice[5], f'Undefined term {p.IDENTIFIER1}', 'error'
+                )
             )
 
         output_type: FunctionArgument = FunctionArgument(output_term, p.STRING1)
 
-        attributes = self._tokenized_attributes_to_dict(
+        attributes: dict[str, Any] = self._tokenized_attributes_to_dict(
             p.attributes, FunctionAttributes
         )
 
@@ -298,7 +302,9 @@ class Parser(BaseParser):
 
             if term is None:
                 raise ValueError(
-                    self._get_exception_message(term_token, 'Undefined term', 'error')
+                    self._get_exception_message(
+                        term_token, f'Undefined term {term_name}', 'error'
+                    )
                 )
 
             if not param_label:
@@ -346,7 +352,9 @@ class Parser(BaseParser):
 
         if parent is None:
             raise ValueError(
-                self._get_exception_message(p._slice[0], 'Undefined term', 'error')
+                self._get_exception_message(
+                    p._slice[0], f'Undefined term {p.IDENTIFIER0}', 'error'
+                )
             )
 
         relationship = RelationshipType.from_str(p.IDENTIFIER1)
@@ -364,16 +372,18 @@ class Parser(BaseParser):
 
         if child_term is None:
             raise ValueError(
-                self._get_exception_message(p._slice[2], 'Undefined term', 'error')
+                self._get_exception_message(
+                    p._slice[2], f'Undefined term {p.IDENTIFIER2}', 'error'
+                )
             )
 
         children: list[Term] = [child_term]
 
-        attributes = self._tokenized_attributes_to_dict(
+        attributes: dict[str, Any] = self._tokenized_attributes_to_dict(
             p.attributes, RelationshipAttributes
         )
 
-        relationship = Relationship(
+        relationship: Relationship = Relationship(
             parent=parent,
             relationship=relationship,
             children=children,
