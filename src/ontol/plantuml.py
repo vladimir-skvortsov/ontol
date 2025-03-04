@@ -80,7 +80,7 @@ class PlantUML:
     @staticmethod
     def _generate_base_hierarchy(relationship: Relationship) -> str:
         relationships = {
-            RelationshipType.DEPENDS.value: {
+            RelationshipType.DEPENDENCE.value: {
                 RelationshipDirection.FORWARD.value: '...>',
                 RelationshipDirection.BACKWARD.value: '<...',
                 RelationshipDirection.BIDIRECTIONAL.value: '<...>',
@@ -100,7 +100,7 @@ class PlantUML:
                 RelationshipDirection.BACKWARD.value: '<|---',
                 RelationshipDirection.BIDIRECTIONAL.value: '<|---|>',
             },
-            RelationshipType.REALIZATION.value: {
+            RelationshipType.IMPLEMENTATION.value: {
                 RelationshipDirection.FORWARD.value: '...|>',
                 RelationshipDirection.BACKWARD.value: '<|...',
                 RelationshipDirection.BIDIRECTIONAL.value: '<|...|>',

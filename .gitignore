@@ -24,3 +24,4 @@ src/ontol.egg-info/
 examples/*.json
 examples/*.puml
 examples/*.png
+examples/*_retr.ontol

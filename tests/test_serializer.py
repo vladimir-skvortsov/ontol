@@ -31,7 +31,7 @@ def sample_ontology():
     )
     ontology.add_relationship(
         Relationship(
-            relationship=RelationshipType.DEPENDS,
+            relationship=RelationshipType.DEPENDENCE,
             parent=Term('int'),
             children=[Term('bool')],
         )
@@ -91,7 +91,7 @@ def test_serialize_ontology(serializer, sample_ontology):
     assert data['hierarchy'] == [
         {
             'parent': 'int',
-            'relationship': 'depends',
+            'relationship': 'dependence',
             'children': ['bool'],
             'attributes': {},
         }
@@ -196,7 +196,7 @@ def test_serialize_ontology_without_meta(serializer):
     )
     ontology.add_relationship(
         Relationship(
-            relationship=RelationshipType.DEPENDS,
+            relationship=RelationshipType.DEPENDENCE,
             parent=Term('int'),
             children=[Term('bool')],
         )
@@ -246,7 +246,7 @@ def test_serialize_ontology_without_meta(serializer):
     assert data['hierarchy'] == [
         {
             'parent': 'int',
-            'relationship': 'depends',
+            'relationship': 'dependence',
             'children': ['bool'],
             'attributes': {},
         }
