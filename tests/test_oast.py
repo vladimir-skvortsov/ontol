@@ -6,6 +6,7 @@ from ontol import (
     Term,
     FunctionArgument,
     RelationshipType,
+    TermAttributes,
 )
 
 
@@ -21,7 +22,7 @@ def test_term_creation() -> None:
 
 
 def test_term_with_attributes_creation() -> None:
-    attributes = {'color': 'red'}
+    attributes = TermAttributes(color='#red')
     term_with_attributes: Term = Term(
         name='test_term',
         label='TestTerm',
