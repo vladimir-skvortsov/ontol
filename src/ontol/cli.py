@@ -102,7 +102,7 @@ class CLI:
             def on_modified(self, event):
                 if event.src_path.endswith('.ontol'):
                     print(f'File {event.src_path} modified, re-parsing...')
-                    self.parse_callback(event.src_path)
+                    self.parse_callback(event.src_path, debug)
 
         event_handler: FileChangeHandler = FileChangeHandler(self.parse_file)
 
