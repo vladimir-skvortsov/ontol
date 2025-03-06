@@ -80,11 +80,14 @@ class CLI:
                 self.plantuml.processes_puml_to_png(puml_file_path)
 
                 # Retranslator
-                if debug:
-                    retranslator_content: str = self.retranslator.translate(ontology)
-                    retranslator_file_path: str = os.path.splitext(file_path)[0] + '_retr' + '.ontol'
-                    with open(retranslator_file_path, 'w', encoding='utf-8') as retr_file:
-                        retr_file.write(retranslator_content)
+                if not debug:
+                    return
+                retranslator_content: str = self.retranslator.translate(ontology)
+                retranslator_file_path: str = (
+                    os.path.splitext(file_path)[0] + '_retr' + '.ontol'
+                )
+                with open(retranslator_file_path, 'w', encoding='utf-8') as retr_file:
+                    retr_file.write(retranslator_content)
         except Exception as e:
             print(e)
 

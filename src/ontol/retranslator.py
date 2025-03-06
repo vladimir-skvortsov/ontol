@@ -7,7 +7,8 @@ from ontol import (
     Relationship,
     Term,
     RelationshipAttributes,
-    TermAttributes, FunctionAttributes,
+    TermAttributes,
+    FunctionAttributes,
 )
 
 
@@ -49,24 +50,26 @@ class Retranslator:
             args += f'{arg.term.name}: {arg.label!r}'
             if i < len(function.input_types) - 1:
                 args += ', '
-        function_line += (f'{args}) -> '
-                          f'{function.output_type.term.name}: {function.output_type.label!r}')
+        function_line += (
+            f'{args}) -> '
+            f'{function.output_type.term.name}: {function.output_type.label!r}'
+        )
 
         return function_line + self.__translate_attributes(function.attributes)
 
     def __translate_hierarchy(self, relationship: Relationship) -> str:
-        relationship_line = (f'{relationship.parent.name} '
-                             f'{relationship.relationship.value} '
-                             f'{relationship.children[0].name}')
+        relationship_line = (
+            f'{relationship.parent.name} '
+            f'{relationship.relationship.value} '
+            f'{relationship.children[0].name}'
+        )
 
         return relationship_line + self.__translate_attributes(relationship.attributes)
 
-    @staticmethod
-    def __translate_attributes(attributes: Union[
-                                  RelationshipAttributes,
-                                  FunctionAttributes,
-                                  TermAttributes
-                              ]) -> str:
+    def __translate_attributes(
+        self,
+        attributes: Union[RelationshipAttributes, FunctionAttributes, TermAttributes],
+    ) -> str:
         res, non_none_fields = '', []
         for field in fields(attributes):
             if (attr := getattr(attributes, field.name)) is not None:
