@@ -6,6 +6,7 @@ from ontol import (
     Term,
     FunctionArgument,
     RelationshipType,
+    TermAttributes,
 )
 
 
@@ -21,7 +22,7 @@ def test_term_creation() -> None:
 
 
 def test_term_with_attributes_creation() -> None:
-    attributes = {'color': 'red'}
+    attributes = TermAttributes(color='#red')
     term_with_attributes: Term = Term(
         name='test_term',
         label='TestTerm',
@@ -112,15 +113,15 @@ def test_function_wth_empty_input_types_creation():
 def test_relationship_creation() -> None:
     rel: Relationship = Relationship(
         parent=Term('set'),
-        relationship=RelationshipType.DEPENDS,
+        relationship=RelationshipType.DEPENDENCE,
         children=[Term('element')],
     )
     assert rel.parent.name == 'set'
-    assert rel.relationship.value == 'depends'
+    assert rel.relationship.value == 'dependence'
     assert rel.children == [Term('element')]
     assert (
         repr(rel)
-        == 'Relationship(parent=set, relationship=depends, children=[element], attributes=RelationshipAttributes(color=None, direction=None, title=None, rightChar=None, leftChar=None))'
+        == 'Relationship(parent=set, relationship=dependence, children=[element], attributes=RelationshipAttributes(color=None, direction=None, title=None, rightChar=None, leftChar=None))'
     )
 
 
