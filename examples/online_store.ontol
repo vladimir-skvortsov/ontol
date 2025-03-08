@@ -1,0 +1,32 @@
+# Онтология для онлайн-магазина
+version: '1.0'
+title: 'Онлайн-магазин'
+author: 'Иван Иванов'
+description: 'Онтология для описания структуры онлайн-магазина, включая продукты, заказы и клиентов.'
+
+# Типы сущностей
+types:
+product: 'Продукт', 'Товар, который продаётся в магазине', { color: '#E6B8B7' }
+category: 'Категория', 'Группа продуктов', { color: '#D0FFD0' }
+order: 'Заказ', 'Запрос на покупку продуктов', { color: '#B7E6E0' }
+customer: 'Клиент', 'Покупатель в магазине', { color: '#F2E6D9' }
+cart: 'Корзина', 'Временное хранилище продуктов перед оформлением заказа', { color: '#E6E0B7' }
+payment: 'Оплата', 'Транзакция для завершения заказа', { color: '#E6B7E0' }
+review: 'Отзыв', 'Оценка продукта от клиента', { color: '#FFFFFF' }
+
+# Функции
+functions:
+addToCart: 'Добавить в корзину' (customer: '', product: '') -> cart: '', { color: '#D0FFD0', colorArrow: '#blue' }
+placeOrder: 'Оформить заказ' (cart: '') -> order: '', { color: '#D0FFD0', colorArrow: '#green' }
+makePayment: 'Оплатить заказ' (order: '') -> payment: '', { color: '#D0FFD0', colorArrow: '#red' }
+leaveReview: 'Оставить отзыв' (customer: '', product: '') -> review: '', { color: '#D0FFD0', colorArrow: '#orange' }
+
+# Иерархия и отношения
+hierarchy:
+product aggregation category, { title: 'входит в' }
+cart composition product, { title: 'содержит' }
+order dependence cart, { title: 'создан из' }
+payment dependence order, { title: 'оплачивает' }
+review dependence product, { title: 'оценивает' }
+review dependence customer, { title: 'оставлен' }
+customer directAssociation order, { title: 'создал' }
