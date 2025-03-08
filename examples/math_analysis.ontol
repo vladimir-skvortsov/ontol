@@ -1,0 +1,33 @@
+# Онтология для математического анализа (Calculus)
+version: '1.0'
+title: 'Математический анализ - основные понятия'
+author: 'Иван Иванов'
+description: 'Онтология для описания основных понятий математического анализа, включая функции, пределы, производные и интегралы.'
+
+# Типы сущностей
+types:
+number: 'Число', 'Элемент числовой оси', { color: '#E6B8B7' }
+function: 'Функция', 'Зависимость одной величины от другой', { color: '#D0FFD0' }
+limit: 'Предел', 'Значение, к которому стремится функция', { color: '#B7E6E0' }
+derivative: 'Производная', 'Скорость изменения функции', { color: '#F2E6D9' }
+integral: 'Интеграл', 'Площадь под кривой функции', { color: '#E6E0B7' }
+sequence: 'Последовательность', 'Упорядоченный набор чисел', { color: '#E6B7E0' }
+series: 'Ряд', 'Сумма элементов последовательности', { color: '#FFFFFF' }
+
+# Определение функций
+functions:
+evaluate: 'Вычислить' (function: '', number: '') -> number: '', { color: '#D0FFD0', colorArrow: '#blue' }
+computeLimit: 'Вычислить предел' (function: '', number: '') -> limit: '', { color: '#D0FFD0', colorArrow: '#green' }
+differentiate: 'Дифференцировать' (function: '') -> derivative: '', { color: '#D0FFD0', colorArrow: '#red' }
+integrate: 'Интегрировать' (function: '') -> integral: '', { color: '#D0FFD0', colorArrow: '#orange' }
+sumSeries: 'Суммировать ряд' (series: '') -> number: '', { color: '#D0FFD0', colorArrow: '#purple' }
+
+# Иерархическое выражение
+hierarchy:
+function dependence number, { title: 'зависит от' }
+limit dependence function, { title: 'определяется для' }
+derivative dependence function, { title: 'вычисляется для' }
+integral dependence function, { title: 'вычисляется для' }
+sequence aggregation number, { title: 'состоит из' }
+series dependence sequence, { title: 'суммирует' }
+  

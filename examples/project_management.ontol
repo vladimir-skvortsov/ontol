@@ -1,0 +1,28 @@
+version: '1.0'
+title: 'Управление проектами в IT-компании'
+author: 'Иван Иванов'
+description: 'Онтология для описания структуры проектов, сотрудников и задач в IT-компании.'
+
+types:
+employee: 'Сотрудник', 'Человек, работающий в компании', { color: '#E6B8B7' }
+project: 'Проект', 'Набор задач, направленных на достижение цели', { color: '#D0FFD0' }
+task: 'Задача', 'Конкретное действие, которое нужно выполнить', { color: '#B7E6E0' }
+team: 'Команда', 'Группа сотрудников, работающих над проектом', { color: '#F2E6D9' }
+department: 'Отдел', 'Структурное подразделение компании', { color: '#E6E0B7' }
+manager: 'Менеджер', 'Сотрудник, управляющий проектами или командой', { color: '#E6B7E0' }
+client: 'Клиент', 'Заказчик проекта', { color: '#FFFFFF' }
+
+functions:
+assignTask: 'Назначить задачу' (employee: '', task: '') -> task: '', { color: '#D0FFD0', colorArrow: '#blue' }
+completeTask: 'Завершить задачу' (task: '') -> task: '', { color: '#D0FFD0', colorArrow: '#green' }
+createProject: 'Создать проект' (manager: '', client: '') -> project: '', { color: '#D0FFD0', colorArrow: '#red' }
+addToTeam: 'Добавить в команду' (employee: '', team: '') -> team: '', { color: '#D0FFD0', colorArrow: '#orange' }
+
+hierarchy:
+employee inheritance manager
+team aggregation employee
+project aggregation task
+project association client, { title: 'заказан' }
+manager directAssociation project, { title: 'управляет' }
+task dependence employee, { title: 'выполняет' }
+department composition team
