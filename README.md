@@ -108,4 +108,4 @@ This project is licensed under the Apache-2.0 License. See the LICENSE file for 
 ## Acknowledgments
 * Thanks to the [PlantUML team](https://github.com/plantuml) for providing an excellent tool for diagram generation.
 * Special thanks to all contributors and users of the Ontol DSL Parser.
-* A heartfelt thank you to [Danil Pestryakov](DanilPestryakov) and [Nikita Motorny](https://github.com/motorny) for their inspiration and support.
+* A heartfelt thank you to [Danil Pestryakov](https://github.com/DanilPestryakov) and [Nikita Motorny](https://github.com/motorny) for their inspiration and support.
