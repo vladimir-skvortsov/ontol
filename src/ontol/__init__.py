@@ -1,5 +1,4 @@
 from .oast import (
-    ASTNode,
     Ontology,
     Term,
     Function,
@@ -20,7 +19,6 @@ from .cli import CLI
 
 
 __all__ = (
-    'ASTNode',
     'Ontology',
     'Term',
     'Function',

@@ -39,6 +39,15 @@ class JSONSerializer:
     def _serialize_function(
         func_def: Function,
     ) -> dict[str, str | list[dict] | dict | None]:
+        attributes = {
+            key: value
+            for key, value in asdict(func_def.attributes).items()
+            if value is not None
+        }
+
+        if 'type' in attributes:
+            attributes['type'] = attributes['type'].value
+
         return {
             'name': func_def.name,
             'label': func_def.label,
@@ -49,11 +58,7 @@ class JSONSerializer:
                 'name': func_def.output_type.term.name,
                 'label': func_def.output_type.label,
             },
-            'attributes': {
-                key: value
-                for key, value in asdict(func_def.attributes).items()
-                if value is not None
-            },
+            'attributes': attributes,
         }
 
     @staticmethod
@@ -64,13 +69,18 @@ class JSONSerializer:
     def _serialize_relationship(
         rel_def: Relationship,
     ) -> dict[str, str | list[str] | dict[str, str]]:
+        attributes = {
+            key: value
+            for key, value in asdict(rel_def.attributes).items()
+            if value is not None
+        }
+
+        if 'direction' in attributes:
+            attributes['direction'] = attributes['direction'].value
+
         return {
             'parent': rel_def.parent.name,
             'relationship': rel_def.relationship.value,
             'children': [child.name for child in rel_def.children],
-            'attributes': {
-                key: value
-                for key, value in asdict(rel_def.attributes).items()
-                if value is not None
-            },
+            'attributes': attributes,
         }
