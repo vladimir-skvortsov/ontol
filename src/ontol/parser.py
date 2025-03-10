@@ -4,7 +4,6 @@ from typing import Literal, Optional, Any
 from dataclasses import fields
 
 from ontol import (
-    ASTNode,
     Ontology,
     Term,
     Function,
@@ -15,6 +14,7 @@ from ontol import (
     RelationshipAttributes,
     TermAttributes,
     FunctionAttributes,
+    RelationshipDirection,
 )
 
 
@@ -124,7 +124,9 @@ class Parser(BaseParser):
         self.__warnings.append(final_message)
 
     def _tokenized_attributes_to_dict(
-        self, tokenized_attributes: list[tuple], attributesClass: ASTNode
+        self,
+        tokenized_attributes: list[tuple],
+        attributesClass: TermAttributes | FunctionAttributes | RelationshipAttributes,
     ) -> dict[str, Any]:
         allowed_attributes: list[str] = [
             field.name for field in fields(attributesClass)
@@ -346,6 +348,31 @@ class Parser(BaseParser):
     def hierarchy_list(self, p) -> None:
         pass
 
+    def _tokenized_relationship_attributes_to_dict(
+        self,
+        tokenized_attributes: list[tuple],
+    ) -> dict[str, Any]:
+        attributes: dict[str, Any] = self._tokenized_attributes_to_dict(
+            tokenized_attributes, RelationshipAttributes
+        )
+
+        if 'direction' in attributes:
+            attributes['direction'] = RelationshipDirection.from_str(
+                attributes['direction']
+            )
+            if attributes['direction'] is None:
+                for key_token, value_token in tokenized_attributes:
+                    if key_token.value == 'direction':
+                        raise ValueError(
+                            self._get_exception_message(
+                                value_token,
+                                f'Unexpected direction type. One of the following was expected: {", ".join(member.value for member in RelationshipDirection)}',
+                                'error',
+                            )
+                        )
+
+        return attributes
+
     @_('IDENTIFIER IDENTIFIER IDENTIFIER attributes')
     def hierarchy(self, p) -> None:
         parent: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER0)
@@ -379,8 +406,8 @@ class Parser(BaseParser):
 
         children: list[Term] = [child_term]
 
-        attributes: dict[str, Any] = self._tokenized_attributes_to_dict(
-            p.attributes, RelationshipAttributes
+        attributes: dict[str, Any] = self._tokenized_relationship_attributes_to_dict(
+            p.attributes
         )
 
         relationship: Relationship = Relationship(

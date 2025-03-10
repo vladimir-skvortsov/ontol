@@ -3,12 +3,8 @@ from typing import Optional
 from dataclasses import dataclass, field
 
 
-class ASTNode:
-    pass
-
-
 @dataclass
-class Meta(ASTNode):
+class Meta:
     version: Optional[str] = None
     title: Optional[str] = None
     author: Optional[str] = None
@@ -25,7 +21,7 @@ class Meta(ASTNode):
 
 
 @dataclass
-class TermAttributes(ASTNode):
+class TermAttributes:
     color: Optional[str] = None
     note: Optional[str] = None
 
@@ -34,7 +30,7 @@ class TermAttributes(ASTNode):
 
 
 @dataclass
-class Term(ASTNode):
+class Term:
     name: str
     label: str = ''
     description: str = ''
@@ -78,7 +74,7 @@ class RelationshipType(Enum):
 
 
 @dataclass
-class FunctionAttributes(ASTNode):
+class FunctionAttributes:
     color: Optional[str] = None
     colorArrow: Optional[str] = None
     type: Optional[RelationshipType] = None
@@ -96,7 +92,7 @@ class FunctionAttributes(ASTNode):
 
 
 @dataclass
-class FunctionArgument(ASTNode):
+class FunctionArgument:
     term: Term
     label: str = ''
 
@@ -105,7 +101,7 @@ class FunctionArgument(ASTNode):
 
 
 @dataclass
-class Function(ASTNode):
+class Function:
     name: str
     label: str
     input_types: list[FunctionArgument]
@@ -135,7 +131,7 @@ class Function(ASTNode):
 
 
 @dataclass
-class RelationshipAttributes(ASTNode):
+class RelationshipAttributes:
     color: Optional[str] = None
     direction: Optional[RelationshipDirection] = None
     title: Optional[str] = None
@@ -153,7 +149,7 @@ class RelationshipAttributes(ASTNode):
 
 
 @dataclass
-class Relationship(ASTNode):
+class Relationship:
     parent: Term
     relationship: RelationshipType
     children: list[Term]
@@ -168,7 +164,7 @@ class Relationship(ASTNode):
 
 
 @dataclass
-class Ontology(ASTNode):
+class Ontology:
     types: list[Term] = field(default_factory=list)
     functions: list[Function] = field(default_factory=list)
     hierarchy: list[Relationship] = field(default_factory=list)

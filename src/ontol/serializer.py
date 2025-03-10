@@ -64,13 +64,18 @@ class JSONSerializer:
     def _serialize_relationship(
         rel_def: Relationship,
     ) -> dict[str, str | list[str] | dict[str, str]]:
+        attributes = {
+            key: value
+            for key, value in asdict(rel_def.attributes).items()
+            if value is not None
+        }
+
+        if 'direction' in attributes:
+            attributes['direction'] = attributes['direction'].value
+
         return {
             'parent': rel_def.parent.name,
             'relationship': rel_def.relationship.value,
             'children': [child.name for child in rel_def.children],
-            'attributes': {
-                key: value
-                for key, value in asdict(rel_def.attributes).items()
-                if value is not None
-            },
+            'attributes': attributes,
         }
