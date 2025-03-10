@@ -1,0 +1,87 @@
+version: '1.0'
+title: 'Определения графов'
+
+# Определение типов
+
+types:
+  graph: 'Граф      \n\n', '', { color: '#FFFFCC' }
+  multigraph: 'Мультиграф', '', { color: '#FFFFCC' }
+  pseudograph: 'Псевдограф', '', { color: '#FFFFCC' }
+  digraph: 'Орграф', '', { color: '#FFFFCC' }
+  hypergraph: 'Гиперграф', '', { color: '#FFFFCC' }
+  hyperorgraph: 'Гиперорграф', '', { color: '#FFFFCC' }
+  vertex: 'Вершина    \n\n\n\n', '', { color: '#FFFFCC' }
+  edge: 'Ребро     \n\n\n\n', '', { color: '#FFFFCC' }
+  node: 'Узел            \n\n\n\n', '', { color: '#FFFFCC' }
+  arc: 'Дуга     \n\n', '', { color: '#FFFFCC' }
+  hyperedge: 'Гиперребро', '', { color: '#FFFFCC' }
+  hyperarc: 'Гипердуга', '', { color: '#FFFFCC' }
+  set: 'Множество', '', { color: '#FFFFCC' }
+  orderedPair: 'Упорядоченная пара', '', { color: '#FFFFCC' }
+  boolean: 'Булеан', '', { color: '#FFFFCC' }
+  loop: 'Петля', '', { color: '#FFFFCC' }
+  subset: 'Подмножество', '', { color: '#FFFFCC' }
+  binaryRelation: 'Бинарное отношение', '', { color: '#FFFFCC' }
+  element: 'Элемент', '', { color: '#FFFFCC' }
+  twoElementSet: 'Двухэлементное множество', '', { color: '#FFFFCC' }
+  symmetricSet: 'Симметричное', '', { color: '#FFFFCC' }
+  shortEdge: 'Кратное ребро', '', { color: '#FFFFCC' }
+
+# Определение функций (если нужно добавить функциональность)
+functions:
+add: 'Дополнение' (graph: '') -> graph: '', { color: '#D0FFD0', inputTitle: '<<flow>>', outputTitle: '<<flow>>', type: 'dependence'}
+
+# Иерархическое выражение (наследование)
+hierarchy:
+edge composition pseudograph
+edge composition graph, { leftChar: 'q' }
+edge directAssociation edge, { title: 'смежна с' }
+edge inheritance twoElementSet
+edge association shortEdge, { leftChar: '*', rightChar: '1' }
+
+shortEdge composition multigraph
+
+loop composition pseudograph
+loop directAssociation vertex, { title: 'при' }
+vertex composition multigraph
+vertex composition pseudograph
+vertex composition graph, { leftChar: 'p' }
+vertex directAssociation vertex, { title: 'смежна с' }
+vertex composition hypergraph
+vertex inheritance element
+vertex directAssociation edge, { title: 'инцидентна', leftChar: '2', rightChar: '1' }
+
+graph inheritance digraph
+
+hyperedge composition hypergraph
+hyperedge inheritance subset
+
+subset composition boolean
+subset association hyperarc, { title: '"+" концы', leftChar: '1..*'}
+subset association hyperarc, { title: '"+" начала', leftChar: '1..*'}
+
+boolean directAssociation set, { title: 'над'}
+
+binaryRelation directAssociation set, { title: 'на'}
+
+element aggregation set
+
+twoElementSet aggregation symmetricSet
+
+symmetricSet inheritance binaryRelation
+symmetricSet directAssociation set, { title: 'на'}
+
+arc inheritance orderedPair
+arc composition digraph, { leftChar: 'q' }
+arc directAssociation node, { title: 'входящая в', leftChar: '*', rightChar: '1' }
+arc directAssociation node, { title: 'исходящая из', leftChar: '*', rightChar: '1' }
+
+orderedPair aggregation binaryRelation
+
+node composition digraph, { leftChar: 'p' }
+node directAssociation arc, { title: 'конечный', leftChar: '1', rightChar: '*' }
+node directAssociation arc, { title: 'начальный', leftChar: '1', rightChar: '*' }
+node inheritance element
+node composition hyperorgraph
+
+hyperarc composition hyperorgraph

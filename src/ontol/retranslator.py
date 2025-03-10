@@ -1,3 +1,4 @@
+import json
 from dataclasses import fields
 from typing import Union
 
@@ -36,15 +37,19 @@ class Retranslator:
         for relationship in ontology.hierarchy:
             ontol_lines.append(self.__translate_hierarchy(relationship))
 
+        ontol_lines.append('\n')
+
         return '\n'.join(ontol_lines)
 
     def __translate_term(self, term: Term) -> str:
-        term_line = f'{term.name}: {term.label!r}, {term.description!r}'
+        label = "'" + term.label + "'"
+        term_line = f'{term.name}: {label}, {term.description!r}'
 
         return term_line + self.__translate_attributes(term.attributes)
 
     def __translate_function(self, function: Function) -> str:
-        function_line = f'{function.name}: {function.label!r} ('
+        label = "'" + function.label + "'"
+        function_line = f'{function.name}: {label} ('
         args = ''
         for i, arg in enumerate(function.input_types):
             args += f'{arg.term.name}: {arg.label!r}'
@@ -80,10 +85,6 @@ class Retranslator:
                 non_none_fields.append(f'{field.name}: {attribute!r} ')
 
         if non_none_fields:
-            res += ', { '
-            for attr in non_none_fields:
-                res += attr
-
-            res += '}'
+            res += ', { ' + ', '.join(non_none_fields) + '}'
 
         return res
