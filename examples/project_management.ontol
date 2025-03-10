@@ -3,6 +3,7 @@ title: 'Управление проектами в IT-компании'
 author: 'Иван Иванов'
 description: 'Онтология для описания структуры проектов, сотрудников и задач в IT-компании.'
 
+
 types:
 employee: 'Сотрудник', 'Человек, работающий в компании', { color: '#E6B8B7' }
 project: 'Проект', 'Набор задач, направленных на достижение цели', { color: '#D0FFD0' }
@@ -19,10 +20,10 @@ createProject: 'Создать проект' (manager: '', client: '') -> projec
 addToTeam: 'Добавить в команду' (employee: '', team: '') -> team: '', { color: '#D0FFD0', colorArrow: '#orange' }
 
 hierarchy:
-employee inheritance manager
-team aggregation employee
-project aggregation task
-project association client, { title: 'заказан' }
-manager directAssociation project, { title: 'управляет' }
-task dependence employee, { title: 'выполняет' }
-department composition team
+employee inheritance manager, { direction: 'forward' }
+team aggregation employee, { direction: 'forward' }
+project aggregation task, { direction: 'forward' }
+project association client, { direction: 'bidirectional', title: 'заказан' }
+manager directAssociation project, { direction: 'forward', title: 'управляет' }
+task dependence employee, { direction: 'forward', title: 'выполняет' }
+department composition team, { direction: 'forward' }

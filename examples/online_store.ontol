@@ -1,10 +1,8 @@
-# Онтология для онлайн-магазина
 version: '1.0'
 title: 'Онлайн-магазин'
 author: 'Иван Иванов'
 description: 'Онтология для описания структуры онлайн-магазина, включая продукты, заказы и клиентов.'
 
-# Типы сущностей
 types:
 product: 'Продукт', 'Товар, который продаётся в магазине', { color: '#E6B8B7' }
 category: 'Категория', 'Группа продуктов', { color: '#D0FFD0' }
@@ -14,19 +12,17 @@ cart: 'Корзина', 'Временное хранилище продукто�
 payment: 'Оплата', 'Транзакция для завершения заказа', { color: '#E6B7E0' }
 review: 'Отзыв', 'Оценка продукта от клиента', { color: '#FFFFFF' }
 
-# Функции
 functions:
 addToCart: 'Добавить в корзину' (customer: '', product: '') -> cart: '', { color: '#D0FFD0', colorArrow: '#blue' }
 placeOrder: 'Оформить заказ' (cart: '') -> order: '', { color: '#D0FFD0', colorArrow: '#green' }
 makePayment: 'Оплатить заказ' (order: '') -> payment: '', { color: '#D0FFD0', colorArrow: '#red' }
 leaveReview: 'Оставить отзыв' (customer: '', product: '') -> review: '', { color: '#D0FFD0', colorArrow: '#orange' }
 
-# Иерархия и отношения
 hierarchy:
-product aggregation category, { title: 'входит в' }
-cart composition product, { title: 'содержит' }
-order dependence cart, { title: 'создан из' }
-payment dependence order, { title: 'оплачивает' }
-review dependence product, { title: 'оценивает' }
-review dependence customer, { title: 'оставлен' }
-customer directAssociation order, { title: 'создал' }
+product aggregation category, { direction: 'forward', title: 'входит в' }
+cart composition product, { direction: 'forward', title: 'содержит' }
+order dependence cart, { direction: 'forward', title: 'создан из' }
+payment dependence order, { direction: 'forward', title: 'оплачивает' }
+review dependence product, { direction: 'forward', title: 'оценивает' }
+review dependence customer, { direction: 'forward', title: 'оставлен' }
+customer directAssociation order, { direction: 'bidirectional', title: 'создал' }
