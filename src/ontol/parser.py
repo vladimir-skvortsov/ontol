@@ -236,6 +236,29 @@ class Parser(BaseParser):
     def function_list(self, p) -> None:
         pass
 
+    def _tokenized_function_attributes_to_dict(
+        self,
+        tokenized_attributes: list[tuple],
+    ) -> dict[str, Any]:
+        attributes: dict[str, Any] = self._tokenized_attributes_to_dict(
+            tokenized_attributes, FunctionAttributes
+        )
+
+        if 'type' in attributes:
+            attributes['type'] = RelationshipType.from_str(attributes['type'])
+            if attributes['type'] is None:
+                for key_token, value_token in tokenized_attributes:
+                    if key_token.value == 'type':
+                        raise ValueError(
+                            self._get_exception_message(
+                                value_token,
+                                f'Unexpected type type. One of the following was expected: {", ".join(member.value for member in RelationshipType)}',
+                                'error',
+                            )
+                        )
+
+        return attributes
+
     @_('IDENTIFIER COLON STRING params ARROW IDENTIFIER COLON STRING attributes')
     def function(self, p) -> None:
         existing_function: Optional[Function] = self.__ontology.find_function_by_name(
@@ -264,8 +287,8 @@ class Parser(BaseParser):
 
         output_type: FunctionArgument = FunctionArgument(output_term, p.STRING1)
 
-        attributes: dict[str, Any] = self._tokenized_attributes_to_dict(
-            p.attributes, FunctionAttributes
+        attributes: dict[str, Any] = self._tokenized_function_attributes_to_dict(
+            p.attributes
         )
 
         function: Function = Function(
