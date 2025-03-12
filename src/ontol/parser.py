@@ -39,9 +39,9 @@ class Lexer(BaseLexer):
     ignore: str = ' \t'
 
     # Regular expression rules for tokens
-    TYPES_BLOCK: str = r'types:'
-    FUNCTIONS_BLOCK: str = r'functions:'
-    HIERARCHY_BLOCK: str = r'hierarchy:'
+    TYPES_BLOCK: str = r'types'
+    FUNCTIONS_BLOCK: str = r'functions'
+    HIERARCHY_BLOCK: str = r'hierarchy'
 
     STRING: str = r'\'[^\']*\'|\"[^\"]*\"'
     IDENTIFIER: str = r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -178,7 +178,7 @@ class Parser(BaseParser):
 
         setattr(self.__ontology.meta, p.IDENTIFIER, p.STRING)
 
-    @_('TYPES_BLOCK NEWLINE type_list')
+    @_('TYPES_BLOCK COLON NEWLINE type_list')
     def statement(self, p) -> None:
         pass
 
@@ -223,7 +223,7 @@ class Parser(BaseParser):
 
         self.__ontology.add_type(term)
 
-    @_('FUNCTIONS_BLOCK NEWLINE function_list')
+    @_('FUNCTIONS_BLOCK COLON NEWLINE function_list')
     def statement(self, p) -> None:
         pass
 
@@ -358,7 +358,7 @@ class Parser(BaseParser):
     def param(self, p) -> tuple:
         return (p._slice[0], p._slice[2])
 
-    @_('HIERARCHY_BLOCK NEWLINE hierarchy_list')
+    @_('HIERARCHY_BLOCK COLON NEWLINE hierarchy_list')
     def statement(self, p) -> None:
         pass
 
