@@ -21,4 +21,9 @@ sheffer: 'Штрих Шеффера' (set: '', set: '') -> set: '', { color: '#D
 
 # Иерархическое выражение
 hierarchy:
-element aggregation set, { leftChar: '*' }
+elem_set_rel: element aggregation set, { leftChar: '*' }
+
+figure terms:
+element
+set
+elem_set_rel
