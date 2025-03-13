@@ -1,6 +1,5 @@
 import os
 import time
-from typing import Optional
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -81,7 +80,7 @@ class CLI:
             version=f'%(prog)s {__VERSION__}',
             help='Show the version of the program and exit',
         )
-        self.args: Optional[Namespace] = None
+        self.args: Namespace = Namespace()
 
         self.parser: Parser = Parser()
         self.serializer: JSONSerializer = JSONSerializer()
