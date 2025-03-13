@@ -16,6 +16,7 @@ from .parser import Parser
 from .plantuml import PlantUML
 from .serializer import JSONSerializer
 from .retranslator import Retranslator
+from .ai import AI
 from .cli import CLI
 
 
@@ -36,5 +37,6 @@ __all__ = (
     'PlantUML',
     'JSONSerializer',
     'Retranslator',
+    'AI',
     'CLI',
 )

@@ -23,21 +23,31 @@ class Retranslator:
                 ontol_lines.append(f'{field.name}: {value!r}')
         ontol_lines.append('')
 
-        ontol_lines.append('types:')
-        for term in ontology.types:
-            ontol_lines.append(self.__translate_term(term))
-        ontol_lines.append('')
+        if ontology.types:
+            ontol_lines.append('types:')
+            for term in ontology.types:
+                ontol_lines.append(self.__translate_term(term))
+            ontol_lines.append('')
 
-        ontol_lines.append('functions:')
-        for function in ontology.functions:
-            ontol_lines.append(self.__translate_function(function))
-        ontol_lines.append('')
+        if ontology.functions:
+            ontol_lines.append('functions:')
+            for function in ontology.functions:
+                ontol_lines.append(self.__translate_function(function))
+            ontol_lines.append('')
 
-        ontol_lines.append('hierarchy:')
-        for relationship in ontology.hierarchy:
-            ontol_lines.append(self.__translate_hierarchy(relationship))
+        if ontology.hierarchy:
+            ontol_lines.append('hierarchy:')
+            for relationship in ontology.hierarchy:
+                ontol_lines.append(self.__translate_hierarchy(relationship))
+            ontol_lines.append('')
 
-        ontol_lines.append('\n')
+        if ontology.figures:
+            for figure in ontology.figures:
+                ontol_lines.append(f'figure {figure.name}:')
+                for definition in figure.types + figure.functions + figure.hierarchy:
+                    if definition.name is not None:
+                        ontol_lines.append(definition.name)
+                ontol_lines.append('')
 
         return '\n'.join(ontol_lines)
 
