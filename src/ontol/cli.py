@@ -7,7 +7,14 @@ from watchdog.observers.api import BaseObserver
 
 from argparse import ArgumentParser, Namespace
 
-from ontol import Parser, JSONSerializer, PlantUML, Retranslator, Ontology
+from ontol import (
+    Parser,
+    JSONSerializer,
+    PlantUML,
+    Retranslator,
+    Ontology,
+    AI,
+)
 
 
 __VERSION__ = os.getenv('ONTOL_VERSION', 'dev')
@@ -48,6 +55,25 @@ class CLI:
             help='Output directory to write files in',
         )
         self.args_parser.add_argument(
+            '--gen-hierarchy',
+            dest='gen_hierarchy',
+            action='store_true',
+            default=False,
+            help='Generate additional hierarchy relationship using Ollama model',
+        )
+        self.args_parser.add_argument(
+            '--model',
+            type=str,
+            default='llama3.1',
+            help='Ollama model to use',
+        )
+        self.args_parser.add_argument(
+            '--temperature',
+            type=float,
+            default=0.0,
+            help='Model temperature to use',
+        )
+        self.args_parser.add_argument(
             '-v',
             '--version',
             action='version',
@@ -59,6 +85,7 @@ class CLI:
         self.serializer: JSONSerializer = JSONSerializer()
         self.plantuml: PlantUML = PlantUML()
         self.retranslator: Retranslator = Retranslator()
+        self.ai: AI = AI()
 
     def run(self) -> None:
         self.args: Namespace = self.args_parser.parse_args()
@@ -77,6 +104,18 @@ class CLI:
                 # Print warnings
                 if warnings and not self.args.quiet:
                     print('\n\n'.join(warnings))
+
+                if self.args.gen_hierarchy:
+                    print('Generating hierarchy...')
+                    hierarchy, comments = self.ai.generate_hierarchy(
+                        ontology, self.args.model, self.args.temperature
+                    )
+                    ontology.hierarchy.extend(hierarchy)
+                    print('\nGenerated relationships:')
+                    for relationship, comment in zip(hierarchy, comments):
+                        print(
+                            f'{relationship.parent.name} {relationship.relationship.value} {relationship.children[0].name}: {comment}'
+                        )
 
                 base_dir = os.path.dirname(file_path)
                 base_name = os.path.splitext(os.path.basename(file_path))[0]
