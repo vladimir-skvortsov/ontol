@@ -103,9 +103,7 @@ class CLI:
                     if not debug:
                         continue
                     retranslator_content: str = self.retranslator.translate(ontology)
-                    retranslator_file_path: str = (
-                        os.path.splitext(file_path)[0] + '_retr' + '.ontol'
-                    )
+                    retranslator_file_path: str = basepath + '_retr' + '.ontol'
                     with open(
                         retranslator_file_path, 'w', encoding='utf-8'
                     ) as retr_file:
