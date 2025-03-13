@@ -1,5 +1,6 @@
 from .oast import (
     Ontology,
+    Figure,
     Term,
     Function,
     Relationship,
@@ -20,6 +21,7 @@ from .cli import CLI
 
 __all__ = (
     'Ontology',
+    'Figure',
     'Term',
     'Function',
     'Relationship',

@@ -1,10 +1,11 @@
 from sly import Lexer as BaseLexer, Parser as BaseParser
 from datetime import datetime
-from typing import Literal, Optional, Any
+from typing import Literal, Optional, Any, Type
 from dataclasses import fields
 
 from ontol import (
     Ontology,
+    Figure,
     Term,
     Function,
     Relationship,
@@ -23,6 +24,7 @@ class Lexer(BaseLexer):
         TYPES_BLOCK,
         FUNCTIONS_BLOCK,
         HIERARCHY_BLOCK,
+        FIGURE_BLOCK,
         STRING,
         IDENTIFIER,
         LBRACE,
@@ -39,9 +41,10 @@ class Lexer(BaseLexer):
     ignore: str = ' \t'
 
     # Regular expression rules for tokens
-    TYPES_BLOCK: str = r'types:'
-    FUNCTIONS_BLOCK: str = r'functions:'
-    HIERARCHY_BLOCK: str = r'hierarchy:'
+    TYPES_BLOCK: str = r'types'
+    FUNCTIONS_BLOCK: str = r'functions'
+    HIERARCHY_BLOCK: str = r'hierarchy'
+    FIGURE_BLOCK: str = r'figure'
 
     STRING: str = r'\'[^\']*\'|\"[^\"]*\"'
     IDENTIFIER: str = r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -126,7 +129,9 @@ class Parser(BaseParser):
     def _tokenized_attributes_to_dict(
         self,
         tokenized_attributes: list[tuple],
-        attributesClass: TermAttributes | FunctionAttributes | RelationshipAttributes,
+        attributesClass: Type[TermAttributes]
+        | Type[FunctionAttributes]
+        | Type[RelationshipAttributes],
     ) -> dict[str, Any]:
         allowed_attributes: list[str] = [
             field.name for field in fields(attributesClass)
@@ -178,13 +183,12 @@ class Parser(BaseParser):
 
         setattr(self.__ontology.meta, p.IDENTIFIER, p.STRING)
 
-    @_('TYPES_BLOCK NEWLINE type_list')
+    @_('TYPES_BLOCK COLON NEWLINE type_list')
     def statement(self, p) -> None:
         pass
 
     @_(
         'type_list type NEWLINE',
-        'type NEWLINE',
         'NEWLINE type_list',
         '',
     )
@@ -193,13 +197,15 @@ class Parser(BaseParser):
 
     @_('IDENTIFIER COLON STRING COMMA STRING attributes')
     def type(self, p) -> None:
-        existing_term: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER)
+        existing_definition: Optional[Term | Function | Relationship] = (
+            self.__ontology.find_definition_by_name(p.IDENTIFIER)
+        )
 
-        if existing_term is not None:
+        if existing_definition is not None:
             raise ValueError(
                 self._get_exception_message(
                     p._slice[0],
-                    f"Type '{p.IDENTIFIER}' has already been declared",
+                    f'Definition {p.IDENTIFIER} has already been declared',
                     'error',
                 )
             )
@@ -223,13 +229,12 @@ class Parser(BaseParser):
 
         self.__ontology.add_type(term)
 
-    @_('FUNCTIONS_BLOCK NEWLINE function_list')
+    @_('FUNCTIONS_BLOCK COLON NEWLINE function_list')
     def statement(self, p) -> None:
         pass
 
     @_(
         'function_list function NEWLINE',
-        'function NEWLINE',
         'NEWLINE function_list',
         '',
     )
@@ -261,15 +266,15 @@ class Parser(BaseParser):
 
     @_('IDENTIFIER COLON STRING params ARROW IDENTIFIER COLON STRING attributes')
     def function(self, p) -> None:
-        existing_function: Optional[Function] = self.__ontology.find_function_by_name(
-            p.IDENTIFIER0
+        existing_definition: Optional[Term | Function | Relationship] = (
+            self.__ontology.find_definition_by_name(p.IDENTIFIER0)
         )
 
-        if existing_function is not None:
+        if existing_definition is not None:
             raise ValueError(
                 self._get_exception_message(
                     p._slice[0],
-                    f"Function '{p.IDENTIFIER0}' has already been declared",
+                    f'Definition {p.IDENTIFIER0} has already been declared',
                     'error',
                 )
             )
@@ -358,13 +363,12 @@ class Parser(BaseParser):
     def param(self, p) -> tuple:
         return (p._slice[0], p._slice[2])
 
-    @_('HIERARCHY_BLOCK NEWLINE hierarchy_list')
+    @_('HIERARCHY_BLOCK COLON NEWLINE hierarchy_list')
     def statement(self, p) -> None:
         pass
 
     @_(
-        'hierarchy_list hierarchy NEWLINE',
-        'hierarchy NEWLINE',
+        'hierarchy_list relationship NEWLINE',
         'NEWLINE hierarchy_list',
         '',
     )
@@ -396,50 +400,131 @@ class Parser(BaseParser):
 
         return attributes
 
-    @_('IDENTIFIER IDENTIFIER IDENTIFIER attributes')
-    def hierarchy(self, p) -> None:
-        parent: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER0)
+    def _add_relationship(
+        self,
+        name_token,
+        parent_token,
+        relationship_type_token,
+        child_token,
+        attributes_tokens,
+    ) -> None:
+        if name_token is not None:
+            existing_definition: Optional[Term | Function | Relationship] = (
+                self.__ontology.find_definition_by_name(name_token.value)
+            )
+            if existing_definition is not None:
+                raise ValueError(
+                    self._get_exception_message(
+                        name_token,
+                        f'Definition {name_token.value} has already been declared',
+                        'error',
+                    )
+                )
+
+        parent: Optional[Term] = self.__ontology.find_term_by_name(parent_token.value)
 
         if parent is None:
             raise ValueError(
                 self._get_exception_message(
-                    p._slice[0], f'Undefined term {p.IDENTIFIER0}', 'error'
+                    parent_token, f'Undefined term {parent_token.value}', 'error'
                 )
             )
 
-        relationship = RelationshipType.from_str(p.IDENTIFIER1)
+        relationship_type: Optional[RelationshipType] = RelationshipType.from_str(
+            relationship_type_token.value
+        )
 
-        if relationship is None:
+        if relationship_type is None:
             raise ValueError(
                 self._get_exception_message(
-                    p._slice[1],
+                    relationship_type_token,
                     f'Unexpected relationship type. One of the following was expected: {", ".join(member.value for member in RelationshipType)}',
                     'error',
                 )
             )
 
-        child_term: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER2)
+        child: Optional[Term] = self.__ontology.find_term_by_name(child_token.value)
 
-        if child_term is None:
+        if child is None:
             raise ValueError(
                 self._get_exception_message(
-                    p._slice[2], f'Undefined term {p.IDENTIFIER2}', 'error'
+                    child_token, f'Undefined term {child_token.value}', 'error'
                 )
             )
 
-        children: list[Term] = [child_term]
+        children: list[Term] = [child]
 
         attributes: dict[str, Any] = self._tokenized_relationship_attributes_to_dict(
-            p.attributes
+            attributes_tokens
         )
 
         relationship: Relationship = Relationship(
+            name=name_token.value if name_token else None,
             parent=parent,
-            relationship=relationship,
+            relationship=relationship_type,
             children=children,
             attributes=RelationshipAttributes(**attributes),
         )
         self.__ontology.add_relationship(relationship)
+
+    @_('IDENTIFIER IDENTIFIER IDENTIFIER attributes')
+    def relationship(self, p) -> None:
+        self._add_relationship(
+            None,
+            p._slice[0],
+            p._slice[1],
+            p._slice[2],
+            p.attributes,
+        )
+
+    @_('IDENTIFIER COLON IDENTIFIER IDENTIFIER IDENTIFIER attributes')
+    def relationship(self, p) -> None:
+        self._add_relationship(
+            p._slice[0],
+            p._slice[2],
+            p._slice[3],
+            p._slice[4],
+            p.attributes,
+        )
+
+    @_('FIGURE_BLOCK IDENTIFIER COLON NEWLINE figure_list')
+    def statement(self, p) -> None:
+        figure: Figure = Figure(name=p.IDENTIFIER)
+
+        for token in p.figure_list:
+            definition: Optional[Term | Function | Relationship] = (
+                self.__ontology.find_definition_by_name(token.value)
+            )
+            if definition is None:
+                raise ValueError(
+                    self._get_exception_message(
+                        token,
+                        f'Undefined identifier {token.value}',
+                        'error',
+                    )
+                )
+            if isinstance(definition, Term):
+                figure.types.append(definition)
+            elif isinstance(definition, Function):
+                figure.functions.append(definition)
+            elif isinstance(definition, Relationship):
+                figure.hierarchy.append(definition)
+
+        self.__ontology.add_figure(figure)
+
+    @_('figure_list IDENTIFIER NEWLINE')
+    def figure_list(self, p) -> None:
+        return p.figure_list + [p._slice[1]]
+
+    @_(
+        'NEWLINE figure_list',
+    )
+    def figure_list(self, p) -> None:
+        return p.figure_list
+
+    @_('')
+    def figure_list(self, p) -> list:
+        return []
 
     @_(
         'COMMA LBRACE attribute_list RBRACE',

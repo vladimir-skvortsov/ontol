@@ -7,7 +7,7 @@ from watchdog.observers.api import BaseObserver
 
 from argparse import ArgumentParser, Namespace
 
-from ontol import Parser, JSONSerializer, PlantUML, Retranslator
+from ontol import Parser, JSONSerializer, PlantUML, Retranslator, Ontology
 
 
 __VERSION__ = os.getenv('ONTOL_VERSION', 'dev')
@@ -31,7 +31,7 @@ class CLI:
             '-d',
             '--debug',
             action='store_true',
-            help='Get retranslation version of the file .ontol',
+            help='Get retranslation version of the file .ontol.',
         )
         self.args_parser.add_argument(
             '-v',
@@ -39,6 +39,12 @@ class CLI:
             action='version',
             version=f'%(prog)s {__VERSION__}',
             help='Show the version of the program and exit.',
+        )
+        self.args_parser.add_argument(
+            '-q',
+            '--quiet',
+            action='store_true',
+            help='Ignore all the warnings.',
         )
 
         self.parser: Parser = Parser()
@@ -49,50 +55,66 @@ class CLI:
     def run(self) -> None:
         args: Namespace = self.args_parser.parse_args()
 
-        debug = True if args.debug else False
-        if args.watch:
-            self.watch_file(args.file, debug)
-        else:
-            self.parse_file(args.file, debug)
+        debug: bool = True if args.debug else False
+        quiet: bool = True if args.quiet else False
 
-    def parse_file(self, file_path: str, debug: bool = False) -> None:
+        if args.watch:
+            self.watch_file(args.file, debug, quiet)
+        else:
+            self.parse_file(args.file, debug, quiet)
+
+    def parse_file(
+        self, file_path: str, debug: bool = False, quiet: bool = False
+    ) -> None:
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content: str = file.read()
                 ontology, warnings = self.parser.parse(content, file_path)
 
                 # Print warnings
-                if warnings:
+                if warnings and not quiet:
                     print('\n\n'.join(warnings))
 
-                # JSON
-                json_content: str = self.serializer.serialize(ontology)
-                json_file_path: str = os.path.splitext(file_path)[0] + '.json'
-                with open(json_file_path, 'w', encoding='utf-8') as json_file:
-                    json_file.write(json_content)
+                basepath: str = os.path.splitext(file_path)[0]
 
-                # PlantUML
-                plantuml_content: str = self.plantuml.generate(ontology)
-                puml_file_path: str = os.path.splitext(file_path)[0] + '.puml'
-                with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
-                    puml_file.write(plantuml_content)
+                ontologies: list[Ontology] = [ontology]
+                basepaths: list[str] = [basepath]
 
-                self.plantuml.processes_puml_to_png(puml_file_path)
+                for figure in ontology.figures:
+                    ontologies.append(Ontology.from_figure(ontology, figure))
+                    basepaths.append(f'{basepath}_{figure.name}')
 
-                # Retranslator
-                if not debug:
-                    return
-                retranslator_content: str = self.retranslator.translate(ontology)
-                retranslator_file_path: str = (
-                    os.path.splitext(file_path)[0] + '_retr' + '.ontol'
-                )
-                with open(retranslator_file_path, 'w', encoding='utf-8') as retr_file:
-                    retr_file.write(retranslator_content)
+                for ontology, basepath in zip(ontologies, basepaths):
+                    # JSON
+                    json_content: str = self.serializer.serialize(ontology)
+                    json_file_path: str = basepath + '.json'
+                    with open(json_file_path, 'w', encoding='utf-8') as json_file:
+                        json_file.write(json_content)
+
+                    # PlantUML
+                    plantuml_content: str = self.plantuml.generate(ontology)
+                    puml_file_path: str = basepath + '.puml'
+                    with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
+                        puml_file.write(plantuml_content)
+
+                    self.plantuml.processes_puml_to_png(puml_file_path)
+
+                    # Retranslator
+                    if not debug:
+                        continue
+                    retranslator_content: str = self.retranslator.translate(ontology)
+                    retranslator_file_path: str = (
+                        os.path.splitext(file_path)[0] + '_retr' + '.ontol'
+                    )
+                    with open(
+                        retranslator_file_path, 'w', encoding='utf-8'
+                    ) as retr_file:
+                        retr_file.write(retranslator_content)
         except Exception as e:
             print(e)
 
-    def watch_file(self, file_path, debug: bool = False):
-        self.parse_file(file_path, debug)
+    def watch_file(self, file_path, debug: bool = False, quiet: bool = False):
+        self.parse_file(file_path, debug, quiet)
 
         class FileChangeHandler(FileSystemEventHandler):
             def __init__(self, parse_callback):
@@ -102,7 +124,7 @@ class CLI:
             def on_modified(self, event):
                 if event.src_path.endswith('.ontol'):
                     print(f'File {event.src_path} modified, re-parsing...')
-                    self.parse_callback(event.src_path, debug)
+                    self.parse_callback(event.src_path, debug, quiet)
 
         event_handler: FileChangeHandler = FileChangeHandler(self.parse_file)
 
