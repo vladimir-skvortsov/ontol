@@ -1,6 +1,6 @@
 from sly import Lexer as BaseLexer, Parser as BaseParser
 from datetime import datetime
-from typing import Literal, Optional, Any
+from typing import Literal, Optional, Any, Type
 from dataclasses import fields
 
 from ontol import (
@@ -129,7 +129,9 @@ class Parser(BaseParser):
     def _tokenized_attributes_to_dict(
         self,
         tokenized_attributes: list[tuple],
-        attributesClass: TermAttributes | FunctionAttributes | RelationshipAttributes,
+        attributesClass: Type[TermAttributes]
+        | Type[FunctionAttributes]
+        | Type[RelationshipAttributes],
     ) -> dict[str, Any]:
         allowed_attributes: list[str] = [
             field.name for field in fields(attributesClass)
