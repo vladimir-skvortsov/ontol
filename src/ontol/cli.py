@@ -31,7 +31,7 @@ class CLI:
             '-d',
             '--debug',
             action='store_true',
-            help='Get retranslation version of the file .ontol',
+            help='Get retranslation version of the file .ontol.',
         )
         self.args_parser.add_argument(
             '-v',
@@ -39,6 +39,12 @@ class CLI:
             action='version',
             version=f'%(prog)s {__VERSION__}',
             help='Show the version of the program and exit.',
+        )
+        self.args_parser.add_argument(
+            '-q',
+            '--quiet',
+            action='store_true',
+            help='Ignore all the warnings.',
         )
 
         self.parser: Parser = Parser()
@@ -49,20 +55,24 @@ class CLI:
     def run(self) -> None:
         args: Namespace = self.args_parser.parse_args()
 
-        debug = True if args.debug else False
-        if args.watch:
-            self.watch_file(args.file, debug)
-        else:
-            self.parse_file(args.file, debug)
+        debug: bool = True if args.debug else False
+        quiet: bool = True if args.quiet else False
 
-    def parse_file(self, file_path: str, debug: bool = False) -> None:
+        if args.watch:
+            self.watch_file(args.file, debug, quiet)
+        else:
+            self.parse_file(args.file, debug, quiet)
+
+    def parse_file(
+        self, file_path: str, debug: bool = False, quiet: bool = False
+    ) -> None:
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content: str = file.read()
                 ontology, warnings = self.parser.parse(content, file_path)
 
                 # Print warnings
-                if warnings:
+                if warnings and not quiet:
                     print('\n\n'.join(warnings))
 
                 # JSON
@@ -91,8 +101,8 @@ class CLI:
         except Exception as e:
             print(e)
 
-    def watch_file(self, file_path, debug: bool = False):
-        self.parse_file(file_path, debug)
+    def watch_file(self, file_path, debug: bool = False, quiet: bool = False):
+        self.parse_file(file_path, debug, quiet)
 
         class FileChangeHandler(FileSystemEventHandler):
             def __init__(self, parse_callback):
@@ -102,7 +112,7 @@ class CLI:
             def on_modified(self, event):
                 if event.src_path.endswith('.ontol'):
                     print(f'File {event.src_path} modified, re-parsing...')
-                    self.parse_callback(event.src_path, debug)
+                    self.parse_callback(event.src_path, debug, quiet)
 
         event_handler: FileChangeHandler = FileChangeHandler(self.parse_file)
 
