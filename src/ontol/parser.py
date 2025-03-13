@@ -197,13 +197,15 @@ class Parser(BaseParser):
 
     @_('IDENTIFIER COLON STRING COMMA STRING attributes')
     def type(self, p) -> None:
-        existing_term: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER)
+        existing_definition: Optional[Term | Function | Relationship] = (
+            self.__ontology.find_definition_by_name(p.IDENTIFIER)
+        )
 
-        if existing_term is not None:
+        if existing_definition is not None:
             raise ValueError(
                 self._get_exception_message(
                     p._slice[0],
-                    f"Type '{p.IDENTIFIER}' has already been declared",
+                    f'Definition {p.IDENTIFIER} has already been declared',
                     'error',
                 )
             )
@@ -264,15 +266,15 @@ class Parser(BaseParser):
 
     @_('IDENTIFIER COLON STRING params ARROW IDENTIFIER COLON STRING attributes')
     def function(self, p) -> None:
-        existing_function: Optional[Function] = self.__ontology.find_function_by_name(
-            p.IDENTIFIER0
+        existing_definition: Optional[Term | Function | Relationship] = (
+            self.__ontology.find_definition_by_name(p.IDENTIFIER0)
         )
 
-        if existing_function is not None:
+        if existing_definition is not None:
             raise ValueError(
                 self._get_exception_message(
                     p._slice[0],
-                    f"Function '{p.IDENTIFIER0}' has already been declared",
+                    f'Definition {p.IDENTIFIER0} has already been declared',
                     'error',
                 )
             )
@@ -406,6 +408,19 @@ class Parser(BaseParser):
         child_token,
         attributes_tokens,
     ) -> None:
+        if name_token is not None:
+            existing_definition: Optional[Term | Function | Relationship] = (
+                self.__ontology.find_definition_by_name(name_token.value)
+            )
+            if existing_definition is not None:
+                raise ValueError(
+                    self._get_exception_message(
+                        name_token,
+                        f'Definition {name_token.value} has already been declared',
+                        'error',
+                    )
+                )
+
         parent: Optional[Term] = self.__ontology.find_term_by_name(parent_token.value)
 
         if parent is None:
@@ -428,18 +443,16 @@ class Parser(BaseParser):
                 )
             )
 
-        child_term: Optional[Term] = self.__ontology.find_term_by_name(
-            child_token.value
-        )
+        child: Optional[Term] = self.__ontology.find_term_by_name(child_token.value)
 
-        if child_term is None:
+        if child is None:
             raise ValueError(
                 self._get_exception_message(
                     child_token, f'Undefined term {child_token.value}', 'error'
                 )
             )
 
-        children: list[Term] = [child_term]
+        children: list[Term] = [child]
 
         attributes: dict[str, Any] = self._tokenized_relationship_attributes_to_dict(
             attributes_tokens
@@ -479,47 +492,23 @@ class Parser(BaseParser):
         figure: Figure = Figure(name=p.IDENTIFIER)
 
         for token in p.figure_list:
-            identifier = token.value
-
-            type: Optional[Term] = next(
-                (type for type in self.__ontology.types if type.name == identifier),
-                None,
+            definition: Optional[Term | Function | Relationship] = (
+                self.__ontology.find_definition_by_name(token.value)
             )
-            if type is not None:
-                figure.types.append(type)
-                continue
-
-            function: Optional[Function] = next(
-                (
-                    function
-                    for function in self.__ontology.functions
-                    if function.name == identifier
-                ),
-                None,
-            )
-            if function is not None:
-                figure.functions.append(function)
-                continue
-
-            relationship: Optional[Relationship] = next(
-                (
-                    relationship
-                    for relationship in self.__ontology.hierarchy
-                    if relationship.name == identifier
-                ),
-                None,
-            )
-            if relationship is not None:
-                figure.hierarchy.append(relationship)
-                continue
-
-            raise ValueError(
-                self._get_exception_message(
-                    token,
-                    f'Undefined key {identifier}',
-                    'error',
+            if definition is None:
+                raise ValueError(
+                    self._get_exception_message(
+                        token,
+                        f'Undefined identifier {token.value}',
+                        'error',
+                    )
                 )
-            )
+            if isinstance(definition, Term):
+                figure.types.append(definition)
+            elif isinstance(definition, Function):
+                figure.functions.append(definition)
+            elif isinstance(definition, Relationship):
+                figure.hierarchy.append(definition)
 
         self.__ontology.add_figure(figure)
 

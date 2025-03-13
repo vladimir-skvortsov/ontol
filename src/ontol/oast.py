@@ -217,6 +217,27 @@ class Ontology:
             (function for function in self.functions if function.name == name), None
         )
 
+    def find_relationship_by_name(self, name: str) -> Optional[Relationship]:
+        return next(
+            (
+                relationship
+                for relationship in self.hierarchy
+                if relationship.name == name
+            ),
+            None,
+        )
+
+    def find_definition_by_name(
+        self, name: str
+    ) -> Optional[Term | Function | Relationship]:
+        definitions: list[Term | Function | Relationship] = (
+            self.types + self.functions + self.hierarchy
+        )
+        return next(
+            (definition for definition in definitions if definition.name == name),
+            None,
+        )
+
     def __repr__(self) -> str:
         return (
             f'Ontology(meta={self.meta}, '
