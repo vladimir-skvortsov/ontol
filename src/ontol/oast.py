@@ -171,7 +171,6 @@ class Figure:
     types: list[Term] = field(default_factory=list)
     functions: list[Function] = field(default_factory=list)
     hierarchy: list[Relationship] = field(default_factory=list)
-    functions: list[Function] = field(default_factory=list)
 
     def __repr__(self) -> str:
         return f'Figure(name={self.name}, tyoes={self.types}, functions={self.functions}, hierarchy={self.hierarchy})'
