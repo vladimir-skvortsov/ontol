@@ -1,5 +1,6 @@
 import os
 import time
+from typing import Optional
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -80,7 +81,15 @@ class CLI:
             version=f'%(prog)s {__VERSION__}',
             help='Show the version of the program and exit',
         )
-        self.args: Namespace = self.args_parser.parse_args()
+
+        self.watch: bool = False
+        self.debug: bool = False
+        self.quiet: bool = False
+        self.gen_hierarchy: bool = False
+        self.file: Optional[str] = None
+        self.dir: Optional[str] = None
+        self.model: str = 'llama3.1'
+        self.temperature: float = 0.0
 
         self.parser: Parser = Parser()
         self.serializer: JSONSerializer = JSONSerializer()
@@ -89,10 +98,17 @@ class CLI:
         self.ai: AI = AI()
 
     def run(self) -> None:
-        if self.args.watch:
-            self.watch_file(self.args.file)
+        args: Namespace = self.args_parser.parse_args()
+        for key, value in vars(args).items():
+            setattr(self, key, value)
+
+        if self.file is None:
+            return
+
+        if self.watch:
+            self.watch_file(self.file)
         else:
-            self.parse_file(self.args.file)
+            self.parse_file(self.file)
 
     def parse_file(self, file_path: str) -> None:
         try:
@@ -101,13 +117,13 @@ class CLI:
                 ontology, warnings = self.parser.parse(content, file_path)
 
                 # Print warnings
-                if warnings and not self.args.quiet:
+                if warnings and not self.quiet:
                     print('\n\n'.join(warnings))
 
-                if self.args.gen_hierarchy:
+                if self.gen_hierarchy:
                     print('Generating hierarchy...')
                     hierarchy, comments = self.ai.generate_hierarchy(
-                        ontology, self.args.model, self.args.temperature
+                        ontology, self.model, self.temperature
                     )
                     ontology.hierarchy.extend(hierarchy)
                     print('\nGenerated relationships:')
@@ -118,7 +134,7 @@ class CLI:
 
                 base_dir = os.path.dirname(file_path)
                 base_name = os.path.splitext(os.path.basename(file_path))[0]
-                output_dir = self.args.dir if self.args.dir is not None else base_dir
+                output_dir = self.dir if self.dir is not None else base_dir
 
                 os.makedirs(output_dir, exist_ok=True)
 
@@ -145,7 +161,7 @@ class CLI:
                     self.plantuml.processes_puml_to_png(puml_file_path)
 
                     # Retranslator
-                    if not self.args.debug:
+                    if not self.debug:
                         continue
                     retranslator_content: str = self.retranslator.translate(ontology)
                     retranslator_file_path: str = os.path.join(

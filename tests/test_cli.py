@@ -1,7 +1,7 @@
 import os
 import tempfile
 
-from ontol import CLI, Ontology
+from ontol import CLI
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -26,8 +26,8 @@ def sample_ontology_file():
 def test_parse_file(cli, sample_ontology_file):
     cli.parse_file(sample_ontology_file)
 
-    json_file_path = os.path.splitext(sample_ontology_file)[0] + '.json'
-    puml_file_path = os.path.splitext(sample_ontology_file)[0] + '.puml'
+    json_file_path: str = os.path.splitext(sample_ontology_file)[0] + '.json'
+    puml_file_path: str = os.path.splitext(sample_ontology_file)[0] + '.puml'
 
     assert os.path.exists(json_file_path)
     assert os.path.exists(puml_file_path)
