@@ -80,6 +80,7 @@ class CLI:
             version=f'%(prog)s {__VERSION__}',
             help='Show the version of the program and exit',
         )
+        self.args: Namespace = self.args_parser.parse_args()
 
         self.parser: Parser = Parser()
         self.serializer: JSONSerializer = JSONSerializer()
@@ -88,8 +89,6 @@ class CLI:
         self.ai: AI = AI()
 
     def run(self) -> None:
-        self.args: Namespace = self.args_parser.parse_args()
-
         if self.args.watch:
             self.watch_file(self.args.file)
         else:
