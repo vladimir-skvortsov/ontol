@@ -1,14 +1,16 @@
 import json
+from typing import Any
 
 from dataclasses import asdict
 
-from ontol import Ontology, Term, Function, Meta, Relationship
+from ontol import Ontology, Term, Function, Meta, Relationship, Figure
 
 
 class JSONSerializer:
     @staticmethod
     def serialize(ontology: Ontology) -> str:
         data: dict[str, object] = {
+            'meta': JSONSerializer._serialize_meta(ontology.meta),
             'terms': [JSONSerializer._serialize_term(t) for t in ontology.types],
             'functions': [
                 JSONSerializer._serialize_function(f) for f in ontology.functions
@@ -16,14 +18,12 @@ class JSONSerializer:
             'hierarchy': [
                 JSONSerializer._serialize_relationship(r) for r in ontology.hierarchy
             ],
-            'meta': JSONSerializer._serialize_meta(ontology.meta)
-            if ontology.meta
-            else None,
+            'figures': [JSONSerializer._serialize_figure(f) for f in ontology.figures],
         }
         return json.dumps(data, ensure_ascii=False, indent=4)
 
     @staticmethod
-    def _serialize_term(type_def: Term) -> dict[str, str | list[dict] | dict | None]:
+    def _serialize_term(type_def: Term) -> dict[str, Any]:
         return {
             'name': type_def.name,
             'label': type_def.label,
@@ -38,7 +38,7 @@ class JSONSerializer:
     @staticmethod
     def _serialize_function(
         func_def: Function,
-    ) -> dict[str, str | list[dict] | dict | None]:
+    ) -> dict[str, Any]:
         attributes = {
             key: value
             for key, value in asdict(func_def.attributes).items()
@@ -68,7 +68,7 @@ class JSONSerializer:
     @staticmethod
     def _serialize_relationship(
         rel_def: Relationship,
-    ) -> dict[str, str | list[str] | dict[str, str]]:
+    ) -> dict[str, Any]:
         attributes = {
             key: value
             for key, value in asdict(rel_def.attributes).items()
@@ -79,8 +79,20 @@ class JSONSerializer:
             attributes['direction'] = attributes['direction'].value
 
         return {
+            'name': rel_def.name,
             'parent': rel_def.parent.name,
             'relationship': rel_def.relationship.value,
             'children': [child.name for child in rel_def.children],
             'attributes': attributes,
+        }
+
+    @staticmethod
+    def _serialize_figure(
+        figure: Figure,
+    ) -> dict[str, Any]:
+        return {
+            'name': figure.name,
+            'terms': [term.name for term in figure.types],
+            'functions': [func.name for func in figure.functions],
+            'hierarchy': [rel.name for rel in figure.hierarchy],
         }

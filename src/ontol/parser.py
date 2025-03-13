@@ -5,6 +5,7 @@ from dataclasses import fields
 
 from ontol import (
     Ontology,
+    Figure,
     Term,
     Function,
     Relationship,
@@ -23,6 +24,7 @@ class Lexer(BaseLexer):
         TYPES_BLOCK,
         FUNCTIONS_BLOCK,
         HIERARCHY_BLOCK,
+        FIGURE_BLOCK,
         STRING,
         IDENTIFIER,
         LBRACE,
@@ -42,6 +44,7 @@ class Lexer(BaseLexer):
     TYPES_BLOCK: str = r'types'
     FUNCTIONS_BLOCK: str = r'functions'
     HIERARCHY_BLOCK: str = r'hierarchy'
+    FIGURE_BLOCK: str = r'figure'
 
     STRING: str = r'\'[^\']*\'|\"[^\"]*\"'
     IDENTIFIER: str = r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -184,7 +187,6 @@ class Parser(BaseParser):
 
     @_(
         'type_list type NEWLINE',
-        'type NEWLINE',
         'NEWLINE type_list',
         '',
     )
@@ -229,7 +231,6 @@ class Parser(BaseParser):
 
     @_(
         'function_list function NEWLINE',
-        'function NEWLINE',
         'NEWLINE function_list',
         '',
     )
@@ -363,8 +364,7 @@ class Parser(BaseParser):
         pass
 
     @_(
-        'hierarchy_list hierarchy NEWLINE',
-        'hierarchy NEWLINE',
+        'hierarchy_list relationship NEWLINE',
         'NEWLINE hierarchy_list',
         '',
     )
@@ -396,50 +396,144 @@ class Parser(BaseParser):
 
         return attributes
 
-    @_('IDENTIFIER IDENTIFIER IDENTIFIER attributes')
-    def hierarchy(self, p) -> None:
-        parent: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER0)
+    def _add_relationship(
+        self,
+        name_token,
+        parent_token,
+        relationship_type_token,
+        child_token,
+        attributes_tokens,
+    ) -> None:
+        parent: Optional[Term] = self.__ontology.find_term_by_name(parent_token.value)
 
         if parent is None:
             raise ValueError(
                 self._get_exception_message(
-                    p._slice[0], f'Undefined term {p.IDENTIFIER0}', 'error'
+                    parent_token, f'Undefined term {parent_token.value}', 'error'
                 )
             )
 
-        relationship = RelationshipType.from_str(p.IDENTIFIER1)
+        relationship_type: Optional[RelationshipType] = RelationshipType.from_str(
+            relationship_type_token.value
+        )
 
-        if relationship is None:
+        if relationship_type is None:
             raise ValueError(
                 self._get_exception_message(
-                    p._slice[1],
+                    relationship_type_token,
                     f'Unexpected relationship type. One of the following was expected: {", ".join(member.value for member in RelationshipType)}',
                     'error',
                 )
             )
 
-        child_term: Optional[Term] = self.__ontology.find_term_by_name(p.IDENTIFIER2)
+        child_term: Optional[Term] = self.__ontology.find_term_by_name(
+            child_token.value
+        )
 
         if child_term is None:
             raise ValueError(
                 self._get_exception_message(
-                    p._slice[2], f'Undefined term {p.IDENTIFIER2}', 'error'
+                    child_token, f'Undefined term {child_token.value}', 'error'
                 )
             )
 
         children: list[Term] = [child_term]
 
         attributes: dict[str, Any] = self._tokenized_relationship_attributes_to_dict(
-            p.attributes
+            attributes_tokens
         )
 
         relationship: Relationship = Relationship(
+            name=name_token.value if name_token else None,
             parent=parent,
-            relationship=relationship,
+            relationship=relationship_type,
             children=children,
             attributes=RelationshipAttributes(**attributes),
         )
         self.__ontology.add_relationship(relationship)
+
+    @_('IDENTIFIER IDENTIFIER IDENTIFIER attributes')
+    def relationship(self, p) -> None:
+        self._add_relationship(
+            None,
+            p._slice[0],
+            p._slice[1],
+            p._slice[2],
+            p.attributes,
+        )
+
+    @_('IDENTIFIER COLON IDENTIFIER IDENTIFIER IDENTIFIER attributes')
+    def relationship(self, p) -> None:
+        self._add_relationship(
+            p._slice[0],
+            p._slice[2],
+            p._slice[3],
+            p._slice[4],
+            p.attributes,
+        )
+
+    @_('FIGURE_BLOCK IDENTIFIER COLON NEWLINE figure_list')
+    def statement(self, p) -> None:
+        figure: Figure = Figure(name=p.IDENTIFIER)
+
+        for token in p.figure_list:
+            identifier = token.value
+
+            type: Optional[Term] = next(
+                (type for type in self.__ontology.types if type.name == identifier),
+                None,
+            )
+            if type is not None:
+                figure.types.append(type)
+                continue
+
+            function: Optional[Function] = next(
+                (
+                    function
+                    for function in self.__ontology.functions
+                    if function.name == identifier
+                ),
+                None,
+            )
+            if function is not None:
+                figure.functions.append(function)
+                continue
+
+            relationship: Optional[Relationship] = next(
+                (
+                    relationship
+                    for relationship in self.__ontology.hierarchy
+                    if relationship.name == identifier
+                ),
+                None,
+            )
+            if relationship is not None:
+                figure.hierarchy.append(relationship)
+                continue
+
+            raise ValueError(
+                self._get_exception_message(
+                    token,
+                    f'Undefined key {identifier}',
+                    'error',
+                )
+            )
+
+        self.__ontology.add_figure(figure)
+
+    @_('figure_list IDENTIFIER NEWLINE')
+    def figure_list(self, p) -> None:
+        return p.figure_list + [p._slice[1]]
+
+    @_(
+        'NEWLINE figure_list',
+    )
+    def figure_list(self, p) -> None:
+        return p.figure_list
+
+    @_('')
+    def figure_list(self, p) -> list:
+        return []
 
     @_(
         'COMMA LBRACE attribute_list RBRACE',

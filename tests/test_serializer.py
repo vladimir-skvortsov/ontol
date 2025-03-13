@@ -90,6 +90,7 @@ def test_serialize_ontology(serializer, sample_ontology):
 
     assert data['hierarchy'] == [
         {
+            'name': None,
             'parent': 'int',
             'relationship': 'dependence',
             'children': ['bool'],
@@ -111,9 +112,6 @@ def test_serialize_empty_ontology(serializer):
     json_output = serializer.serialize(ontology)
     data = json.loads(json_output)
     assert data == {
-        'terms': [],
-        'functions': [],
-        'hierarchy': [],
         'meta': {
             'version': None,
             'title': None,
@@ -122,6 +120,10 @@ def test_serialize_empty_ontology(serializer):
             'type': None,
             'date': None,
         },
+        'terms': [],
+        'functions': [],
+        'hierarchy': [],
+        'figures': [],
     }
 
 
@@ -245,6 +247,7 @@ def test_serialize_ontology_without_meta(serializer):
 
     assert data['hierarchy'] == [
         {
+            'name': None,
             'parent': 'int',
             'relationship': 'dependence',
             'children': ['bool'],

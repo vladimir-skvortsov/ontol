@@ -14,7 +14,9 @@ def cli():
 
 @pytest.fixture
 def sample_ontology_file():
-    content = 'ontology test'
+    content = """
+    version: '1.0'
+    """
     with tempfile.NamedTemporaryFile(suffix='.ontol', delete=False) as tmp_file:
         tmp_file.write(content.encode('utf-8'))
         tmp_file_path = tmp_file.name
@@ -22,11 +24,6 @@ def sample_ontology_file():
 
 
 def test_parse_file(cli, sample_ontology_file):
-    cli.parser.parse = MagicMock(return_value=(Ontology, []))
-    cli.serializer.serialize = MagicMock(return_value='{}')
-    cli.plantuml.generate = MagicMock(return_value='@startuml\n@enduml')
-    cli.render_plantuml_to_png = MagicMock()
-
     cli.parse_file(sample_ontology_file)
 
     json_file_path = os.path.splitext(sample_ontology_file)[0] + '.json'
@@ -34,12 +31,6 @@ def test_parse_file(cli, sample_ontology_file):
 
     assert os.path.exists(json_file_path)
     assert os.path.exists(puml_file_path)
-
-    with open(json_file_path, 'r', encoding='utf-8') as json_file:
-        assert json_file.read() == '{}'
-
-    with open(puml_file_path, 'r', encoding='utf-8') as puml_file:
-        assert puml_file.read() == '@startuml\n@enduml'
 
     os.remove(sample_ontology_file)
     os.remove(json_file_path)

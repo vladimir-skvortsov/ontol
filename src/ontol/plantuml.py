@@ -186,12 +186,14 @@ class PlantUML:
                 continue
             relations.append(
                 Relationship(
-                    term,
-                    RelationshipType.from_str(function.attributes.type.value)
+                    parent=term,
+                    relationship=RelationshipType.from_str(
+                        function.attributes.type.value
+                    )
                     if function.attributes.type
                     else RelationshipType.DIRECT_ASSOCIATION,
-                    [Term(function.name)],
-                    RelationshipAttributes(
+                    children=[Term(function.name)],
+                    attributes=RelationshipAttributes(
                         color=function.attributes.colorArrow or '#black',
                         title=function.attributes.inputTitle or '',
                         leftChar=f'{v if v != 1 else ""}',
@@ -201,12 +203,12 @@ class PlantUML:
             )
         relations.append(
             Relationship(
-                Term(function.name),
-                RelationshipType.from_str(function.attributes.type.value)
+                parent=Term(function.name),
+                relationship=RelationshipType.from_str(function.attributes.type.value)
                 if function.attributes.type
                 else RelationshipType.DIRECT_ASSOCIATION,
-                [ontology.find_term_by_name(function.output_type.term.name)],
-                RelationshipAttributes(
+                children=[ontology.find_term_by_name(function.output_type.term.name)],
+                attributes=RelationshipAttributes(
                     color=function.attributes.colorArrow,
                     title=function.attributes.outputTitle or '',
                     direction=RelationshipDirection.FORWARD,

@@ -1,3 +1,4 @@
+import copy
 from enum import Enum
 from typing import Optional
 from dataclasses import dataclass, field
@@ -65,7 +66,7 @@ class RelationshipType(Enum):
     COMPOSITION = 'composition'
 
     @classmethod
-    def from_str(cls, value: str):
+    def from_str(cls, value: str) -> Optional['RelationshipType']:
         return cls._value2member_map_.get(value, None)
 
     @classmethod
@@ -153,6 +154,7 @@ class Relationship:
     parent: Term
     relationship: RelationshipType
     children: list[Term]
+    name: Optional[str] = None
     attributes: RelationshipAttributes = field(default_factory=RelationshipAttributes)
 
     def __repr__(self) -> str:
@@ -164,11 +166,33 @@ class Relationship:
 
 
 @dataclass
-class Ontology:
+class Figure:
+    name: str
     types: list[Term] = field(default_factory=list)
     functions: list[Function] = field(default_factory=list)
     hierarchy: list[Relationship] = field(default_factory=list)
+    functions: list[Function] = field(default_factory=list)
+
+    def __repr__(self) -> str:
+        return f'Figure(name={self.name}, tyoes={self.types}, functions={self.functions}, hierarchy={self.hierarchy})'
+
+
+@dataclass
+class Ontology:
     meta: Meta = field(default_factory=Meta)
+    types: list[Term] = field(default_factory=list)
+    functions: list[Function] = field(default_factory=list)
+    hierarchy: list[Relationship] = field(default_factory=list)
+    figures: list[Figure] = field(default_factory=list)
+
+    @staticmethod
+    def from_figure(parent_ontology: 'Ontology', figure: Figure) -> 'Ontology':
+        return Ontology(
+            meta=copy.copy(parent_ontology.meta),
+            types=figure.types,
+            functions=figure.functions,
+            hierarchy=figure.hierarchy,
+        )
 
     def add_type(self, type_def: Term) -> None:
         self.types.append(type_def)
@@ -176,8 +200,11 @@ class Ontology:
     def add_function(self, func_def: Function) -> None:
         self.functions.append(func_def)
 
-    def add_relationship(self, logical_expr: Relationship) -> None:
-        self.hierarchy.append(logical_expr)
+    def add_relationship(self, relationship: Relationship) -> None:
+        self.hierarchy.append(relationship)
+
+    def add_figure(self, figure: Figure) -> None:
+        self.figures.append(figure)
 
     def set_meta(self, meta: Meta) -> None:
         self.meta = meta
@@ -192,8 +219,9 @@ class Ontology:
 
     def __repr__(self) -> str:
         return (
-            f'Ontology(types={self.types}, '
-            f'functions={self.functions},'
-            f'hierarchy={self.hierarchy},'
-            f'meta={self.meta})'
+            f'Ontology(meta={self.meta}, '
+            f'types={self.types}, '
+            f'functions={self.functions}, '
+            f'hierarchy={self.hierarchy}, '
+            f'figures={self.figures})'
         )
