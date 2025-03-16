@@ -109,7 +109,7 @@ class CLI:
                 content: str = file.read()
                 ontology, warnings = self.parser.parse(content, file_path)
 
-                if args.max_edges and (count := ontology.count_edges()) > args.max_edges:
+                if args and args.max_edges and (count := ontology.count_edges()) > args.max_edges:
                     warnings.append("🔔 \033[33mWarning\033[0m: " + f"Too much edges: expected: "
                                                                    f"{args.max_edges}, got: {count}")
 
