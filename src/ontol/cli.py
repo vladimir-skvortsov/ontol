@@ -98,17 +98,17 @@ class CLI:
         else:
             self.parse_file(args.file, args)
 
-    def parse_file(self, file_path: str, args: Namespace) -> None:
+    def parse_file(self, file_path: str, args: Optional[Namespace] = None) -> None:
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content: str = file.read()
                 ontology, warnings = self.parser.parse(content, file_path)
 
                 # Print warnings
-                if warnings and not args.quiet:
+                if warnings and (not args or not args.quiet):
                     print('\n\n'.join(warnings))
 
-                if args.gen_hierarchy:
+                if args and args.gen_hierarchy:
                     print('Generating hierarchy...')
                     hierarchy, comments = self.ai.generate_hierarchy(
                         ontology, args.model, args.temperature
@@ -122,9 +122,9 @@ class CLI:
 
                 base_dir = os.path.dirname(file_path)
                 base_name = os.path.splitext(os.path.basename(file_path))[0]
-                output_dir = args.dir if args.dir is not None else base_dir
+                output_dir = args.dir if args and args.dir else base_dir
 
-                if args.dir:
+                if args and args.dir:
                     os.makedirs(output_dir, exist_ok=True)
 
                 ontologies: list[Ontology] = [ontology]
@@ -150,7 +150,7 @@ class CLI:
                     self.plantuml.processes_puml_to_png(puml_file_path)
 
                     # Retranslator
-                    if not args.debug:
+                    if args and not args.debug:
                         continue
                     retranslator_content: str = self.retranslator.translate(ontology)
                     retranslator_file_path: str = os.path.join(
@@ -163,7 +163,7 @@ class CLI:
         except Exception as e:
             print(e)
 
-    def watch_file(self, file_path: str, args: Namespace):
+    def watch_file(self, file_path: str, args: Optional[Namespace] = None):
         self.parse_file(file_path, args)
 
         class FileChangeHandler(FileSystemEventHandler):
