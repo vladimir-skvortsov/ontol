@@ -63,12 +63,14 @@ class CLI:
             help='Generate additional hierarchy relationship using Ollama model',
         )
         self.args_parser.add_argument(
+            '-m',
             '--model',
             type=str,
             default='llama3.1',
             help='Ollama model to use',
         )
         self.args_parser.add_argument(
+            '-t',
             '--temperature',
             type=float,
             default=0.0,
