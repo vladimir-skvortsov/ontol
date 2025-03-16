@@ -217,7 +217,7 @@ class AI:
 
                 relationships.append(rel)
                 comments.append(relationship.comment)
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
         return relationships, comments
