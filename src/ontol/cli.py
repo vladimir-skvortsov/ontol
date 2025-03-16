@@ -81,8 +81,8 @@ class CLI:
             help='Show the version of the program and exit',
         )
         self.args_parser.add_argument(
-            '-me',
-            '--max_edges',
+            '--max-edges',
+            dest='max_edges',
             type=int,
             help='Set max edges in scheme',
         )
@@ -123,7 +123,8 @@ class CLI:
                 ontology, warnings = self.parser.parse(content, file_path)
 
                 if self.max_edges and (count := ontology.count_edges()) > self.max_edges:
-                    warnings.append(f"Too much edges: expected:{self.max_edges}, got:{count}")
+                    warnings.append("🔔 \033[33mWarning\033[0m: " + f"Too much edges: expected: "
+                                                                   f"{self.max_edges}, got: {count}")
 
                 # Print warnings
                 if warnings and not self.quiet:

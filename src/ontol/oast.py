@@ -250,6 +250,5 @@ class Ontology:
         count = len(self.hierarchy)
         for func in self.functions:
             types = [attribute.term.name for attribute in func.input_types]
-            types.append(func.output_type.term.name)
-            count += len(set(types))
+            count += len(set(types)) + 1
         return count
