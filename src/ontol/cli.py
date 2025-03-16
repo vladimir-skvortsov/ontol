@@ -82,15 +82,6 @@ class CLI:
             help='Show the version of the program and exit',
         )
 
-        self.watch: bool = False
-        self.debug: bool = False
-        self.quiet: bool = False
-        self.gen_hierarchy: bool = False
-        self.file: Optional[str] = None
-        self.dir: Optional[str] = None
-        self.model: str = 'llama3.1'
-        self.temperature: float = 0.0
-
         self.parser: Parser = Parser()
         self.serializer: JSONSerializer = JSONSerializer()
         self.plantuml: PlantUML = PlantUML()
@@ -99,31 +90,26 @@ class CLI:
 
     def run(self) -> None:
         args: Namespace = self.args_parser.parse_args()
-        for key, value in vars(args).items():
-            setattr(self, key, value)
 
-        if self.file is None:
-            return
-
-        if self.watch:
-            self.watch_file(self.file)
+        if args.watch:
+            self.watch_file(args.file, args)
         else:
-            self.parse_file(self.file)
+            self.parse_file(args.file, args)
 
-    def parse_file(self, file_path: str) -> None:
+    def parse_file(self, file_path: str, args: Namespace) -> None:
         try:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content: str = file.read()
                 ontology, warnings = self.parser.parse(content, file_path)
 
                 # Print warnings
-                if warnings and not self.quiet:
+                if warnings and not args.quiet:
                     print('\n\n'.join(warnings))
 
-                if self.gen_hierarchy:
+                if args.gen_hierarchy:
                     print('Generating hierarchy...')
                     hierarchy, comments = self.ai.generate_hierarchy(
-                        ontology, self.model, self.temperature
+                        ontology, args.model, args.temperature
                     )
                     ontology.hierarchy.extend(hierarchy)
                     print('\nGenerated relationships:')
@@ -134,9 +120,10 @@ class CLI:
 
                 base_dir = os.path.dirname(file_path)
                 base_name = os.path.splitext(os.path.basename(file_path))[0]
-                output_dir = self.dir if self.dir is not None else base_dir
+                output_dir = args.dir if args.dir is not None else base_dir
 
-                os.makedirs(output_dir, exist_ok=True)
+                if args.dir:
+                    os.makedirs(output_dir, exist_ok=True)
 
                 ontologies: list[Ontology] = [ontology]
                 base_names: list[str] = [base_name]
@@ -161,7 +148,7 @@ class CLI:
                     self.plantuml.processes_puml_to_png(puml_file_path)
 
                     # Retranslator
-                    if not self.debug:
+                    if not args.debug:
                         continue
                     retranslator_content: str = self.retranslator.translate(ontology)
                     retranslator_file_path: str = os.path.join(
@@ -174,8 +161,8 @@ class CLI:
         except Exception as e:
             print(e)
 
-    def watch_file(self, file_path: str):
-        self.parse_file(file_path)
+    def watch_file(self, file_path: str, args: Namespace):
+        self.parse_file(file_path, args)
 
         class FileChangeHandler(FileSystemEventHandler):
             def __init__(self, parse_callback):
@@ -185,7 +172,7 @@ class CLI:
             def on_modified(self, event):
                 if event.src_path.endswith('.ontol'):
                     print(f'File {event.src_path} modified, re-parsing...')
-                    self.parse_callback(event.src_path)
+                    self.parse_callback(event.src_path, args)
 
         event_handler: FileChangeHandler = FileChangeHandler(self.parse_file)
 
