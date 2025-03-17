@@ -141,6 +141,21 @@ class CLI:
                     ontologies.append(Ontology.from_figure(ontology, figure))
                     base_names.append(f'{base_name}_{figure.name}')
 
+                if args and args.split_funcs_rels:
+                    new_ontologies: list[Ontology] = []
+                    new_base_names: list[str] = []
+
+                    for ontology, base_name in zip(ontologies, base_names):
+                        new_ontologies.extend(
+                            [ontology.without_functions, ontology.only_functions]
+                        )
+                        new_base_names.extend(
+                            [f'{base_name}_rels', f'{base_name}_funcs']
+                        )
+
+                    ontologies.extend(new_ontologies)
+                    base_names.extend(new_base_names)
+
                 for ontology, base_name in zip(ontologies, base_names):
                     # JSON
                     json_content: str = self.serializer.serialize(ontology)
@@ -154,31 +169,6 @@ class CLI:
                     with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
                         puml_file.write(plantuml_content)
                     self.plantuml.processes_puml_to_png(puml_file_path)
-
-                    if args and args.split_funcs_rels:
-                        rels_puml_content: str = self.plantuml.generate(
-                            ontology.without_functions
-                        )
-                        rels_puml_file_path: str = os.path.join(
-                            output_dir, f'{base_name}_rels.puml'
-                        )
-                        with open(
-                            rels_puml_file_path, 'w', encoding='utf-8'
-                        ) as puml_file:
-                            puml_file.write(rels_puml_content)
-                        self.plantuml.processes_puml_to_png(rels_puml_file_path)
-
-                        func_puml_content: str = self.plantuml.generate(
-                            ontology.only_functions
-                        )
-                        funcs_puml_file_path: str = os.path.join(
-                            output_dir, f'{base_name}_funcs.puml'
-                        )
-                        with open(
-                            funcs_puml_file_path, 'w', encoding='utf-8'
-                        ) as puml_file:
-                            puml_file.write(func_puml_content)
-                        self.plantuml.processes_puml_to_png(funcs_puml_file_path)
 
                     # Retranslator
                     if args and not args.debug:
