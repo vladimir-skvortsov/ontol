@@ -67,7 +67,8 @@ parser = PydanticOutputParser(pydantic_object=HierarchyGenerationSchema)
 template = """
 ### Instructions
 
-As a highly skilled UML expert, your task is to thoroughly analyze the classes and any associated functions provided. Using this information, you will determine all possible relationships in a class diagram. Adhere to the following requirements:
+As a highly skilled UML expert, your task is to thoroughly analyze the classes and any associated functions provided.
+Using this information, you will determine all possible relationships in a class diagram. Adhere to the following requirements:
 
 1. Include relationships that define:
    - Parent class
