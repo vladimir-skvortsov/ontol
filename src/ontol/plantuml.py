@@ -132,7 +132,11 @@ class PlantUML:
             else ''
         )
         color: str = '[' + (relationship.attributes.color or '#black') + ']'
-        slice = 3 if relationship.relationship == RelationshipDirection.FORWARD else 2
+        slice = (
+            3
+            if relationship.attributes.direction == RelationshipDirection.BIDIRECTIONAL
+            else 2
+        )
 
         relation: str = (
             relationships[relationship.relationship.value][
