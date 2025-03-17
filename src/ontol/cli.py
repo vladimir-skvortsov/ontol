@@ -77,6 +77,13 @@ class CLI:
             help='Model temperature to use',
         )
         self.args_parser.add_argument(
+            '--split-funcs-rels',
+            dest='split_funcs_rels',
+            action='store_true',
+            default=False,
+            help='Split functions and relations',
+        )
+        self.args_parser.add_argument(
             '-v',
             '--version',
             action='version',
@@ -150,6 +157,21 @@ class CLI:
                     ontologies.append(Ontology.from_figure(ontology, figure))
                     base_names.append(f'{base_name}_{figure.name}')
 
+                if args and args.split_funcs_rels:
+                    new_ontologies: list[Ontology] = []
+                    new_base_names: list[str] = []
+
+                    for ontology, base_name in zip(ontologies, base_names):
+                        new_ontologies.extend(
+                            [ontology.without_functions, ontology.only_functions]
+                        )
+                        new_base_names.extend(
+                            [f'{base_name}_rels', f'{base_name}_funcs']
+                        )
+
+                    ontologies.extend(new_ontologies)
+                    base_names.extend(new_base_names)
+
                 for ontology, base_name in zip(ontologies, base_names):
                     # JSON
                     json_content: str = self.serializer.serialize(ontology)
@@ -162,7 +184,6 @@ class CLI:
                     puml_file_path: str = os.path.join(output_dir, f'{base_name}.puml')
                     with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
                         puml_file.write(plantuml_content)
-
                     self.plantuml.processes_puml_to_png(puml_file_path)
 
                     # Retranslator

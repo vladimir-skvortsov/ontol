@@ -20,6 +20,16 @@ class Meta:
             f'date={self.date})'
         )
 
+    def with_new_name(self, new_name: str) -> 'Meta':
+        return Meta(
+            version=self.version,
+            title=new_name,
+            author=self.author,
+            description=self.description,
+            type=self.type,
+            date=self.date,
+        )
+
 
 @dataclass
 class TermAttributes:
@@ -235,6 +245,36 @@ class Ontology:
         return next(
             (definition for definition in definitions if definition.name == name),
             None,
+        )
+
+    @property
+    def without_functions(self) -> 'Ontology':
+        types_used_in_hierarchy = [
+            term
+            for relationship in self.hierarchy
+            for term in [relationship.parent] + relationship.children
+        ]
+        return Ontology(
+            meta=self.meta.with_new_name(f'{self.meta.title} | Иерархия'),
+            types=types_used_in_hierarchy,
+            functions=[],
+            hierarchy=self.hierarchy,
+            figures=self.figures,
+        )
+
+    @property
+    def only_functions(self) -> 'Ontology':
+        types_used_in_functions = [
+            arg.term
+            for func in self.functions
+            for arg in func.input_types + [func.output_type]
+        ]
+        return Ontology(
+            meta=self.meta.with_new_name(f'{self.meta.title} | Алгоритмы'),
+            types=types_used_in_functions,
+            functions=self.functions,
+            hierarchy=[],
+            figures=self.figures,
         )
 
     def __repr__(self) -> str:
