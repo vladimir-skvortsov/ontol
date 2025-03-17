@@ -4,6 +4,7 @@ from typing import Literal, Optional, Any, Type
 from dataclasses import fields
 
 from ontol import (
+    constants,
     Ontology,
     Figure,
     Term,
@@ -73,7 +74,7 @@ class Lexer(BaseLexer):
 
     def error(self, t) -> None:
         self.index += 1
-        raise SyntaxError(f"🚨 \033[31mError: \033[0mIllegal character '{t.value[0]}'")
+        raise SyntaxError(f"{constants.error_prefix} illegal character '{t.value[0]}'")
 
 
 class Parser(BaseParser):
@@ -105,7 +106,7 @@ class Parser(BaseParser):
         line: str = self.__lines[line_number - 1]
         line_padding: int = 4
         message_prefix: str = (
-            '🔔 \033[33mWarning' if type == 'warning' else '🚨 \033[31mError'
+            constants.warning_prefix if type == 'warning' else constants.error_prefix
         )
 
         final_message: str = f'File "{self.__file_path}", line {line_number}'
@@ -116,9 +117,7 @@ class Parser(BaseParser):
             )
             column_index: int = token.index - line_start_index - 1
             final_message += f'\n {" " * line_padding}{" " * column_index}^'
-        final_message += (
-            f'\n{message_prefix}: \033[0m{message[0].lower() + message[1:]}'
-        )
+        final_message += f'\n{message_prefix} {message[0].lower() + message[1:]}'
 
         return final_message
 
@@ -576,4 +575,4 @@ class Parser(BaseParser):
                 )
             )
 
-        raise SyntaxError('🚨 \033[31mError: \033[0mSyntax error at EOF')
+        raise SyntaxError(f'{constants.error_prefix} Syntax error at EOF')

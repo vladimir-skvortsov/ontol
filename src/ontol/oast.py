@@ -118,11 +118,11 @@ class Function:
 
     def _format_input_types(self) -> str:
         return (
-                '['
-                + ', '.join(
-            f'{{name: {t.term.name}, label: {t.label}}}' for t in self.input_types
-        )
-                + ']'
+            '['
+            + ', '.join(
+                f'{{name: {t.term.name}, label: {t.label}}}' for t in self.input_types
+            )
+            + ']'
         )
 
     def _format_output_type(self) -> str:
@@ -227,10 +227,10 @@ class Ontology:
         )
 
     def find_definition_by_name(
-            self, name: str
+        self, name: str
     ) -> Optional[Term | Function | Relationship]:
         definitions: list[Term | Function | Relationship] = (
-                self.types + self.functions + self.hierarchy
+            self.types + self.functions + self.hierarchy
         )
         return next(
             (definition for definition in definitions if definition.name == name),
@@ -247,8 +247,8 @@ class Ontology:
         )
 
     def count_edges(self) -> int:
-        count = len(self.hierarchy)
+        count: int = len(self.hierarchy)
         for func in self.functions:
-            types = [attribute.term.name for attribute in func.input_types]
+            types: list[str] = [attribute.term.name for attribute in func.input_types]
             count += len(set(types)) + 1
         return count

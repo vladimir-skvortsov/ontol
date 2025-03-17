@@ -15,6 +15,7 @@ from ontol import (
     Retranslator,
     Ontology,
     AI,
+    constants,
 )
 
 __VERSION__ = os.getenv('ONTOL_VERSION', 'dev')
@@ -109,9 +110,15 @@ class CLI:
                 content: str = file.read()
                 ontology, warnings = self.parser.parse(content, file_path)
 
-                if args and args.max_edges and (count := ontology.count_edges()) > args.max_edges:
-                    warnings.append("🔔 \033[33mWarning\033[0m: " + f"Too much edges: expected: "
-                                                                   f"{args.max_edges}, got: {count}")
+                if (
+                    args
+                    and args.max_edges
+                    and (count := ontology.count_edges()) > args.max_edges
+                ):
+                    warnings.append(
+                        f'{constants.warning_prefix} Too much edges: expected: '
+                        f'{args.max_edges}, got: {count}'
+                    )
 
                 # Print warnings
                 if warnings and (not args or not args.quiet):
@@ -166,7 +173,7 @@ class CLI:
                         output_dir, f'{base_name}_retr.ontol'
                     )
                     with open(
-                            retranslator_file_path, 'w', encoding='utf-8'
+                        retranslator_file_path, 'w', encoding='utf-8'
                     ) as retr_file:
                         retr_file.write(retranslator_content)
         except Exception as e:

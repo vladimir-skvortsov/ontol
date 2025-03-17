@@ -1,3 +1,4 @@
+from . import constants
 from .oast import (
     Ontology,
     Figure,
@@ -21,6 +22,7 @@ from .cli import CLI
 
 
 __all__ = (
+    'constants',
     'Ontology',
     'Figure',
     'Term',
