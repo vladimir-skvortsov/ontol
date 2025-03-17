@@ -1,0 +1,42 @@
+version: '1.0'
+title: 'Фундаментальные циклы и разрезы'
+author: 'Автор онтологии'
+description: 'Описание онтологии фундаментальных циклов и разрезов в теории графов.'
+
+types:
+cycleVector: 'Циклический вектор', ''
+cycle: 'Цикл', ''
+simpleCycle: 'Простой цикл', ''
+fundamentalSystemCycles: 'Фундаментальная система циклов', 'ранг'
+
+cut: 'Разрез', ''
+correctCut: 'Правильный разрез', ''
+simpleCut: 'Простой разрез', ''
+fundamentalSystemCuts: 'Фундаментальная система разрезов', 'ранг'
+
+hierarchy:
+agg1: simpleCycle aggregation fundamentalSystemCycles
+inh1: simpleCycle inheritance cycle
+inh2: cycle inheritance cycleVector
+
+agg2: simpleCut aggregation fundamentalSystemCuts
+inh3: simpleCut inheritance correctCut
+inh4: correctCut inheritance cut
+
+figure cycles:
+cycleVector
+cycle
+simpleCycle
+fundamentalSystemCycles
+agg1
+inh1
+inh2
+
+figure cuts:
+cut
+correctCut
+simpleCut
+fundamentalSystemCuts
+agg2
+inh3
+inh4
