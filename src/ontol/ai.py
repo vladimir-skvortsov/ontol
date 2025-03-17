@@ -62,6 +62,8 @@ class HierarchyGenerationSchema(BaseModel):
     )
 
 
+parser = PydanticOutputParser(pydantic_object=HierarchyGenerationSchema)
+
 template = """
 ### Instructions
 
@@ -100,8 +102,6 @@ Format Instructions:
 
 Your final output should be a JSON object listing all identified relationships. Return only this JSON object and nothing else.
 """
-
-parser = PydanticOutputParser(pydantic_object=HierarchyGenerationSchema)
 
 prompt = PromptTemplate(
     template=template,
