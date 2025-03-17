@@ -165,6 +165,12 @@ class AI:
             )
 
             for relationship in response.relationships:
+                if relationship.relationship == 'inheritance':
+                    relationship.parent, relationship.child = (
+                        relationship.child,
+                        relationship.parent,
+                    )
+
                 parent: Optional[Term] = ontology.find_term_by_name(relationship.parent)
                 if parent is None:
                     continue
