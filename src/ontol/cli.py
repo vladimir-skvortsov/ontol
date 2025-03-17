@@ -17,7 +17,6 @@ from ontol import (
     AI,
 )
 
-
 __VERSION__ = os.getenv('ONTOL_VERSION', 'dev')
 
 
@@ -83,6 +82,12 @@ class CLI:
             version=f'%(prog)s {__VERSION__}',
             help='Show the version of the program and exit',
         )
+        self.args_parser.add_argument(
+            '--max-edges',
+            dest='max_edges',
+            type=int,
+            help='Set max edges in scheme',
+        )
 
         self.parser: Parser = Parser()
         self.serializer: JSONSerializer = JSONSerializer()
@@ -103,6 +108,10 @@ class CLI:
             with open(file_path, 'r', encoding='utf-8') as file:
                 content: str = file.read()
                 ontology, warnings = self.parser.parse(content, file_path)
+
+                if args and args.max_edges and (count := ontology.count_edges()) > args.max_edges:
+                    warnings.append("🔔 \033[33mWarning\033[0m: " + f"Too much edges: expected: "
+                                                                   f"{args.max_edges}, got: {count}")
 
                 # Print warnings
                 if warnings and (not args or not args.quiet):
@@ -157,7 +166,7 @@ class CLI:
                         output_dir, f'{base_name}_retr.ontol'
                     )
                     with open(
-                        retranslator_file_path, 'w', encoding='utf-8'
+                            retranslator_file_path, 'w', encoding='utf-8'
                     ) as retr_file:
                         retr_file.write(retranslator_content)
         except Exception as e:
