@@ -51,7 +51,8 @@ class CLI:
             help='Ignore all the warnings',
         )
         self.args_parser.add_argument(
-            '--dir',
+            '--output-dir',
+            dest='output_dir',
             type=str,
             help='Output directory to write files in',
         )
@@ -145,9 +146,9 @@ class CLI:
 
                 base_dir = os.path.dirname(file_path)
                 base_name = os.path.splitext(os.path.basename(file_path))[0]
-                output_dir = args.dir if args and args.dir else base_dir
+                output_dir = args.output_dir if args and args.output_dir else base_dir
 
-                if args and args.dir:
+                if output_dir:
                     os.makedirs(output_dir, exist_ok=True)
 
                 ontologies: list[Ontology] = [ontology]
