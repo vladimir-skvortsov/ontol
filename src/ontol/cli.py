@@ -77,6 +77,13 @@ class CLI:
             help='Model temperature to use',
         )
         self.args_parser.add_argument(
+            '--split-funcs-rels',
+            dest='split_funcs_rels',
+            action='store_true',
+            default=False,
+            help='Split functions and relations',
+        )
+        self.args_parser.add_argument(
             '-v',
             '--version',
             action='version',
@@ -146,8 +153,32 @@ class CLI:
                     puml_file_path: str = os.path.join(output_dir, f'{base_name}.puml')
                     with open(puml_file_path, 'w', encoding='utf-8') as puml_file:
                         puml_file.write(plantuml_content)
-
                     self.plantuml.processes_puml_to_png(puml_file_path)
+
+                    if args and args.split_funcs_rels:
+                        rels_puml_content: str = self.plantuml.generate(
+                            ontology.without_functions
+                        )
+                        rels_puml_file_path: str = os.path.join(
+                            output_dir, f'{base_name}_rels.puml'
+                        )
+                        with open(
+                            rels_puml_file_path, 'w', encoding='utf-8'
+                        ) as puml_file:
+                            puml_file.write(rels_puml_content)
+                        self.plantuml.processes_puml_to_png(rels_puml_file_path)
+
+                        func_puml_content: str = self.plantuml.generate(
+                            ontology.only_functions
+                        )
+                        funcs_puml_file_path: str = os.path.join(
+                            output_dir, f'{base_name}_funcs.puml'
+                        )
+                        with open(
+                            funcs_puml_file_path, 'w', encoding='utf-8'
+                        ) as puml_file:
+                            puml_file.write(func_puml_content)
+                        self.plantuml.processes_puml_to_png(funcs_puml_file_path)
 
                     # Retranslator
                     if args and not args.debug:
