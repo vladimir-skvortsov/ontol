@@ -74,14 +74,11 @@ Using this information, you will determine all possible relationships in a class
    - Parent class
    - Child class
    - Relationship type (e.g., inheritance, composition, aggregation, association, dependency)
-   - Possible arrow label (which may be "None" if not applicable)
+   - Possible arrow label in UML style.
    - Additional comments, if necessary
    - Whether the relationship is bidirectional (true or false)
-
-2. Every class must be connected to at least one other class.
-
+2. There can be no bidirectional inheritance relationships.
 3. Derive as many relevant relationships as possible by examining the functions (methods) where these classes may be used.
-
 4. Output only a JSON object following the format below (with each relationship as an item in a JSON array). Do not include any additional text or explanation beyond the JSON object.
 
 ### Context
@@ -109,22 +106,6 @@ prompt = PromptTemplate(
     input_variables=['classes', 'functions'],
     partial_variables={'format_instructions': parser.get_format_instructions()},
 )
-
-
-class DecompositionChain:
-    def __init__(self, llm):
-        retry_parser = RetryOutputParser.from_llm(
-            parser=parser,
-            llm=llm,
-            max_retries=3,
-        )
-
-        self.chain = RunnableParallel(
-            completion=prompt | llm | JsonExtractor(), prompt_value=prompt
-        ) | RunnableLambda(lambda x: retry_parser.parse_with_prompt(**x))
-
-    def invoke(self, query: str) -> str:
-        return self.chain.invoke({'query': query}).subqueries
 
 
 class AI:
@@ -184,6 +165,12 @@ class AI:
             )
 
             for relationship in response.relationships:
+                if relationship.relationship == 'inheritance':
+                    relationship.parent, relationship.child = (
+                        relationship.child,
+                        relationship.parent,
+                    )
+
                 parent: Optional[Term] = ontology.find_term_by_name(relationship.parent)
                 if parent is None:
                     continue
