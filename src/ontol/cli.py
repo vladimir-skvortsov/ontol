@@ -124,7 +124,7 @@ class CLI:
                     and (count := ontology.count_edges()) > args.max_edges
                 ):
                     warnings.append(
-                        f'{constants.warning_prefix} Too much edges: expected: '
+                        f'{constants.warning_prefix} too much edges. Expected: '
                         f'{args.max_edges}, got: {count}'
                     )
 
