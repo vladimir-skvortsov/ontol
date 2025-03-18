@@ -197,7 +197,7 @@ class Ontology:
     @staticmethod
     def from_figure(parent_ontology: 'Ontology', figure: Figure) -> 'Ontology':
         return Ontology(
-            meta=copy.copy(parent_ontology.meta),
+            meta=parent_ontology.meta.with_new_name(figure.name),
             types=figure.types,
             functions=figure.functions,
             hierarchy=figure.hierarchy,
