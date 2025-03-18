@@ -18,7 +18,7 @@ from ontol import (
 
 # TODO: make look like in technical task
 class PlantUML:
-    SERVER_URL: str = 'http://www.plantuml.com/plantuml/img/'
+    SERVER_URL: str = 'http://www.plantuml.com/plantuml/png/'
 
     def __init__(self, url=SERVER_URL):
         self.url = url
@@ -260,6 +260,7 @@ class PlantUML:
 
         url = f'{self.url}{encoded_text}'
         response = requests.get(url)
+        response.raise_for_status()
 
         if response.status_code == 200:
             with open(outfile, 'wb') as out:
