@@ -23,7 +23,7 @@ agg2: simpleCut aggregation fundamentalSystemCuts
 inh3: simpleCut inheritance correctCut
 inh4: correctCut inheritance cut
 
-figure cycles:
+figure 'Циклы в графах':
 cycleVector
 cycle
 simpleCycle
@@ -32,7 +32,7 @@ agg1
 inh1
 inh2
 
-figure cuts:
+figure 'Разрезы в графах':
 cut
 correctCut
 simpleCut

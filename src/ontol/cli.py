@@ -1,6 +1,9 @@
 import os
+import re
 import time
 from typing import Optional
+
+from unidecode import unidecode
 
 from watchdog.events import FileSystemEventHandler
 from watchdog.observers import Observer
@@ -14,6 +17,7 @@ from ontol import (
     PlantUML,
     Retranslator,
     Ontology,
+    Figure,
     AI,
     constants,
 )
@@ -156,7 +160,8 @@ class CLI:
 
                 for figure in ontology.figures:
                     ontologies.append(Ontology.from_figure(ontology, figure))
-                    base_names.append(f'{base_name}_{figure.name}')
+                    file_postfix = self.get_figure_file_postfix(figure)
+                    base_names.append(f'{base_name}_{file_postfix}')
 
                 if args and args.split_funcs_rels:
                     new_ontologies: list[Ontology] = []
@@ -226,6 +231,14 @@ class CLI:
         except KeyboardInterrupt:
             observer.stop()
         observer.join()
+
+    def get_figure_file_postfix(self, figure: Figure) -> str:
+        file_postfix: str = figure.name.strip().lower()
+        file_postfix = unidecode(file_postfix)
+        file_postfix = re.sub(r'[^a-zA-Z0-9\s]', ' ', file_postfix)
+        file_postfix = re.sub(r'\s+', ' ', file_postfix)
+        file_postfix = re.sub(r'\s', '_', file_postfix)
+        return file_postfix
 
 
 def main():

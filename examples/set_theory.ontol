@@ -23,7 +23,7 @@ sheffer: 'Штрих Шеффера' (set: '', set: '') -> set: '', { color: '#D
 hierarchy:
 elem_set_rel: element aggregation set, { leftChar: '*' }
 
-figure terms:
+figure 'terms':
 element
 set
 elem_set_rel

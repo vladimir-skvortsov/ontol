@@ -486,9 +486,9 @@ class Parser(BaseParser):
             p.attributes,
         )
 
-    @_('FIGURE_BLOCK IDENTIFIER COLON NEWLINE figure_list')
+    @_('FIGURE_BLOCK STRING COLON NEWLINE figure_list')
     def statement(self, p) -> None:
-        figure: Figure = Figure(name=p.IDENTIFIER)
+        figure: Figure = Figure(name=p.STRING)
 
         for token in p.figure_list:
             definition: Optional[Term | Function | Relationship] = (
