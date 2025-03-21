@@ -234,7 +234,7 @@ class Parser(BaseParser):
     def _validate_src(self, src: str) -> bool:
         try:
             result = urlparse(src)
-            return all([result.scheme, result.netloc])
+            return bool(result.scheme and result.netloc)
         except AttributeError:
             return False
 
@@ -336,6 +336,7 @@ class Parser(BaseParser):
             if definition.name is None:
                 continue
 
+            name_token, alias_token = None, None
             if import_tokens is not None:
                 name_token, alias_token = next(
                     (
@@ -389,7 +390,7 @@ class Parser(BaseParser):
 
     @_('IMPORT_KEYWORD ASTERISK FROM_KEYWORD STRING')
     def statement(self, p) -> None:
-        self._import_ontology(p._slice[3])
+        self._import_ontology(p._slice[3], None, p._slice[1])
 
     @_('TYPES_BLOCK COLON NEWLINE type_list')
     def statement(self, p) -> None:
