@@ -54,7 +54,6 @@ def generate_image(dsl_text):
     with open(input_file, 'w') as f:
         f.write(dsl_text)
 
-    # Запускаем процесс и читаем stdout в реальном времени
     process = subprocess.Popen(
         ['ontol', input_file, '--output-dir', USER_RESULTS_DIR],
         stdout=subprocess.PIPE,
@@ -66,7 +65,7 @@ def generate_image(dsl_text):
     for line in process.stdout:
         logs.append(line.strip())
 
-    process.wait()  # Ждём завершения
+    process.wait()
 
     create_zip(USER_RESULTS_DIR)
     return '\n'.join(logs)
@@ -80,20 +79,20 @@ if st.session_state['first_load']:
     st.session_state['first_load'] = False
     st.session_state['auto_compile'] = True
 
-st.title('Генерация PNG с помощью Ontol')
+st.title('Ontol DSL Online REPL')
 
-# Create two columns
 col1, col2 = st.columns(2)
 
 with col1:
     code = st.text_area(
-        'Введите DSL-код',
+        'Enter DSL Code',
+        label_visibility='collapsed',
         height=800,
         value=DEFAULT_TEXT,
         on_change=on_change,
     )
 
-compile_now = st.button('Сгенерировать изображение', icon='🖼')
+compile_now = st.button('Generate Image', icon='🖼')
 
 if compile_now or st.session_state['auto_compile']:
     st.session_state['auto_compile'] = False
@@ -102,19 +101,24 @@ if compile_now or st.session_state['auto_compile']:
             logs = generate_image(code)
             image_path = os.path.join(USER_RESULTS_DIR, 'ontology.png')
             with col2:
-                st.image(image_path, caption='Сгенерированное изображение')
-        except Exception:
-            st.error(f'Ошибка генерации')
+                st.image(
+                    image_path, use_container_width=True, caption='Generated image'
+                )
+        except Exception as e:
+            st.error(f'Error generating image: {e}')
         finally:
-            with st.expander('📜 Логи выполнения (нажмите, чтобы раскрыть)'):
+            with st.expander('Execution Logs (click to expand)'):
                 st.text(logs)
     else:
-        st.warning('Введите код на DSL Ontol')
+        st.warning('Please enter DSL code.')
 
 zip_path = os.path.join(USER_RESULTS_DIR, 'results.zip')
 if os.path.exists(zip_path):
     with open(zip_path, 'rb') as f:
         st.download_button(
-            '📥 Скачать ZIP', f, file_name='results.zip', mime='application/zip'
+            'Download Results as ZIP',
+            f,
+            file_name='results.zip',
+            mime='application/zip',
         )
     rm_dir(USER_RESULTS_DIR)
