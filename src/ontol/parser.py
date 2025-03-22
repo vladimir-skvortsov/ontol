@@ -49,14 +49,14 @@ class Lexer(BaseLexer):
     ignore: str = ' \t'
 
     # Regular expression rules for tokens
-    TYPES_BLOCK: str = r'types'
-    FUNCTIONS_BLOCK: str = r'functions'
-    HIERARCHY_BLOCK: str = r'hierarchy'
-    FIGURE_BLOCK: str = r'figure'
+    TYPES_BLOCK: str = r'\btypes\b'
+    FUNCTIONS_BLOCK: str = r'\bfunctions\b'
+    HIERARCHY_BLOCK: str = r'\bhierarchy\b'
+    FIGURE_BLOCK: str = r'\bfigure\b'
 
-    IMPORT_KEYWORD: str = r'import'
-    FROM_KEYWORD: str = r'from'
-    AS_KEYWORD: str = r'as'
+    IMPORT_KEYWORD: str = r'\bimport\b'
+    FROM_KEYWORD: str = r'\bfrom\b'
+    AS_KEYWORD: str = r'\bas\b'
 
     STRING: str = r'\'[^\']*\'|\"[^\"]*\"'
     IDENTIFIER: str = r'[a-zA-Z_][a-zA-Z0-9_]*'
