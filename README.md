@@ -12,6 +12,8 @@
 
 Ontol DSL Parser is a command-line tool for parsing and visualizing ontology files written in the Ontol DSL. It generates JSON representations and PlantUML diagrams from `.ontol` files.
 
+[Explore Ontol DSL in the Online REPL](https://ontol-deploy.streamlit.app)
+
 ## Features
 
 -  Parse `.ontol` files to extract ontology structures.
@@ -90,7 +92,7 @@ pytest tests
 - **PlantUML File**: A `.puml` file is generated for visualization.
 - **PNG Image**: A PNG image is rendered from the PlantUML file.
 
-## Debug mode 
+## Debug mode
 When the `--debug` flag is used, the parser retranslates the output back to the .ontol file. This is particularly useful for debugging, as it allows you to verify the accuracy and consistency of the parsing process. The retranslated file is saved with the same name as the original .ontol file, enabling easy comparison between the original and retranslated versions.
 
 ## Contributing
@@ -102,7 +104,7 @@ Contributions are welcome! If you'd like to contribute, please follow these step
 4. Ensure all tests pass by running `pytest tests`.
 5. Submit a pull request.
 
-## License 
+## License
 This project is licensed under the Apache-2.0 License. See the LICENSE file for details.
 
 ## Acknowledgments
