@@ -91,8 +91,10 @@ with col1:
         value=DEFAULT_TEXT,
         on_change=on_change,
     )
+button_col1, button_col2 = st.columns([1, 1])
 
-compile_now = st.button('Generate Image', icon='🖼')
+with button_col1:
+    compile_now = st.button('Generate image', icon='🖼', use_container_width=True)
 
 if compile_now or st.session_state['auto_compile']:
     st.session_state['auto_compile'] = False
@@ -114,11 +116,14 @@ if compile_now or st.session_state['auto_compile']:
 
 zip_path = os.path.join(USER_RESULTS_DIR, 'results.zip')
 if os.path.exists(zip_path):
-    with open(zip_path, 'rb') as f:
-        st.download_button(
-            'Download Results as ZIP',
-            f,
-            file_name='results.zip',
-            mime='application/zip',
-        )
-    rm_dir(USER_RESULTS_DIR)
+    with button_col2:
+        with open(zip_path, 'rb') as f:
+            st.download_button(
+                'Download compiled files',
+                f,
+                file_name='results.zip',
+                mime='application/zip',
+                icon='📥',
+                use_container_width=True,
+            )
+        rm_dir(USER_RESULTS_DIR)
