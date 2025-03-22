@@ -4,6 +4,7 @@ import shutil
 import os
 import uuid
 from zipfile import ZipFile
+from code_editor import code_editor
 
 st.set_page_config(page_title='Ontol DSL Online REPL', layout='wide')
 
@@ -18,11 +19,51 @@ functions:
 
 hierarchy:
 """
+SNIPPETS = [
+    {
+        'name': 'types block',
+        'code': 'types:\n',
+    },
+    {
+        'name': 'type definition',
+        'code': "name: '', ''",
+    },
+    {
+        'name': 'type definition with arguments',
+        'code': "name: '', '', {\n\n}",
+    },
+    {
+        'name': 'functions block',
+        'code': 'functions:\n',
+    },
+    {
+        'name': 'function definition',
+        'code': "name: '' (arg1: '', arg2: '') -> return_type",
+    },
+    {
+        'name': 'function definition with arguments',
+        'code': "name: '' (arg1: '', arg2: '') -> return_type, {\n\n}",
+    },
+    {
+        'name': 'hierarchy block',
+        'code': 'heirarchy:\n',
+    },
+    {
+        'name': 'relationship definition',
+        'code': 'parent aggregation child',
+    },
+    {
+        'name': 'relationship definition with arguments',
+        'code': 'parent aggregation child, {\n\n}',
+    },
+]
 
 if 'session_id' not in st.session_state:
     st.session_state['session_id'] = str(uuid.uuid4())
     st.session_state['first_load'] = True
-    st.session_state['auto_compile'] = False
+
+USER_RESULTS_DIR = f'results/{st.session_state["session_id"]}'
+ZIP_FILE = f'{USER_RESULTS_DIR}.zip'
 
 
 def create_zip(directory):
@@ -41,10 +82,6 @@ def create_zip(directory):
 def rm_dir(dir: str):
     if os.path.exists(dir):
         shutil.rmtree(dir)
-
-
-USER_RESULTS_DIR = f'results/{st.session_state["session_id"]}'
-ZIP_FILE = f'{USER_RESULTS_DIR}.zip'
 
 
 def generate_image(dsl_text):
@@ -71,48 +108,41 @@ def generate_image(dsl_text):
     return '\n'.join(logs)
 
 
-def on_change():
-    st.session_state['auto_compile'] = True
-
-
 if st.session_state['first_load']:
     st.session_state['first_load'] = False
-    st.session_state['auto_compile'] = True
 
 st.title('Ontol DSL Online REPL')
 
 col1, col2 = st.columns(2)
 
 with col1:
-    code = st.text_area(
-        'Enter DSL Code',
-        label_visibility='collapsed',
-        height=800,
-        value=DEFAULT_TEXT,
-        on_change=on_change,
+    response_dict = code_editor(
+        DEFAULT_TEXT,
+        height=[30, 30],
+        focus=True,
+        options={'showLineNumbers': True},
+        lang='plain_text',
+        snippets=[SNIPPETS, ''],
+        response_mode='debounce',
     )
+    print(response_dict)
+    code = response_dict['text']
+
 button_col1, button_col2 = st.columns([1, 1])
 
 with button_col1:
-    compile_now = st.button('Generate image', icon='🖼', use_container_width=True)
+    st.button('Generate image', icon='🖼', use_container_width=True)
 
-if compile_now or st.session_state['auto_compile']:
-    st.session_state['auto_compile'] = False
-    if code.strip():
-        try:
-            logs = generate_image(code)
-            image_path = os.path.join(USER_RESULTS_DIR, 'ontology.png')
-            with col2:
-                st.image(
-                    image_path, use_container_width=True, caption='Generated image'
-                )
-        except Exception as e:
-            st.error(f'Error generating image: {e}')
-        finally:
-            with st.expander('Execution Logs (click to expand)'):
-                st.text(logs)
-    else:
-        st.warning('Please enter DSL code.')
+try:
+    logs = generate_image(code)
+    image_path = os.path.join(USER_RESULTS_DIR, 'ontology.png')
+    with col2:
+        st.image(image_path, use_container_width=True, caption='Generated image')
+except Exception as e:
+    st.error(f'Error generating image: {e}')
+finally:
+    with st.expander('Execution Logs (click to expand)'):
+        st.text(logs)
 
 zip_path = os.path.join(USER_RESULTS_DIR, 'results.zip')
 if os.path.exists(zip_path):
