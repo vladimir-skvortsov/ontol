@@ -22,6 +22,7 @@ hierarchy:
 if 'session_id' not in st.session_state:
     st.session_state['session_id'] = str(uuid.uuid4())
     st.session_state['first_load'] = True
+    st.session_state['auto_compile'] = False
 
 
 def create_zip(directory):
@@ -71,6 +72,10 @@ def generate_image(dsl_text):
     return '\n'.join(logs)
 
 
+def on_change():
+    st.session_state['auto_compile'] = True
+
+
 if st.session_state['first_load']:
     st.session_state['first_load'] = False
 
@@ -80,12 +85,20 @@ st.title('Генерация PNG с помощью Ontol')
 col1, col2 = st.columns(2)
 
 with col1:
-    dsl_code = st.text_area('Введите DSL-код', value=DEFAULT_TEXT, height=800)
+    code = st.text_area(
+        'Введите DSL-код',
+        height=800,
+        value=DEFAULT_TEXT,
+        on_change=on_change,
+    )
 
-if st.button('Сгенерировать изображение', icon='🖼'):
-    if dsl_code.strip():
+compile_now = st.button('Сгенерировать изображение', icon='🖼')
+
+if compile_now or st.session_state['auto_compile']:
+    st.session_state['auto_compile'] = False
+    if code.strip():
         try:
-            logs = generate_image(dsl_code)
+            logs = generate_image(code)
             image_path = os.path.join(USER_RESULTS_DIR, 'ontology.png')
             with col2:
                 st.image(image_path, caption='Сгенерированное изображение')
