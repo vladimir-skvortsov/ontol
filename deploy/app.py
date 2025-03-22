@@ -140,7 +140,7 @@ try:
 except Exception as e:
     st.error(f'Error generating image: {e}')
 finally:
-    with st.expander('Execution Logs (click to expand)'):
+    with st.expander('Execution logs (click to expand)'):
         st.text(logs)
 
 zip_path = os.path.join(USER_RESULTS_DIR, 'results.zip')
