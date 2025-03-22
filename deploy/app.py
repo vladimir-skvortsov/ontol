@@ -78,6 +78,7 @@ def on_change():
 
 if st.session_state['first_load']:
     st.session_state['first_load'] = False
+    st.session_state['auto_compile'] = True
 
 st.title('Генерация PNG с помощью Ontol')
 
