@@ -5,20 +5,18 @@ import os
 import uuid
 from zipfile import ZipFile
 
+st.set_page_config(layout='wide')
+
 DEFAULT_TEXT = """version: '1.0'
 title: ''
 author: ''
 description: ''
 
 types:
-...
 
 functions:
-...
 
 hierarchy:
-...
-
 """
 
 if 'session_id' not in st.session_state:
@@ -60,7 +58,7 @@ def generate_image(dsl_text):
         ['ontol', input_file, '--output-dir', USER_RESULTS_DIR],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
-        text=True
+        text=True,
     )
 
     logs = []
@@ -70,25 +68,31 @@ def generate_image(dsl_text):
     process.wait()  # Ждём завершения
 
     create_zip(USER_RESULTS_DIR)
-    return "\n".join(logs)  
+    return '\n'.join(logs)
+
 
 if st.session_state['first_load']:
     st.session_state['first_load'] = False
 
 st.title('Генерация PNG с помощью Ontol')
 
-dsl_code = st.text_area('Введите DSL-код', value=DEFAULT_TEXT, height=800)
+# Create two columns
+col1, col2 = st.columns(2)
+
+with col1:
+    dsl_code = st.text_area('Введите DSL-код', value=DEFAULT_TEXT, height=800)
 
 if st.button('Сгенерировать изображение', icon='🖼'):
     if dsl_code.strip():
         try:
             logs = generate_image(dsl_code)
             image_path = os.path.join(USER_RESULTS_DIR, 'ontology.png')
-            st.image(image_path, caption='Сгенерированное изображение')
+            with col2:
+                st.image(image_path, caption='Сгенерированное изображение')
         except Exception:
             st.error(f'Ошибка генерации')
         finally:
-            with st.expander("📜 Логи выполнения (нажмите, чтобы раскрыть)"):
+            with st.expander('📜 Логи выполнения (нажмите, чтобы раскрыть)'):
                 st.text(logs)
     else:
         st.warning('Введите код на DSL Ontol')
