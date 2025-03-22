@@ -5,7 +5,7 @@ import os
 import uuid
 from zipfile import ZipFile
 
-st.set_page_config(layout='wide')
+st.set_page_config(page_title='Ontol DSL Online REPL', layout='wide')
 
 DEFAULT_TEXT = """version: '1.0'
 title: ''
