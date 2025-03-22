@@ -100,6 +100,9 @@ class Parser(BaseParser):
     def parse(self, file_content: str, file_path: str) -> tuple[Ontology, list[str]]:
         self.__warnings.clear()
 
+        # FIX: fix EOF issue
+        file_content += '\n'
+
         self.__lines: list[str] = file_content.splitlines()
         self.__file_path: str = file_path
         self.__ontology: Ontology = Ontology()
