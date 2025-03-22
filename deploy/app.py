@@ -160,4 +160,4 @@ if os.path.exists(zip_path):
 if st.session_state['first_load']:
     st.session_state['first_load'] = False
 
-   rm_dir(USER_RESULTS_DIR)
+rm_dir(USER_RESULTS_DIR)
