@@ -9,15 +9,18 @@ from code_editor import code_editor
 st.set_page_config(page_title='Ontol DSL Online REPL', layout='wide')
 
 DEFAULT_TEXT = """version: '1.0'
-title: ''
+title: 'Set theory'
 author: ''
 description: ''
 
 types:
-
-functions:
+element: 'Element', '', { color: '#E6B8B7' }
+set: 'Set', '', { color: '#E6B8B7' }
+subset: 'Subset', '', { color: '#E6B8B7' }
 
 hierarchy:
+element aggregation set, { leftChar: '*' }
+subset inheritance set
 """
 SNIPPETS = [
     {
@@ -108,9 +111,6 @@ def generate_image(dsl_text):
     return '\n'.join(logs)
 
 
-if st.session_state['first_load']:
-    st.session_state['first_load'] = False
-
 st.title('Ontol DSL Online REPL')
 
 col1, col2 = st.columns(2)
@@ -125,8 +125,7 @@ with col1:
         snippets=[SNIPPETS, ''],
         response_mode='debounce',
     )
-    print(response_dict)
-    code = response_dict['text']
+    code = DEFAULT_TEXT if st.session_state['first_load'] else response_dict['text']
 
 button_col1, button_col2 = st.columns([1, 1])
 
@@ -157,3 +156,6 @@ if os.path.exists(zip_path):
                 use_container_width=True,
             )
         rm_dir(USER_RESULTS_DIR)
+
+if st.session_state['first_load']:
+    st.session_state['first_load'] = False
