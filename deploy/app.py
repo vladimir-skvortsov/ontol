@@ -136,7 +136,7 @@ try:
     logs = generate_image(code)
     image_path = os.path.join(USER_RESULTS_DIR, 'ontology.png')
     with col2:
-        st.image(image_path, use_container_width=True, caption='Generated image')
+        st.image(image_path, use_container_width=True)
 except Exception as e:
     st.error(f'Error generating image: {e}')
 finally:
