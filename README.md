@@ -25,9 +25,7 @@ Ontol DSL Parser is a command-line tool for parsing and visualizing ontology fil
 
 ## Requirements
 
--  Python 3.9 or higher
--  Java (for local PlantUML rendering)
--  PlantUML (for local rendering)
+-  Python 3.9 or higher.
 
 ## Installation
 
