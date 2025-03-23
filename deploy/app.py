@@ -15,7 +15,7 @@ description: ''
 
 types:
 element: 'Element', '', { color: '#E6B8B7' }
-set: 'Set\n\n\n\n\n', '', { color: '#E6B8B7' }
+set: 'Set\\n\\n\\n\\n\\n', '', { color: '#E6B8B7' }
 subset: 'Subset', '', { color: '#E6B8B7' }
 
 functions:
