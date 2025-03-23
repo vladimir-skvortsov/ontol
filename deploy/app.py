@@ -119,10 +119,11 @@ def generate_image(dsl_text):
     return '\n'.join(logs)
 
 
-ONTOL_VERSION = get_ontol_version()
+if 'version' not in st.session_state:
+    st.session_state['version'] = get_ontol_version()
 
 st.title('Ontol DSL Online REPL')
-st.markdown(f'`{ONTOL_VERSION}`')
+st.markdown(f'`{st.session_state["version"]}`')
 
 col1, col2 = st.columns(2)
 
