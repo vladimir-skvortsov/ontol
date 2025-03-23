@@ -68,12 +68,14 @@ if 'session_id' not in st.session_state:
 USER_RESULTS_DIR = f'results/{st.session_state["session_id"]}'
 ZIP_FILE = f'{USER_RESULTS_DIR}.zip'
 
+
 def get_ontol_version():
     try:
-        version = subprocess.check_output(["ontol", "--version"], text=True).strip()
+        version = subprocess.check_output(['ontol', '--version'], text=True).strip()
         return version
     except Exception as e:
-        return f"Ошибка получения версии: {e}"
+        return f'Ошибка получения версии: {e}'
+
 
 def create_zip(directory):
     zip_filename = os.path.join(directory, 'results.zip')
@@ -116,17 +118,18 @@ def generate_image(dsl_text):
     create_zip(USER_RESULTS_DIR)
     return '\n'.join(logs)
 
+
 ONTOL_VERSION = get_ontol_version()
 
 st.title('Ontol DSL Online REPL')
-st.markdown(f"`{ONTOL_VERSION}`")
+st.markdown(f'`{ONTOL_VERSION}`')
 
 col1, col2 = st.columns(2)
 
 with col1:
     response_dict = code_editor(
         DEFAULT_TEXT,
-        height=[20, 80],
+        height=[20, 30],
         focus=True,
         options={'showLineNumbers': True},
         lang='plain_text',
