@@ -1,0 +1,26 @@
+title: 'Ontol tokens'
+author: 'Skvortsov Vladimir Sergeevich'
+
+types:
+TYPES_BLOCK: '**TYPES_BLOCK**', 'types:', { color: '#F2E6D6' }
+FUNCTIONS_BLOCK: '**FUNCTIONS_BLOCK**', 'functions:', { color: '#F2E6D6' }
+HIERARCHY_BLOCK: '**HIERARCHY_BLOCK**', 'hierarchy:', { color: '#F2E6D6' }
+FIGURE_BLOCK: '**FIGURE_BLOCK**', 'figure', { color: '#F2E6D6' }
+
+IMPORT_KEYWORD: '**IMPORT_KEYWORD**', 'import', { color: '#F2E6D6' }
+FROM_KEYWORD: '**FROM_KEYWORD**', 'from', { color: '#F2E6D6' }
+AS_KEYWORD: '**AS_KEYWORD**', 'as', { color: '#F2E6D6' }
+
+STRING: '**STRING**', '"[^"]*"', { color: '#F2E6D6' }
+IDENTIFIER: '**IDENTIFIER**', '[a-zA-Z_][a-zA-Z0-9_]*', { color: '#F2E6D6' }
+
+LBRACE: '**LBRACE**', '{', { color: '#F2E6D6' }
+RBRACE: '**RBRACE**', '}', { color: '#F2E6D6' }
+COLON: '**COLON**', ':', { color: '#F2E6D6' }
+COMMA: '**COMMA**', ',', { color: '#F2E6D6' }
+ASTERISK: '**ASTERISK**', '*', { color: '#F2E6D6' }
+ARROW: '**ARROW**', '->', { color: '#F2E6D6' }
+LPAREN: '**LPAREN**', '(', { color: '#F2E6D6' }
+RPAREN: '**RPAREN**', ')', { color: '#F2E6D6' }
+NEWLINE: '**NEWLINE**', '\\n', { color: '#F2E6D6' }
+EMPTY: '**EMPTY**', '', { color: '#F2E6D6' }

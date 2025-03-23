@@ -1,0 +1,37 @@
+import {
+  AS_KEYWORD,
+  IDENTIFIER,
+  EMPTY,
+  NEWLINE,
+  LBRACE,
+  RBRACE,
+  COMMA,
+} from 'tokens.ontol'
+import { statement } from 'statement.ontol'
+
+title: 'Ontol imports'
+author: 'Skvortsov Vladimir Sergeevich'
+
+types:
+imported_identifiers: '**imported_identifiers**', 'LBRACE import_identifiers_list RBRACE\nLBRACE NEWLINE import_identifiers_list RBRACE\nLBRACE import_identifiers_list NEWLINE RBRACE\nLBRACE NEWLINE import_identifiers_list NEWLINE RBRACE\nLBRACE NEWLINE import_identifiers_list COMMA NEWLINE RBRACE\nEMPTY', { color: '#E6B6B3' }
+import_identifiers_list: '**import_identifiers_list**', 'import_identifiers_list COMMA import_identifier\nimport_identifiers_list COMMA NEWLINE import_identifier\nimport_identifier\nEMPTY', { color: '#E6B6B3' }
+import_identifier: '**import_identifier**', 'IDENTIFIER\nIDENTIFIER AS_KEYWORD IDENTIFIER', { color: '#E6B6B3' }
+
+hierarchy:
+statement directAssociation imported_identifiers
+
+imported_identifiers directAssociation COMMA
+imported_identifiers directAssociation EMPTY
+imported_identifiers directAssociation import_identifiers_list
+imported_identifiers directAssociation LBRACE
+imported_identifiers directAssociation NEWLINE
+imported_identifiers directAssociation RBRACE
+
+import_identifiers_list directAssociation import_identifiers_list
+import_identifiers_list directAssociation COMMA
+import_identifiers_list directAssociation import_identifier
+import_identifiers_list directAssociation NEWLINE
+import_identifiers_list directAssociation EMPTY
+
+import_identifier directAssociation IDENTIFIER
+import_identifier directAssociation AS_KEYWORD

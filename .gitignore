@@ -21,7 +21,7 @@ dist/
 src/ontol.egg-info/
 
 # Compiled examples
-examples/*.json
-examples/*.puml
-examples/*.png
-examples/*_retr.ontol
+examples/**/*.json
+examples/**/*.puml
+examples/**/*.png
+examples/**/*_retr.ontol

@@ -1,0 +1,37 @@
+import {
+  TYPES_BLOCK,
+  STRING,
+  IDENTIFIER,
+  COLON,
+  EMPTY,
+  NEWLINE,
+  COMMA,
+} from 'tokens.ontol'
+import { statement } from 'statement.ontol'
+import { attributes } from 'attributes.ontol'
+
+title: 'Ontol types'
+author: 'Skvortsov Vladimir Sergeevich'
+
+types:
+type_list: '**type_list**', 'type_list type NEWLINE\ntype NEWLINE\nNEWLINE type_list\nEMPTY', { color: '#E6B6B3' }
+type: '**type**', 'IDENTIFIER COLON STRING COMMA STRING attributes', { color: '#E6B6B3' }
+
+hierarchy:
+statement directAssociation TYPES_BLOCK
+statement directAssociation STRING
+statement directAssociation IDENTIFIER
+statement directAssociation COLON
+statement directAssociation type_list
+
+type_list directAssociation EMPTY
+type_list directAssociation NEWLINE
+type_list directAssociation type_list
+type_list directAssociation type
+
+type directAssociation STRING
+type directAssociation IDENTIFIER
+type directAssociation COLON
+type directAssociation COMMA
+type directAssociation attributes
+

@@ -1,0 +1,27 @@
+import {
+  EMPTY,
+} from 'tokens.ontol'
+import { statement } from 'statement.ontol'
+import { imported_identifiers } from 'imports.ontol'
+import { type_list } from 'types.ontol'
+import { function_list } from 'functions.ontol'
+import { hierarchy_list } from 'hierarchy.ontol'
+
+title: 'Ontol bootstrapping'
+author: 'Skvortsov Vladimir Sergeevich'
+
+types:
+ontology: '**ontology**', 'statement_list', { color: '#E6B6B3' }
+statement_list: '**statement_list**', 'statement_list statement\nEMPTY', { color: '#E6B6B3' }
+
+hierarchy:
+ontology directAssociation statement_list
+
+statement_list directAssociation statement_list
+statement_list directAssociation statement
+statement_list directAssociation EMPTY
+
+statement directAssociation type_list
+statement directAssociation function_list
+statement directAssociation hierarchy_list
+statement directAssociation imported_identifiers

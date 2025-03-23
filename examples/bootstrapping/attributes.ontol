@@ -1,0 +1,34 @@
+import {
+  COMMA,
+  LBRACE,
+  RBRACE,
+  NEWLINE,
+  EMPTY,
+  COLON,
+  STRING,
+  IDENTIFIER,
+} from 'tokens.ontol'
+
+title: 'Ontol attributes'
+author: 'Skvortsov Vladimir Sergeevich'
+
+types:
+attributes: '**attributes**', 'COMMA LBRACE attribute_list RBRACE\nCOMMA BRACE NEWLINE attribute_list RBRACE\nCOMMA BRACE attribute_list NEWLINE RBRACE\nCOMMA LBRACE NEWLINE attribute_list NEWLINE RBRACE\nCOMMA LBRACE NEWLINE attribute_list COMMA NEWLINE RBRACE\nEMPTYLIST', { color: '#E6B6B3' }
+attribute_list: '**attribute_list**', 'attribute_list COMMA attribute\nattribute _list COMMA NEWLINE attribute\nattribute\nEMPTY', { color: '#E6B6B3' }
+attribute: '**attribute**', 'IDENTIFIER COLON STRING', { color: '#E6B6B3' }
+
+hierarchy:
+attributes directAssociation COMMA
+attributes directAssociation LBRACE
+attributes directAssociation RBRACE
+attributes directAssociation NEWLINE
+attributes directAssociation attribute_list
+
+attribute_list directAssociation COMMA
+attribute_list directAssociation EMPTY
+attribute_list directAssociation attribute_list
+attribute_list directAssociation attribute
+
+attribute directAssociation STRING
+attribute directAssociation IDENTIFIER
+attribute directAssociation COLON

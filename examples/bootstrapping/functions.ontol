@@ -1,0 +1,59 @@
+import {
+  FUNCTIONS_BLOCK,
+  STRING,
+  IDENTIFIER,
+  COLON,
+  EMPTY,
+  NEWLINE,
+  COMMA,
+  RPAREN,
+  LPAREN,
+  ARROW,
+} from 'tokens.ontol'
+import { statement } from 'statement.ontol'
+import { attributes } from 'attributes.ontol'
+
+title: 'Ontol functions'
+author: 'Skvortsov Vladimir Sergeevich'
+
+types:
+function_list: '**function_list**', 'function_list function NEWLINE\nfunction NEWLINE\nNEWLINE function_list\nEMPTY', { color: '#E6B6B3' }
+function: '**function**', 'IDENTIFIER COLON STRING params ARROW IDENTIFIER COLON STRING attributes', { color: '#E6B6B3' }
+params: '**params**', 'LPAREN param _list RPAREN\nLPAREN NEWLINE param_list RPAREN\nLPAREN param_list NEWLINE RPAREN\nLPAREN NEWLINE param_list NEWLINE RPAREN\nLPAREN NEWLINE param_list COMMA NEWLINE RPAREN', { color: '#E6B6B3' }
+param_list: '**param_list**', 'param_list COMMA NEWLINE param\nparam _list COMMA param\nparam\nEMPTY', { color: '#E6B6B3' }
+param: '**param**', 'IDENTIFIER COLON STRING', { color: '#E6B6B3' }
+
+hierarchy:
+statement directAssociation FUNCTIONS_BLOCK
+statement directAssociation STRING
+statement directAssociation IDENTIFIER
+statement directAssociation COLON
+statement directAssociation function_list
+
+function_list directAssociation EMPTY
+function_list directAssociation NEWLINE
+function_list directAssociation function_list
+function_list directAssociation function
+
+function directAssociation IDENTIFIER
+function directAssociation COLON
+function directAssociation STRING
+function directAssociation params
+function directAssociation ARROW
+function directAssociation attributes
+
+params directAssociation RPAREN
+params directAssociation param_list
+params directAssociation LPAREN
+params directAssociation NEWLINE
+params directAssociation COMMA
+
+param_list directAssociation param_list
+param_list directAssociation COMMA
+param_list directAssociation NEWLINE
+param_list directAssociation param
+param_list directAssociation EMPTY
+
+param directAssociation IDENTIFIER
+param directAssociation COLON
+param directAssociation STRING

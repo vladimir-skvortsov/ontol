@@ -1,0 +1,31 @@
+import {
+  TYPES_BLOCK,
+  FUNCTIONS_BLOCK,
+  HIERARCHY_BLOCK,
+  IMPORT_KEYWORD,
+  FROM_KEYWORD,
+  AS_KEYWORD,
+  IDENTIFIER,
+  NEWLINE,
+  COLON,
+  STRING,
+} from 'tokens.ontol'
+
+title: 'Ontol statement'
+author: 'Skvortsov Vladimir Sergeevich'
+
+types:
+statement: '**statement**', 'IDENTIFIER COLON STRING NEWLINE\nTYPES_BLOCK NEWLINE type_list\nFUNCTIONS_BLOCK NEWLINE function\nHIERARCHY_BLOCK NEWLINE hierarchy\nIMPORT_KEYWORD imported_identifiers FROM_KEYWORD STRING\nIMPORT_KEYWORD ASTERISK FROM_KEYWORD STRING\nNEWLINE', { color: '#E6B6B3' }
+
+hierarchy:
+statement directAssociation IDENTIFIER
+statement directAssociation COLON
+statement directAssociation STRING
+statement directAssociation NEWLINE
+statement directAssociation TYPES_BLOCK
+statement directAssociation FUNCTIONS_BLOCK
+statement directAssociation HIERARCHY_BLOCK
+statement directAssociation IMPORT_KEYWORD
+statement directAssociation FROM_KEYWORD
+statement directAssociation AS_KEYWORD
+statement directAssociation NEWLINE

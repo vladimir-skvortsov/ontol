@@ -1,0 +1,27 @@
+import {
+  HIERARCHY_BLOCK,
+  IDENTIFIER,
+  EMPTY,
+  NEWLINE,
+} from 'tokens.ontol'
+import { statement } from 'statement.ontol'
+import { attributes } from 'attributes.ontol'
+
+title: 'Ontol hierarchy'
+author: 'Skvortsov Vladimir Sergeevich'
+
+types:
+hierarchy_list: '**hierarchy_list**', 'hierarchy_list relationship NEWLINE\nrelationship NEWLINE\nNEWLINE hierarchy_list\nEMPTY', { color: '#E6B6B3' }
+relationship: '**relationship**', 'IDENTIFIER IDENTIFIER IDENTIFIER attributes', { color: '#E6B6B3' }
+
+hierarchy:
+statement directAssociation HIERARCHY_BLOCK
+statement directAssociation hierarchy_list
+
+hierarchy_list directAssociation hierarchy_list
+hierarchy_list directAssociation NEWLINE
+hierarchy_list directAssociation EMPTY
+hierarchy_list directAssociation relationship
+
+relationship directAssociation IDENTIFIER
+relationship directAssociation attributes
