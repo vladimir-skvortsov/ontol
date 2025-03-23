@@ -8,9 +8,6 @@ from code_editor import code_editor
 
 st.set_page_config(page_title='Ontol DSL Online REPL', layout='wide')
 
-
-
-
 DEFAULT_TEXT = """version: '1.0'
 title: 'Set theory'
 author: ''
