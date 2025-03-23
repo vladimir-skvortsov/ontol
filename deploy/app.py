@@ -22,10 +22,10 @@ functions:
 add: 'Add' (set: '', element: '') -> set: '', { color: '#D0FFD0', colorArrow: '#red' }
 remove: 'Remove' (set: '', element: '') -> set: '', { color: '#D0FFD0', colorArrow: '#blue' }
 
-union: 'Объединение' (set: '') -> set: '', { color: '#D0FFD0', inputTitle: '*' }
-intersect: 'Пересечение' (set: '') -> set: '', { color: '#D0FFD0', inputTitle: '*' }
-difference: 'Разность' (set: '', set: '') -> set: '', { color: '#D0FFD0' }
-symDiff: 'Симметрическая разность' (set: '', set: '') -> set: '', { color: '#D0FFD0' }
+union: 'Union' (set: '') -> set: '', { color: '#D0FFD0', inputTitle: '*' }
+intersection: 'Intersection' (set: '') -> set: '', { color: '#D0FFD0', inputTitle: '*' }
+difference: 'Difference' (set: '', set: '') -> set: '', { color: '#D0FFD0' }
+symDiff: 'Symmetric difference' (set: '', set: '') -> set: '', { color: '#D0FFD0' }
 
 hierarchy:
 element aggregation set, { leftChar: '*' }
