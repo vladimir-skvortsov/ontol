@@ -15,8 +15,17 @@ description: ''
 
 types:
 element: 'Element', '', { color: '#E6B8B7' }
-set: 'Set', '', { color: '#E6B8B7' }
+set: 'Set\n\n\n\n\n', '', { color: '#E6B8B7' }
 subset: 'Subset', '', { color: '#E6B8B7' }
+
+functions:
+add: 'Add' (set: '', element: '') -> set: '', { color: '#D0FFD0', colorArrow: '#red' }
+remove: 'Remove' (set: '', element: '') -> set: '', { color: '#D0FFD0', colorArrow: '#blue' }
+
+union: 'Объединение' (set: '') -> set: '', { color: '#D0FFD0', inputTitle: '*' }
+intersect: 'Пересечение' (set: '') -> set: '', { color: '#D0FFD0', inputTitle: '*' }
+difference: 'Разность' (set: '', set: '') -> set: '', { color: '#D0FFD0' }
+symDiff: 'Симметрическая разность' (set: '', set: '') -> set: '', { color: '#D0FFD0' }
 
 hierarchy:
 element aggregation set, { leftChar: '*' }
