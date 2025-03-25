@@ -1,7 +1,8 @@
 import os
 import re
 import time
-from typing import Optional
+from typing import Optional, List
+import glob
 
 from unidecode import unidecode
 
@@ -31,14 +32,16 @@ class CLI:
             description='Ontol DSL Parser - A tool for parsing and visualizing ontology files written in the Ontol DSL.'
         )
         self.args_parser.add_argument(
-            'file', type=str, help='Path to the .ontol file to be parsed'
+            'file',
+            type=str,
+            help='Path to the .ontol file to be parsed. Supports wildcards and directories.',
         )
         self.args_parser.add_argument(
             '-w',
             '--watch',
             action='store_true',
             default=False,
-            help='Watch the specified file for changes and re-parse automatically',
+            help='Watch the specified file(s) for changes and re-parse automatically',
         )
         self.args_parser.add_argument(
             '-d',
@@ -111,10 +114,28 @@ class CLI:
     def run(self) -> None:
         args: Namespace = self.args_parser.parse_args()
 
+        file_paths = self.get_file_paths(args.file)
+
         if args.watch:
-            self.watch_file(args.file, args)
+            for file_path in file_paths:
+                self.watch_file(file_path, args)
         else:
-            self.parse_file(args.file, args)
+            for file_path in file_paths:
+                self.parse_file(file_path, args)
+
+    def get_file_paths(self, path: str) -> List[str]:
+        # Check if the path is a directory
+        if os.path.isdir(path):
+            # Recursively find all .ontol files
+            ontol_files = []
+            for root, _, files in os.walk(path):
+                for file in files:
+                    if file.endswith('.ontol'):
+                        ontol_files.append(os.path.join(root, file))
+            return ontol_files
+        # If not a directory, assume it's a pattern or a file
+        else:
+            return glob.glob(path, recursive=True)
 
     def parse_file(self, file_path: str, args: Optional[Namespace] = None) -> None:
         try:
@@ -204,7 +225,7 @@ class CLI:
                     ) as retr_file:
                         retr_file.write(retranslator_content)
         except Exception as e:
-            print(e)
+            print(f'Error processing file {file_path}: {e}')
 
     def watch_file(self, file_path: str, args: Optional[Namespace] = None):
         self.parse_file(file_path, args)
