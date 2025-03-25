@@ -115,6 +115,9 @@ class CLI:
         args: Namespace = self.args_parser.parse_args()
 
         file_paths = self.get_file_paths(args.file)
+        # Ensure we attempt to parse even non-existent files
+        if not file_paths:
+            file_paths = [args.file]
 
         if args.watch:
             for file_path in file_paths:
@@ -224,8 +227,10 @@ class CLI:
                         retranslator_file_path, 'w', encoding='utf-8'
                     ) as retr_file:
                         retr_file.write(retranslator_content)
+        except FileNotFoundError:
+            print(f"{constants.error_prefix} the file '{file_path}' does not exist.")
         except Exception as e:
-            print(f'Error processing file {file_path}: {e}')
+            print(f'{constants.error_prefix} error processing file {file_path}: {e}')
 
     def watch_file(self, file_path: str, args: Optional[Namespace] = None):
         self.parse_file(file_path, args)
