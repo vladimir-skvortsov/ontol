@@ -26,4 +26,4 @@ project aggregation task, { direction: 'forward' }
 project association client, { direction: 'bidirectional', title: 'заказан' }
 manager directAssociation project, { direction: 'forward', title: 'управляет' }
 task dependence employee, { direction: 'forward', title: 'выполняет' }
-department composition team, { direction: 'forward' }
+department composition team, { direction: 'backward' }
